@@ -18,11 +18,17 @@ class LoginPage extends Component {
   }
 
   render() {
+    
+    const { login, register, loginOrRegister, status } = this.props
+    console.log("status", status);
     return (
       <div className={s.root}>
         <div className={s.container}>
           <h1>{title}</h1>
           <p>...</p>
+          <p>Status: {status}</p>
+          <button onClick={() => login()}>Login</button>
+          <button onClick={() => register()}>Register</button>
         </div>
       </div>
     );

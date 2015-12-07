@@ -7,6 +7,13 @@ import Header from '../Header';
 import Feedback from '../Feedback';
 import Footer from '../Footer';
 
+import CounterApp from '../../containers/App.js';
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import configureStore from '../../stores/configureStore'
+
+const store = configureStore()
+
 class App extends Component {
 
   static propTypes = {
@@ -46,10 +53,13 @@ class App extends Component {
   }
 
   render() {
-    return !this.props.error ? (
+    console.log("app props", this.props);
+    return !this.props.error ? ( 
       <div>
         <Header />
-        {this.props.children}
+        <Provider store={store}>
+          {this.props.children}
+        </Provider> 
         <Feedback />
         <Footer />
       </div>
