@@ -13,20 +13,19 @@ import ErrorPage from './components/ErrorPage';
 import CounterApp from './containers/App';
 import LoginPage from './containers/LoginPage';
 
+import configureStore from './stores/configureStore';
+
 const router = new Router(on => {
   
   on('*', async (state, next) => {
     const component = await next();
-    console.log("app state", state);
+    console.log("app state", state); 
     return component && <App context={state.context}>{component}</App>;
   });
 
-  on('/contact', async () => <ContactPage />);
-  
+  on('/contact', async () => <ContactPage />); 
   on('/counter', async () => <CounterApp />);
-
   on('/login', async () => <LoginPage />);
-
   on('/register', async () => <RegisterPage />);
 
   on('*', async (state) => {

@@ -17,9 +17,10 @@ export function loginOrRegister() {
 
   return (dispatch, getState) => {
     
-    const { status } = getState()
+    const state = getState();
+    let status = state.login;
     
-    if (status === 'initial') {
+    if (status === 'initialized') {
       dispatch(login());
     } else if (status === 'new') {
       dispatch(register());

@@ -4,6 +4,7 @@ import Counter from '../components/Counter'
 import * as CounterActions from '../actions/counter'
 
 function mapStateToProps(state) {
+  console.log("counter container, state: ", state);
   return {
     counter: state.counter
   }

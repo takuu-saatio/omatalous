@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux'
-import counter from './counter'
-import login from './login'
 
-const rootReducer = combineReducers({
-  counter,
-  login
-})
+export default function(reducers) {
 
-export default rootReducer
+  const reducerModules = {};
+  reducers.forEach(reducer => {
+    reducerModules[reducer] = require(`./${reducer}`);
+  });
+
+  return combineReducers(reducerModules);
+
+}

@@ -1,5 +1,3 @@
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
-
 import React, { Component, PropTypes } from 'react';
 import emptyFunction from 'fbjs/lib/emptyFunction';
 import s from './App.scss';
@@ -12,9 +10,14 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import configureStore from '../../stores/configureStore'
 
-const store = configureStore()
-
 class App extends Component {
+  
+  constructor(props) {
+    super(props);
+    let initialState = props.context.initialState || window.__INITIAL_STATE__;
+    let reducers = props.context.reducers || window.__REDUCERS__;
+    this.store = configureStore(initialState, reducers);
+  }
 
   static propTypes = {
     context: PropTypes.shape({
@@ -53,11 +56,11 @@ class App extends Component {
   }
 
   render() {
-    console.log("app props", this.props);
+    
     return !this.props.error ? ( 
       <div>
         <Header />
-        <Provider store={store}>
+        <Provider store={this.store}>
           {this.props.children}
         </Provider> 
         <Feedback />

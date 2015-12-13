@@ -34,7 +34,14 @@ class Html extends Component {
       `ga('create','${config.googleAnalyticsId}','auto');ga('send','pageview');`,
     });
   }
-
+  
+  initialState() {
+    return ({ __html:
+      `window.__INITIAL_STATE__ = ${JSON.stringify(this.props.initialState)};
+       window.__REDUCERS__ = ${JSON.stringify(this.props.reducers)};`
+    });
+  }
+  
   render() {
     return (
       <html className="no-js" lang="">
@@ -46,6 +53,7 @@ class Html extends Component {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
         <style id="css" dangerouslySetInnerHTML={{ __html: this.props.css }} />
+        <script dangerouslySetInnerHTML={this.initialState()} />
       </head>
       <body>
         <div id="app" dangerouslySetInnerHTML={{ __html: this.props.body }} />

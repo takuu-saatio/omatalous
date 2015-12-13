@@ -6,9 +6,16 @@ const createStoreWithMiddleware = applyMiddleware(
   thunk
 )(createStore)
 
-export default function configureStore(initialState) {
-  const store = createStoreWithMiddleware(reducer, initialState)
+export default function configureStore(initialState, reducers) {
+  
+  if (!reducers) {
+    reducers = [];
+  }
 
+  const store = createStoreWithMiddleware(reducer(reducers), initialState)
+  console.log("store state", module.hot, initialState, store.getState());
+
+  /* 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers', () => {
@@ -16,6 +23,7 @@ export default function configureStore(initialState) {
       store.replaceReducer(nextReducer)
     })
   }
-
+  */
   return store
+
 }

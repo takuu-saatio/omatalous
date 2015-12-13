@@ -4,10 +4,10 @@ import LoginPage from '../components/LoginPage/LoginPage'
 import * as LoginActions from '../actions/login'
 
 function mapStateToProps(state) {
-  console.log("lp state", state);
+  console.log("lp container, state:", state);
   return {
-    status: state.status
-  }
+    state: state
+  };
 }
 
 function mapDispatchToProps(dispatch) {
