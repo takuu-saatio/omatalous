@@ -1,10 +1,10 @@
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
+"use strict";
 
-import React, { Component } from 'react';
-import s from './Header.scss';
-import withStyles from '../../decorators/withStyles';
-import Link from '../Link';
-import Navigation from '../Navigation';
+import React, { Component } from "react";
+import s from "./Header.scss";
+import withStyles from "../../decorators/withStyles";
+import Link from "../Link";
+import Navigation from "../Navigation";
 
 @withStyles(s)
 class Header extends Component {
@@ -15,7 +15,7 @@ class Header extends Component {
         <div className={s.container}>
           <Navigation className={s.nav} />
           <a className={s.brand} href="/" onClick={Link.handleClick}>
-            <img src={require('./logo-small.png')} width="38" height="38" alt="React" />
+            <img src={require("./logo-small.png")} width="38" height="38" alt="React" />
             <span className={s.brandTxt}>Takuu-Säätiö</span>
           </a>
           <div className={s.banner}>

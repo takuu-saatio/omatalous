@@ -1,16 +1,14 @@
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
-
-import fs from 'fs';
-import { join } from 'path';
-import { Router } from 'express';
-import Promise from 'bluebird';
-import jade from 'jade';
-import fm from 'front-matter';
+import fs from "fs";
+import { join } from "path";
+import { Router } from "express";
+import Promise from "bluebird";
+import jade from "jade";
+import fm from "front-matter";
 
 // A folder with Jade/Markdown/HTML content pages
-const CONTENT_DIR = join(__dirname, './content');
+const CONTENT_DIR = join(__dirname, "./content");
 
-// Extract 'front matter' metadata and generate HTML
+// Extract "front matter" metadata and generate HTML
 const parseJade = (path, jadeContent) => {
   const fmContent = fm(jadeContent);
   const htmlContent = jade.render(fmContent.body);
@@ -24,28 +22,28 @@ const fileExists = filename => new Promise(resolve => {
 
 const router = new Router();
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   
   try {
     
     const path = req.query.path;
-
-    if (!path || path === 'undefined') {
-      res.status(400).send({ error: `The 'path' query parameter cannot be empty.` });
+    console.log("content path: ", path);
+    if (!path || path === "undefined") {
+      res.status(400).send({ error: `The "path" query parameter cannot be empty.` });
       return;
     }
 
-    let fileName = join(CONTENT_DIR, (path === '/' ? '/index' : path) + '.jade');
+    let fileName = join(CONTENT_DIR, (path === "/" ? "/index" : path) + ".jade");
     if (!(await fileExists(fileName))) {
-      fileName = join(CONTENT_DIR, path + '/index.jade');
+      fileName = join(CONTENT_DIR, path + "/index.jade");
     }
 
     if (!(await fileExists(fileName))) {
-      res.status(404).send({ error: `The page '${path}' is not found.` });
+      res.status(404).send({ error: `The page "${path}" is not found.` });
     } else {
-      const source = await readFile(fileName, { encoding: 'utf8' });
+      const source = await readFile(fileName, { encoding: "utf8" });
       const content = parseJade(path, source);
-      console.log(content);
+      console.log("content: ", content);
       res.status(200).send(content);
     }
 

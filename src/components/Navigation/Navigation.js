@@ -1,10 +1,10 @@
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
+"use strict";
 
-import React, { Component, PropTypes } from 'react';
-import cx from 'classnames';
-import s from './Navigation.scss';
-import withStyles from '../../decorators/withStyles';
-import Link from '../Link';
+import React, { Component, PropTypes } from "react";
+import cx from "classnames";
+import s from "./Navigation.scss";
+import withStyles from "../../decorators/withStyles";
+import Link from "../Link";
 
 @withStyles(s)
 class Navigation extends Component {
@@ -16,12 +16,9 @@ class Navigation extends Component {
   render() {
     return (
       <div className={cx(s.root, this.props.className)} role="navigation">
-        <a className={s.link} href="/about" onClick={Link.handleClick}>About</a>
-        <a className={s.link} href="/contact" onClick={Link.handleClick}>Contact</a>
+        <a className={s.link} href="/about" onClick={Link.handleClick}>Sovellus</a>
         <span className={s.spacer}> | </span>
-        <a className={s.link} href="/login" onClick={Link.handleClick}>Log in</a>
-        <span className={s.spacer}>or</span>
-        <a className={cx(s.link, s.highlight)} href="/register" onClick={Link.handleClick}>Sign up</a>
+        <a className={s.link} href="/login" onClick={Link.handleClick}>Käytä</a>
       </div>
     );
   }

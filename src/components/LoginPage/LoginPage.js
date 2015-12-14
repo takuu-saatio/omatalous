@@ -1,3 +1,4 @@
+import request from "superagent";
 import React, { Component, PropTypes } from 'react';
 import s from './LoginPage.scss';
 import withStyles from '../../decorators/withStyles';
@@ -18,10 +19,34 @@ class LoginPage extends Component {
 
   componentWillMount() {
     this.context.onSetTitle(title);
+    if (!this.state.login) {
+      this.fetchData();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.state);
+  }
+
+  fetchData() {
+    
+    request
+      .get("/api/login")
+      .accept("application/json")
+      .end((err, res) => {
+        
+        if (err) {
+          console.log("Error:", err);
+          return;
+        }
+        
+        var response = res.body;
+        console.log("response", response);
+
+        this.setState(response.login);
+
+      });
+
   }
 
   render() {

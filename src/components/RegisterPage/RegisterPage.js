@@ -1,10 +1,10 @@
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
+"use strict";
 
-import React, { Component, PropTypes } from 'react';
-import s from './RegisterPage.scss';
-import withStyles from '../../decorators/withStyles';
+import React, { Component, PropTypes } from "react";
+import s from "./RegisterPage.scss";
+import withStyles from "../../decorators/withStyles";
 
-const title = 'New User Registration';
+const title = "New User Registration";
 
 @withStyles(s)
 class RegisterPage extends Component {
