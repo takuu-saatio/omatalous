@@ -16,7 +16,6 @@ const HttpClient = {
   get: path => new Promise((resolve, reject) => {
     request
       .get(getUrl(path))
-      .accept("application/json")
       .end((err, res) => {
         if (err) {
           if (err.status === 404) {
@@ -25,7 +24,7 @@ const HttpClient = {
             reject(err);
           }
         } else {
-          resolve(res.body);
+          resolve(res.text);
         }
       });
   }),

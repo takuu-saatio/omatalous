@@ -1,11 +1,11 @@
-import { LOGIN, REGISTER } from '../actions/login'
+import { LOGIN, REGISTER } from "../actions/login"
 
-export default function status(state = 'initial', action) {
+export default function status(state = "initial", action) {
   switch (action.type) {
     case LOGIN:
-      return 'loggingIn'
+      return "loggingIn"
     case REGISTER:
-      return 'registering'
+      return "registering"
     default:
       return state
   }

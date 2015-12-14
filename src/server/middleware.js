@@ -1,8 +1,8 @@
 import assets from "./assets.json";
 
 export function registerMiddleware(app) {
-
-  app.use("*", async (req, res, next) => {
+  
+  app.use((req, res, next) => {
   
     console.log("use middleware");
   
@@ -36,4 +36,11 @@ export function registerMiddleware(app) {
 
   });
 
+}
+
+export function registerErrorHandlers(app) {
+  app.use("/api", (err, req, res, next) => {
+    console.log("ERROR!!!");
+    res.json({ error: err });
+  });
 }

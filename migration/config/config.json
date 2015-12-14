@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "omatalous",
+    "password": "omatalous",
+    "database": "omatalous",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "omatalous",
+    "password": "omatalous",
+    "database": "omatalous",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "omatalous",
+    "password": "omatalous",
+    "database": "omatalous",
+    "host": "127.0.0.1",
+    "dialect": "omatalous"
+  }
+}

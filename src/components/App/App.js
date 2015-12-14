@@ -17,6 +17,7 @@ class App extends Component {
     let initialState = props.context.initialState || window.__INITIAL_STATE__;
     let reducers = props.context.reducers || window.__REDUCERS__;
     this.store = configureStore(initialState, reducers);
+    console.log("App instantiated", this.store.getState());
   }
 
   static propTypes = {
@@ -49,10 +50,15 @@ class App extends Component {
 
   componentWillMount() {
     this.removeCss = this.props.context.insertCss(s);
+    console.log("App will mount");
   }
 
   componentWillUnmount() {
     this.removeCss();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log("App will receive props");
   }
 
   render() {
