@@ -1,7 +1,7 @@
 import "babel-core/polyfill";
 import ReactDOM from "react-dom";
 import FastClick from "fastclick";
-import Router from "./server/routes";
+import Router from "./site/router";
 import Location from "./core/Location";
 import { addEventListener, removeEventListener } from "./core/DOMUtils";
 
