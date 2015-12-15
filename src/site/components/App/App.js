@@ -1,24 +1,27 @@
-import React, { Component, PropTypes } from 'react';
-import emptyFunction from 'fbjs/lib/emptyFunction';
-import s from './App.scss';
-import Header from '../Header';
-import Feedback from '../Feedback';
-import Footer from '../Footer';
+"use strict";
 
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import configureStore from '../../configureStore'
+import React, { Component, PropTypes } from "react";
+import reactMixin from "react-mixin";
+import ReactIntl from "react-intl";
+import emptyFunction from "fbjs/lib/emptyFunction";
+import s from "./App.scss";
+import Header from "../Header";
+import Feedback from "../Feedback";
+import Footer from "../Footer";
+
+import { render } from "react-dom"
+import { Provider } from "react-redux"
+import configureStore from "../../configureStore"
 
 class App extends Component {
-  
+
   constructor(props) {
     super(props);
-    let initialState = props.context.initialState || window.__INITIAL_STATE__;
-    let reducers = props.context.reducers || window.__REDUCERS__;
-    this.store = configureStore(initialState, reducers);
-    console.log("App instantiated", this.store.getState());
+    let initialState = props.context.initialState || window.__INITIAL_STATE__; 
+    this.intlData = props.context.intlData || window.__INTL_DATA__;
+    this.store = configureStore(initialState);
   }
-
+  
   static propTypes = {
     context: PropTypes.shape({
       insertCss: PropTypes.func,
@@ -64,7 +67,7 @@ class App extends Component {
     
     return !this.props.error ? ( 
       <div>
-        <Header />
+        <Header {...this.intlData} />
         <Provider store={this.store}>
           {this.props.children}
         </Provider> 

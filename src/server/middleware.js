@@ -1,11 +1,12 @@
 import assets from "./assets.json";
+import { readLocalizedMessages } from "../core/utils";
 
 export function registerMiddleware(app) {
   
-  app.use((req, res, next) => {
+  app.use(async (req, res, next) => {
   
-    console.log("use middleware");
-  
+    console.log("use middleware", req.locale);
+     
     let statusCode = 200;
     console.log("create data"); 
     const data = { 
@@ -17,7 +18,13 @@ export function registerMiddleware(app) {
     };
     
     console.log("create context"); 
+    const messages = await readLocalizedMessages(req.locale);
+    console.log("read messages", messages);
     const context = {
+      intlData: { 
+        locales: ["en-US"],
+        messages: messages
+      },
       initialState: {},
       reducers: [],
       css: [],

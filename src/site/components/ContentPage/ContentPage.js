@@ -33,7 +33,6 @@ class ContentPage extends BaseComponent {
 
   render() {
     
-    console.log("contet state", this.state);    
     this._setTitle(this.state.meta);
     
     return (

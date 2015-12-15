@@ -18,9 +18,20 @@ const ContentContainer = container(ContentPage, {}, "content");
 export default new Router(on => {
   
   on("*", async (state, next) => {
+    
     const component = await next();
-    console.log("app state", state); 
-    return component && <App context={state.context}>{component}</App>;
+    let intlData = state.context.intlData;
+    console.log("intl data", intlData);
+    /*
+    intlData = {
+      locales: ["en-US"],
+      messages: {
+        hello_world: "Hello, world!!!"
+      }
+      };
+      */
+    return component && <App context={state.context} {...intlData}>{component}</App>;
+  
   });
 
   on("/login", () => <LoginContainer />);

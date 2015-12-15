@@ -13,7 +13,6 @@ export default function configureStore(initialState, reducers) {
   }
 
   const store = createStoreWithMiddleware(reducer(reducers), initialState)
-  console.log("store state", module.hot, initialState, store.getState());
 
   /* 
   if (module.hot) {

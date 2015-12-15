@@ -32,7 +32,7 @@ class Html extends Component {
   initialState() {
     return ({ __html:
       `window.__INITIAL_STATE__ = ${JSON.stringify(this.props.initialState)};
-       window.__REDUCERS__ = ${JSON.stringify(this.props.reducers)};`
+       window.__INTL_DATA__ = ${JSON.stringify(this.props.intlData)};`
     });
   }
   

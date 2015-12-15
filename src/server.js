@@ -4,6 +4,7 @@ const log = log4js.getLogger("server");
 
 import path from "path";
 import express from "express";
+import locale from "locale";
 import bodyParser from "body-parser";
 import Sequelize from "sequelize";
 import React from "react";
@@ -35,6 +36,7 @@ app.entities = {
 };
 
 app.use(bodyParser.json());
+app.use(locale(["en", "fi"]));
 app.use(express.static(path.join(__dirname, "public")));
 
 registerMiddleware(app);
@@ -57,7 +59,7 @@ app.renderPage = async (req, res, next) => {
 
       log.debug("rendering output page");      
       data.initialState = context.initialState;
-      data.reducers = context.reducers;
+      data.intlData = context.intlData;
       const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
       res.status(context.statusCode).send("<!doctype html>\n" + html);
     

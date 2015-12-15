@@ -1,13 +1,20 @@
 "use strict";
 
 import React, { Component } from "react";
+import reactMixin from "react-mixin";
+import ReactIntl from "react-intl";
 import s from "./Header.scss";
 import withStyles from "../../decorators/withStyles";
 import Link from "../Link";
 import Navigation from "../Navigation";
 
 @withStyles(s)
+@reactMixin.decorate(ReactIntl.IntlMixin)
 class Header extends Component {
+  
+  constructor(props) {
+    super(props);
+  }
 
   render() {
     return (
