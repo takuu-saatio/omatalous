@@ -8,11 +8,17 @@ import App from "./components/App";
 import LoginPage from "./components/LoginPage";
 import * as LoginActions from "./actions/login";
 
+import * as AuthActions from "./actions/auth";
+
+import Test from "./components/Test/Test";
+import * as TestActions from "./actions/test";
+
 import ContentPage from "./components/ContentPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ErrorPage from "./components/ErrorPage";
 
-const LoginContainer = container(LoginPage, LoginActions, "login");
+const TestContainer = container(Test, TestActions, "test");
+const LoginContainer = container(LoginPage, AuthActions, "auth");
 const ContentContainer = container(ContentPage, {}, "content");
 
 export default new Router(on => {
@@ -34,6 +40,7 @@ export default new Router(on => {
   
   });
 
+  on("/test", () => <TestContainer />);
   on("/login", () => <LoginContainer />);
   on("*", (state) => {
     return <ContentContainer path={state.path} />

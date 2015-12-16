@@ -10,7 +10,7 @@ export function registerRoutes(app) {
   app.get("/login", (req, res, next) => {
     
     req.context.initialState = { 
-      login: { iso: true, status: "iso" }
+      auth: {}
     };
 
     app.renderPage(req, res);

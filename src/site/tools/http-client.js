@@ -6,21 +6,20 @@ class HttpClient {
   constructor() {
   }
 
+  _resolveResponse(resolve, err, res) {
+
+    const response = (err && !res.body) ? { status: "error", error: err.message } : res.body;
+    resolve(response);
+    
+  }
+
   get(path) {
     
     return new Promise((resolve, reject) => {
       request.get(path)
       .accept("application/json")
       .end((err, res) => {
-        if (err) {
-          if (err.status === 404) {
-            resolve(null);
-          } else {
-            reject(err);
-          }
-        } else {
-          resolve(res.body);
-        }
+        this._resolveResponse(resolve, err, res);
       });
     });
 
@@ -32,15 +31,7 @@ class HttpClient {
       .send(body)
       .accept("application/json")
       .end((err, res) => {
-        if (err) {
-          if (err.status === 404) {
-            resolve(null);
-          } else {
-            reject(err);
-          }
-        } else {
-          resolve(res.body);
-        }
+        this._resolveResponse(resolve, err, res);
       });
     });
   }

@@ -20,26 +20,30 @@ class LoginPage extends BaseComponent {
   }
 
   async fetchData() {
-    
-    const response = await http.get("/api/login");
-    if (!response.error) {
-      this.setState(response.login);
-    }
+  }
 
+  createErrorElem(error) {
+    return (
+      <div>{error.message}</div>
+    );
   }
 
   render() {
     
-    const { login, register, loginOrRegister } = this.props;
-    
+    const { register, logIn, test } = this.props;
+     
+    let errorElem = this.state.error ? this.createErrorElem(this.state.error) : null;
+    console.log("login page", this.state);
+
     return (
       <div className={s.root}>
         <div className={s.container}>
           <h1>{title}</h1>
           <p>...</p>
-          <p>Status: {this.state.status}</p>
-          <button onClick={() => loginOrRegister()}>Login</button>
-          <button onClick={() => this.fetchData()}>Register</button>
+          {errorElem}
+          <button onClick={() => logIn({ email: "test1@test.com", password: "pwd1" })}>Login</button>
+          <button onClick={() => register({ wmail: "test1@test.com", password: "pwd1" })}>Register</button>
+          <button onClick={() => test()}>Test</button>
         </div>
       </div>
     );

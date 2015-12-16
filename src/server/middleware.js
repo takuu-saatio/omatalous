@@ -1,5 +1,9 @@
-import assets from "./assets.json";
-import { readLocalizedMessages } from "../core/utils";
+"use strict";
+
+import assets from "./assets.json"
+import { readLocalizedMessages } from "../core/utils"
+
+import { BaseError } from "../core/errors"
 
 export function registerMiddleware(app) {
   
@@ -46,8 +50,16 @@ export function registerMiddleware(app) {
 }
 
 export function registerErrorHandlers(app) {
+  
   app.use("/api", (err, req, res, next) => {
-    console.log("ERROR!!!");
-    res.json({ error: err });
+    
+    console.log("ERROR!!!", err);
+    if (!err.id) {
+      err = new BaseError(err);
+    }
+    
+    res.status(err.statusCode).json({ status: "error", error: err });
+  
   });
+
 }

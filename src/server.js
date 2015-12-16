@@ -16,6 +16,8 @@ import { registerMiddleware, registerErrorHandlers } from "./server/middleware";
 import Html from "./site/components/Html";
 import SchemaLoader from "./server/schema/SchemaLoader";
 
+import { LocalAuthServiceInterface } from "./services/auth";
+
 const app = global.app = express();
 const port = process.env.PORT || 5000;
 app.set("port", port);
@@ -42,6 +44,11 @@ app.use(express.static(path.join(__dirname, "public")));
 registerMiddleware(app);
 registerSiteRoutes(app);
 registerApiRoutes(app);
+
+app.services = {
+  auth: new LocalAuthServiceInterface(app, { provideService: true, provideRoutes: true })
+};
+
 registerErrorHandlers(app);
 
 app.renderPage = async (req, res, next) => {

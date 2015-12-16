@@ -21,8 +21,8 @@ class BaseEntity {
 
   getClassMethods() {
     return Object.assign(this.classMethods, {
-      findByUuid: async (uuid) => {
-        return await this.schema.findOne({ 
+      findByUuid: (uuid) => {
+        return this.schema.findOne({ 
           where: { uuid: uuid }
         });
       }
