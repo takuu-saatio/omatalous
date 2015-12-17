@@ -1,26 +1,11 @@
 "use strict";
 
-class AuthServiceInterface {
+import ServiceInterface from "../ServiceInterface"
+
+export class LocalAuthServiceInterface extends ServiceInterface {
 
   constructor(app, options) {
-    if (options) {
-      if (options.provideService) {
-        const AuthService = require("../../server/services/auth/service");
-        this.service = new AuthService(app);
-        if (options.provideRoutes) {
-          const { registerRoutes } = require("../../server/services/auth/api");
-          registerRoutes(app);
-        }
-      }
-    }
-  }
-
-}
-
-export class LocalAuthServiceInterface extends AuthServiceInterface {
-
-  constructor(app, options) {
-    super(app, Object.assign(options, { provideService: true }));
+    super(app, "auth", Object.assign(options, { provideService: true }));
   }
 
   async screenRequest(req) {
@@ -37,10 +22,10 @@ export class LocalAuthServiceInterface extends AuthServiceInterface {
 
 }
 
-export class HttpAuthServiceInterface extends AuthServiceInterface {
+export class HttpAuthServiceInterface extends ServiceInterface {
 
   constructor(app, options) {
-    super(app, options);
+    super(app, "auth", options);
     this.url = options.url;
   }
 

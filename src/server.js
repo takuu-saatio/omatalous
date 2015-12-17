@@ -10,13 +10,14 @@ import Sequelize from "sequelize";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import Router from "./site/router";
-import { registerRoutes as registerApiRoutes } from "./routes/api";
-import { registerRoutes as registerSiteRoutes } from "./routes/site";
+import { registerRoutes as registerSiteRoutes } from "./site/routes";
 import { registerMiddleware, registerErrorHandlers } from "./server/middleware";
 import Html from "./site/components/Html";
 import SchemaLoader from "./server/schema/SchemaLoader";
 
 import { LocalAuthServiceInterface } from "./services/auth";
+import { HttpUserServiceInterface } from "./services/user";
+import { HttpCommonServiceInterface } from "./services/common";
 
 const app = global.app = express();
 const port = process.env.PORT || 5000;
@@ -43,10 +44,13 @@ app.use(express.static(path.join(__dirname, "public")));
 
 registerMiddleware(app);
 registerSiteRoutes(app);
-registerApiRoutes(app);
 
 app.services = {
-  auth: new LocalAuthServiceInterface(app, { provideService: true, provideRoutes: true })
+  auth: new LocalAuthServiceInterface(app, { 
+    provideService: true, provideRoutes: true 
+  }),
+  user: new HttpUserServiceInterface(app, { provideRoutes: true }),
+  common: new HttpCommonServiceInterface(app, { provideRoutes: true })
 };
 
 registerErrorHandlers(app);

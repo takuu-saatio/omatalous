@@ -43,7 +43,6 @@ export function logIn(loginParams) {
   loginParams.method = "password";
   return async (dispatch) => {
     let response = await http.post("/api/login", loginParams);
-    console.log("got resp", response);
     //let response = { status: "ok", user: { email: "nnn", password: "jjj" } };
     dispatch(processResponse(response, LOGIN_SUCCESS, LOGIN_FAIL, "user"));
   };

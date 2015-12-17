@@ -23,7 +23,7 @@ class AuthService {
       User.schema.findOne({
         where: { email: email }
       }).then((user) => {
-         
+          
         if (!user) {
           reject(new NotFound(null, "user_not_found"));
           return;
