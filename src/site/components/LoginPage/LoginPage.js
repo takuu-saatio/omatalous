@@ -16,9 +16,14 @@ class LoginPage extends BaseComponent {
 
   constructor(props) {
     super(props);
-    this.state = props.state;
+    this.state = Object.assign({
+      loginParams: {
+        email: "",
+        password: ""
+      }
+    }, props.state);
   }
-
+  
   async fetchData() {
   }
 
@@ -27,13 +32,34 @@ class LoginPage extends BaseComponent {
       <div>{error.message}</div>
     );
   }
+  
+  handleInputChange(event) {
 
+    let formParams = {};
+    formParams[event.target.name] = event.target.value;
+    let loginParams = Object.assign(this.state.loginParams, formParams);
+    this.setState(Object.assign(this.state, { loginParams }));
+  
+  }
+
+  _logIn() {
+    
+    let loginParams = Object.assign({
+      method: "password"
+    }, this.state.loginParams);
+
+    this.props.logIn(loginParams);
+  
+  }
+  
   render() {
     
     const { register, logIn, test } = this.props;
      
     let errorElem = this.state.error ? this.createErrorElem(this.state.error) : null;
     console.log("login page", this.state);
+    
+    let loginParams = this.state.loginParams;
 
     return (
       <div className={s.root}>
@@ -41,7 +67,9 @@ class LoginPage extends BaseComponent {
           <h1>{title}</h1>
           <p>...</p>
           {errorElem}
-          <button onClick={() => logIn({ email: "test1@test.com", password: "pwd1" })}>Login</button>
+          E-mail <input type="text" name="email" value={loginParams.email} onChange={this.handleInputChange.bind(this)} /> 
+          Password <input type="text" name="password" value={loginParams.password} onChange={this.handleInputChange.bind(this)} /> 
+          <button onClick={() => logIn({ method: "passport", email: "a", password: "b" })}>Login</button>
           <button onClick={() => register({ wmail: "test1@test.com", password: "pwd1" })}>Register</button>
           <button onClick={() => test()}>Test</button>
         </div>

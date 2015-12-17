@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 import Sequelize from "sequelize";
 import React from "react";
 import ReactDOM from "react-dom/server";
+import passport from "./server/passport";
 import Router from "./site/router";
 import { registerRoutes as registerSiteRoutes } from "./site/routes";
 import { registerMiddleware, registerErrorHandlers } from "./server/middleware";
@@ -37,6 +38,8 @@ app.schemaLoader = new SchemaLoader(app.sequelize);
 app.entities = {
   User: app.schemaLoader.loadSchema("User")
 };
+
+app.passport = passport();
 
 app.use(bodyParser.json());
 app.use(locale(["en", "fi"]));

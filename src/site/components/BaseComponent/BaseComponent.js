@@ -10,7 +10,8 @@ class BaseComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     this._fetchIfUpdated(nextProps);
-    this.state = nextProps.state;
+    this.state = nextProps.state; //setState(Object.assign(this.state, state));
+    //this.updateState(nextProps.state);
   }
    
   componentDidMount() {
@@ -29,6 +30,12 @@ class BaseComponent extends Component {
 
   fetchData() {
   }
+
+  /*
+  updateState(state) {
+    this.setState(Object.assign(this.state, state));
+    }
+    */
 
 }
 
