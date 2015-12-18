@@ -27,12 +27,6 @@ class LoginPage extends BaseComponent {
   async fetchData() {
   }
 
-  createErrorElem(error) {
-    return (
-      <div>{error.message}</div>
-    );
-  }
-  
   handleInputChange(event) {
 
     let formParams = {};
@@ -59,7 +53,7 @@ class LoginPage extends BaseComponent {
     let errorElem = this.state.error ? this.createErrorElem(this.state.error) : null;
     console.log("login page", this.state);
     
-    let loginParams = this.state.loginParams;
+    let loginForm = this._renderLoginForm();
 
     return (
       <div className={s.root}>
@@ -67,13 +61,45 @@ class LoginPage extends BaseComponent {
           <h1>{title}</h1>
           <p>...</p>
           {errorElem}
-          E-mail <input type="text" name="email" value={loginParams.email} onChange={this.handleInputChange.bind(this)} /> 
-          Password <input type="text" name="password" value={loginParams.password} onChange={this.handleInputChange.bind(this)} /> 
-          <button onClick={() => logIn({ method: "passport", email: "a", password: "b" })}>Login</button>
-          <button onClick={() => register({ wmail: "test1@test.com", password: "pwd1" })}>Register</button>
+          {loginForm}
           <button onClick={() => test()}>Test</button>
         </div>
       </div>
+    );
+  }
+  
+  
+  _renderLoginForm() {
+
+    let loginParams = this.state.loginParams;
+  
+    return (
+      <div>
+          <div>
+            <button onClick={() => this._logIn("facebook")}>Facebook</button>
+            <button onClick={() => this._logIn("google")}>Google</button>
+          </div>
+          <div>
+            E-mail 
+            <input type="text" name="email" value={loginParams.email} onChange={this.handleInputChange.bind(this)} /> 
+          </div>
+          <div>
+            Password
+            <input type="text" name="password" value={loginParams.password} onChange={this.handleInputChange.bind(this)} /> 
+          </div>
+          <div>
+            <button onClick={() => this._logIn()}>Login</button>
+          </div>
+      </div>
+    );
+
+  }
+
+
+
+  createErrorElem(error) {
+    return (
+      <div>{error.message}</div>
     );
   }
 

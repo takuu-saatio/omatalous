@@ -5,11 +5,13 @@ const log = log4js.getLogger("server");
 import path from "path";
 import express from "express";
 import locale from "locale";
+import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import expressSession from "express-session";
 import Sequelize from "sequelize";
 import React from "react";
 import ReactDOM from "react-dom/server";
-import passport from "./server/passport";
+import confPassport from "./server/passport";
 import Router from "./site/router";
 import { registerRoutes as registerSiteRoutes } from "./site/routes";
 import { registerMiddleware, registerErrorHandlers } from "./server/middleware";
@@ -39,11 +41,17 @@ app.entities = {
   User: app.schemaLoader.loadSchema("User")
 };
 
-app.passport = passport();
+const passport = require("passport");
 
+app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(expressSession({ secret: "secret-key" }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(locale(["en", "fi"]));
 app.use(express.static(path.join(__dirname, "public")));
+
+app.passport = passport;
 
 registerMiddleware(app);
 registerSiteRoutes(app);
@@ -56,6 +64,7 @@ app.services = {
   common: new HttpCommonServiceInterface(app, { provideRoutes: true })
 };
 
+confPassport(app);
 registerErrorHandlers(app);
 
 app.renderPage = async (req, res, next) => {

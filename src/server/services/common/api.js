@@ -25,6 +25,18 @@ export function registerRoutes(app) {
     }
 
   });
+  
+  app.get("/api/test", async (req, res, next) => {
+    
+    console.log("testing api");
+    app.passport.authenticate("login-pwd", (err, user, info) => {
+      console.log("passport-login", err, user, info);
+      return next();
+    });
+    
+    res.json({ status: "ok" }); 
+
+  });
 
   
 }

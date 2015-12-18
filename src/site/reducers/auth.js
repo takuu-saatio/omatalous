@@ -4,7 +4,8 @@ import * as actions from "../actions/auth";
 
 export default function (state = {}, action) {
   
-  //state.error = null;
+  state = Object.assign({}, state);
+  state.error = null;
 
   switch (action.type) {
     case actions.LOGIN_SUCCESS:
@@ -12,16 +13,13 @@ export default function (state = {}, action) {
     case actions.LOGOUT_SUCCESS:
       state.user = null;
       return state;
-    case actions.LOG_IN:
-      return Object.assign(state, { hip: "hei" });
     default:
-      return Object.assign(state,
-        action.error ? { 
+      return Object.assign(state, action.error ? { 
           error: {
             cause: action.error,
             message: "Log-in failed"
           }
-        } : {});
+      } : {});
 
   }
 
