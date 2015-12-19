@@ -26,16 +26,17 @@ export function registerRoutes(app) {
 
   });
   
-  app.get("/api/test", async (req, res, next) => {
-    
-    console.log("testing api");
-    app.passport.authenticate("login-pwd", (err, user, info) => {
-      console.log("passport-login", err, user, info);
-      return next();
-    });
-    
-    res.json({ status: "ok" }); 
 
+  app.get("/api/test", (req, res, next) => {
+    console.log("is auth", req.isAuthenticated());
+    console.log("req user", req.user);
+    res.json({ test: "ok" });
+  });
+  
+  app.get("/api/logout", (req, res, next) => {
+    console.log("user", req.user);
+    req.logout();
+    res.json({ test: "ok" });
   });
 
   

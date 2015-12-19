@@ -42,16 +42,15 @@ app.entities = {
 };
 
 const passport = require("passport");
+app.passport = passport;
 
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(expressSession({ secret: "secret-key" }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(bodyParser());
+app.use(expressSession({ secret: "keyboard cat" }));
+app.use(app.passport.initialize());
+app.use(app.passport.session());
 app.use(locale(["en", "fi"]));
 app.use(express.static(path.join(__dirname, "public")));
-
-app.passport = passport;
 
 registerMiddleware(app);
 registerSiteRoutes(app);

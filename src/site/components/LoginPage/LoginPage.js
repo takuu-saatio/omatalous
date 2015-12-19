@@ -18,7 +18,7 @@ class LoginPage extends BaseComponent {
     super(props);
     this.state = Object.assign({
       loginParams: {
-        email: "",
+        username: "",
         password: ""
       }
     }, props.state);
@@ -44,6 +44,16 @@ class LoginPage extends BaseComponent {
 
     this.props.logIn(loginParams);
   
+  }
+
+  _register() {
+    
+    let regParams = Object.assign({
+      method: "password"
+    }, this.state.loginParams);
+
+    this.props.register(regParams);
+
   }
   
   render() {
@@ -81,7 +91,7 @@ class LoginPage extends BaseComponent {
           </div>
           <div>
             E-mail 
-            <input type="text" name="email" value={loginParams.email} onChange={this.handleInputChange.bind(this)} /> 
+            <input type="text" name="username" value={loginParams.username} onChange={this.handleInputChange.bind(this)} /> 
           </div>
           <div>
             Password
@@ -89,6 +99,7 @@ class LoginPage extends BaseComponent {
           </div>
           <div>
             <button onClick={() => this._logIn()}>Login</button>
+            <button onClick={() => this._register()}>Register</button>
           </div>
       </div>
     );

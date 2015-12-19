@@ -1,5 +1,9 @@
 "use strict";
 
+import log4js from "log4js";
+const log = log4js.getLogger("server/services/auth/service");
+
+import bcrypt from "bcrypt-nodejs";
 import uuid from "node-uuid"
 import { 
   NotFound, 
@@ -23,24 +27,27 @@ class AuthService {
       User.schema.findOne({
         where: { email: email }
       }).then((user) => {
-          
+
         if (!user) {
           reject(new NotFound(null, "user_not_found"));
           return;
         }
-        
-        const pwdMatch = user.password === password;
-        if (!pwdMatch) {
-          reject(new Unauthorized(null, "pwd_mismatch"));
-          return;
-        }
-        
-        user.token = uuid.v4();
-        user.save()
-        .then(() => resolve({ user }))
-        .catch((err) => reject(new BaseErr(err)));
 
-      }).catch((err) => reject(new BaseError(err)));
+        try { 
+          
+          const pwdMatch = bcrypt.compareSync(password, user.password);
+          if (!pwdMatch) {
+            reject(new Unauthorized(null, "pwd_mismatch"));
+            return;
+          }
+
+          resolve({ user });
+        
+        } catch (err) { 
+          reject(new Unauthorized(err, "hash_error"));
+        }
+
+      });
 
     });
 
@@ -68,22 +75,31 @@ class AuthService {
     return new Promise((resolve, reject) => {
       
       const { User } = this.app.entities;
-    
+        
       const { email, password } = regParams;
+      
       User.schema.findOne({
         where: { email: email }
       }).then((user) => {
-        
+
         if (user) {
           reject(new UnprocessableEntity(null, "user_exists"));
           return;
         }
+         
+        const pwdHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+        user = {
+          email: email,
+          password: pwdHash
+        };
         
-        const pwdHash = user.password;
-        user.password = pwdHash;
-        user.save()
-        .then(() => resolve({ user }))
-        .catch((err) => reject(new BaseErr(err)));
+        User.schema.create(user)
+        .then((user) => {
+          resolve({ user })
+        })
+        .catch((err) => {
+          reject(new BaseErr(err))
+        });
 
       }).catch((err) => reject(new BaseError(err)));
     
@@ -106,7 +122,6 @@ class AuthService {
     }
 
   }
-
 
   screenRequest(req) {
     

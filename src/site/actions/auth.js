@@ -32,9 +32,11 @@ function processResponse(response, successType, failType, dataKey) {
 
 export function register(regParams) {
   
-  //let response = await http.post("/api/register", regParams);
-  let response = { status: "ok", user: { email: "nnn", password: "jjj" } };
-  return processResponse(response, REG_SUCCESS, REG_FAIL, "user");
+  return async (dispatch) => {
+    let response = await http.post("/api/register", regParams);
+    //let response = { status: "ok", user: { email: "nnn", password: "jjj" } };
+    dispatch(processResponse(response, REG_SUCCESS, REG_FAIL, "user"));
+  };
 
 }
 
