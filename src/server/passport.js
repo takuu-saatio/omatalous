@@ -4,6 +4,7 @@ import log4js from "log4js";
 const log = log4js.getLogger("server/passport");
 
 import generatePassword from "password-generator";
+import bcrypt from "bcrypt-nodejs";
 
 import { BaseError, Unauthorized } from "../core/errors";
 
@@ -62,7 +63,6 @@ export default function(app) {
   }, async (accessToken, refreshToken, profile, done) => {
 
       log.debug("Invoke Facebook login strategy", accessToken, refreshToken, profile);
-      done({ stop: "now" });
 
       var email = (profile && profile.emails && profile.emails.length > 0) ? 
         profile.emails[0].value : null;
@@ -79,7 +79,16 @@ export default function(app) {
         if (!user) {
           
           const password = generatePassword(8, false);
-          User.schema.create({ email: email, password: password })
+          const pwdHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+          user = Object.assign({ 
+            email: email, 
+            password: pwdHash 
+          }, profile.name ? {
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName
+          } : {});
+
+          User.schema.create(user)
           .then((user) => {
             user = user.json();
             log.debug("Registered user by Facebook", user);
