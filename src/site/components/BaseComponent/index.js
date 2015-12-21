@@ -9,6 +9,7 @@ class BaseComponent extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log("bc will rec props", nextProps);
     this._fetchIfUpdated(nextProps);
     //this.state = nextProps.state;
     this.updateState(nextProps.state);

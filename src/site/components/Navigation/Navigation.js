@@ -17,15 +17,27 @@ class Navigation extends Component {
   };
 
   render() {
+
+    console.log("van props", this.props);
+
+    const { auth } = this.props; 
+    const loginElem = !(auth && auth.user) ? (
+      <a className={s.link} href="/login" onClick={Link.handleClick}>
+        {this.getIntlMessage("login")}
+      </a>
+    ) : (
+      <a className={s.link} href="/logout">
+        Ulos
+      </a>
+    )
+
     return (
       <div className={cx(s.root, this.props.className)} role="navigation">
         <a className={s.link} href="/about" onClick={Link.handleClick}>
           {this.getIntlMessage("about")}
         </a>
         <span className={s.spacer}> | </span>
-        <a className={s.link} href="/login" onClick={Link.handleClick}>
-          {this.getIntlMessage("login")}
-        </a>
+        {loginElem}
       </div>
     );
   }

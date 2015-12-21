@@ -5,21 +5,25 @@ import container from "./container";
 
 import App from "./components/App";
 
-import LoginPage from "./components/LoginPage";
+import HomeView from "./components/HomeView";
+import * as HomeActions from "./actions/home";
+
+import LoginView from "./components/LoginView";
 import * as LoginActions from "./actions/login";
 
 import * as AuthActions from "./actions/auth";
 
-import Test from "./components/Test/Test";
+import TestView from "./components/Test/Test";
 import * as TestActions from "./actions/test";
 
-import ContentPage from "./components/ContentPage";
+import ContentView from "./components/ContentPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ErrorPage from "./components/ErrorPage";
 
-const TestContainer = container(Test, TestActions, "test");
-const LoginContainer = container(LoginPage, AuthActions, "auth");
-const ContentContainer = container(ContentPage, {}, "content");
+const TestContainer = container(TestView, TestActions, "test");
+const HomeContainer = container(HomeView, HomeActions, "home");
+const LoginContainer = container(LoginView, AuthActions);
+const ContentContainer = container(ContentView, {}, "content");
 
 export default new Router(on => {
   
@@ -28,19 +32,12 @@ export default new Router(on => {
     const component = await next();
     let intlData = state.context.intlData;
     console.log("intl data", intlData);
-    /*
-    intlData = {
-      locales: ["en-US"],
-      messages: {
-        hello_world: "Hello, world!!!"
-      }
-      };
-      */
     return component && <App context={state.context} {...intlData}>{component}</App>;
   
   });
 
   on("/test", () => <TestContainer />);
+  on("/home", () => <HomeContainer />);
   on("/login", () => <LoginContainer />);
   on("*", (state) => {
     return <ContentContainer path={state.path} />

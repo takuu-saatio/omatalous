@@ -1,5 +1,8 @@
 "use strict";
 
+import log4js from "log4js";
+const log = log4js.getLogger("server/middleware");
+
 import assets from "./assets.json"
 import { readLocalizedMessages } from "../core/utils"
 
@@ -8,11 +11,18 @@ import { BaseError } from "../core/errors"
 export function registerMiddleware(app) {
   
   app.use(async (req, res, next) => {
-  
-    console.log("use middleware", req.locale);
+
+    log.debug(`Access path ${req.path}`);
+        
+    if (req.path.substring(0, 2) === "/_") {
+      return next();
+    } else if (req.path.substring(0, 4) === "/api") {
+      return next();
+    }
+
+    log.debug(`Use middleware [locale=${req.locale}, auth=${req.isAuthenticated()}]`);
      
     let statusCode = 200;
-    console.log("create data"); 
     const data = { 
       title: "",
       description: "",
@@ -21,9 +31,7 @@ export function registerMiddleware(app) {
       entry: assets.app.js 
     };
     
-    console.log("create context"); 
     const messages = await readLocalizedMessages(req.locale);
-    console.log("read messages", messages);
     const context = {
       intlData: { 
         locales: ["en-US"],
@@ -39,10 +47,16 @@ export function registerMiddleware(app) {
       onPageNotFound: () => context.statusCode = 404
     };
 
+    if (req.isAuthenticated()) {
+      context.initialState.auth = {
+        user: req.user.json()
+      };
+    }
+
     req.context = context;
     req.data = data;
         
-    console.log("middleware >>> next");
+    console.log("middleware >>> next", req.context.initialState);
     next();
 
   });

@@ -21,27 +21,18 @@ export function registerRoutes(app) {
  
   });
   
-  app.post("/api/login/pwd", app.passport.authenticate("login-local"), (req, res, next) => { 
-    res.json({ status: "ok" });
-  });
-  
-  app.get("/api/login/fb", 
-          app.passport.authenticate("login-facebook", { scope: ["email"] }), 
-          (req, res, next) => { 
-    res.json({ status: "ok" });
-  });
-  
-  app.get("/api/login/fb/callback", app.passport.authenticate("login-facebook"), (req, res, next) => { 
-    res.json({ status: "ok-auth" });
-  });
+  app.post("/api/login", async (req, res, next) => { 
+    
+    try {
+       
+      const { auth } = app.services;
+      const result = await auth.login(req.body);
+      res.json(Object.assign({ status: "ok" }, result));
+      
+    } catch (err) {
+      next(err);
+    }
 
-  app.post("/api/register", app.passport.authenticate("register-local"), (req, res, next) => {
-    res.json({ status: "ok" });
   });
-  
-  app.get("/api/logout", (req, res, next) => { 
-    req.logout();
-    res.json({ status: "ok-logout" });
-  });
-
+ 
 }

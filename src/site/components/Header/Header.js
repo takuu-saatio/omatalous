@@ -8,19 +8,19 @@ import withStyles from "../../decorators/withStyles";
 import Link from "../Link";
 import Navigation from "../Navigation";
 
+import BaseComponent from "../BaseComponent";
+
 @withStyles(s)
-@reactMixin.decorate(ReactIntl.IntlMixin)
 class Header extends Component {
   
-  constructor(props) {
-    super(props);
-  }
-
   render() {
+    
+    console.log("render header", this.state, this.props);
+
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <Navigation className={s.nav} />
+          <Navigation auth={this.props.auth} className={s.nav} />
           <a className={s.brand} href="/" onClick={Link.handleClick}>
             <img src={require("./logo-small.png")} width="38" height="38" alt="React" />
             <span className={s.brandTxt}>Takuu-Säätiö</span>

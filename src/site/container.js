@@ -5,7 +5,7 @@ export default function container(component, actions, reducer) {
   
   let mapStateToProps = function(state) {
     return {
-      state: state[reducer]
+      state: Object.assign(reducer ? state[reducer] : {}, { auth: state.auth }) 
     };
   };
 

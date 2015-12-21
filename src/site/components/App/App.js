@@ -13,6 +13,19 @@ import { render } from "react-dom"
 import { Provider } from "react-redux"
 import configureStore from "../../configureStore"
 
+@reactMixin.decorate(ReactIntl.IntlMixin)
+class Content extends Component {
+  
+  render() {  
+    return (
+      <div>
+        {this.props.children}
+      </div>
+    );
+  }
+
+}
+
 class App extends Component {
 
   constructor(props) {
@@ -67,12 +80,11 @@ class App extends Component {
     
     return !this.props.error ? ( 
       <div>
-        <Header {...this.intlData} />
         <Provider store={this.store}>
-          {this.props.children}
+          <Content {...this.intlData}>
+            {this.props.children}
+          </Content>
         </Provider> 
-        <Feedback />
-        <Footer />
       </div>
     ) : this.props.children;
   }

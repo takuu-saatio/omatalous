@@ -1,7 +1,11 @@
 import React, { Component, PropTypes } from "react";
 import s from "./ContentPage.scss";
 import withStyles from "../../decorators/withStyles";
-import BaseComponent from "../BaseComponent/BaseComponent";
+import BaseComponent from "../BaseComponent";
+import Header from "../Header";
+import Feedback from "../Feedback";
+import Footer from "../Footer";
+
 import http from "../../tools/http-client";
 
 @withStyles(s)
@@ -36,12 +40,17 @@ class ContentPage extends BaseComponent {
     this._setTitle(this.state.meta);
     
     return (
-      <div className={s.root}>
-        <div className={s.container}>
-          <div dangerouslySetInnerHTML={{ __html: this.state.content || "" }} />
+      <div>
+        <Header auth={this.state.auth}/>
+        <div className={s.root}>
+          <div className={s.container}>
+            <div dangerouslySetInnerHTML={{ __html: this.state.content || "" }} />
+          </div>
+          <button onClick={this.fetchData.bind(this)}>fetch</button>
         </div>
-        <button onClick={this.fetchData.bind(this)}>fetch</button>
-      </div>
+        <Feedback />
+        <Footer />
+    </div>
     );
   }
 
