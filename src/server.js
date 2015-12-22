@@ -19,7 +19,7 @@ import Html from "./site/components/Html";
 import SchemaLoader from "./server/schema/SchemaLoader";
 
 import { LocalAuthServiceInterface } from "./services/auth";
-import { HttpUserServiceInterface } from "./services/user";
+import { LocalUserServiceInterface } from "./services/user";
 import { HttpCommonServiceInterface } from "./services/common";
 
 const app = global.app = express();
@@ -59,7 +59,9 @@ app.services = {
   auth: new LocalAuthServiceInterface(app, { 
     provideService: true, provideRoutes: true 
   }),
-  user: new HttpUserServiceInterface(app, { provideRoutes: true }),
+  user: new LocalUserServiceInterface(app, { 
+    provideService: true, provideRoutes: true 
+  }),
   common: new HttpCommonServiceInterface(app, { provideRoutes: true })
 };
 

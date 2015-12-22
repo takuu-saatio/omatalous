@@ -35,6 +35,27 @@ class HttpClient {
       });
     });
   }
+  
+  put(path, body) {
+    return new Promise((resolve, reject) => {
+      request.put(path)
+      .send(body)
+      .accept("application/json")
+      .end((err, res) => {
+        this._resolveResponse(resolve, err, res);
+      });
+    });
+  }
+  
+  delete(path, body) {
+    return new Promise((resolve, reject) => {
+      request.delete(path)
+      .accept("application/json")
+      .end((err, res) => {
+        this._resolveResponse(resolve, err, res);
+      });
+    });
+  }
 
 };
 

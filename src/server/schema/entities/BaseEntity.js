@@ -1,5 +1,6 @@
 "use strict";
 
+import Sequelize from "sequelize";
 import uuid from "node-uuid";
 
 class BaseEntity {
@@ -7,38 +8,55 @@ class BaseEntity {
   constructor() {
     this.classMethods = {};
     this.instanceMethods = {};
+    this.fields = {
+      uuid: { type: Sequelize.STRING },
+      deleted: { type: Sequelize.BOOLEAN }
+    };
+    this.hiddenFields = ["id", "deleted", "createdAt", "updatedAt"];
   }
 
   initHooks() {
 
     this.schema.beforeCreate((schema, options) => {
-      if (this.fields.uuid) {
-        schema.uuid = uuid.v4();
-      }
+      schema.uuid = uuid.v4();
+      schema.deleted = false;
     });
 
+  }
+  
+  selectOne(query) {
+    query.deleted = false;
+    return this.schema.findOne({
+      where: query
+    });
+  }
+  
+  selectAll(query) {
+    query.deleted = false;
+    return this.schema.findAll({
+      where: query
+    });
+  }
+  
+  findByUuid(uuid) {
+    return this.selectOne({ uuid });
   }
 
   getClassMethods() {
-    return Object.assign(this.classMethods, {
-      findByUuid: (uuid) => {
-        return this.schema.findOne({ 
-          where: { uuid: uuid }
-        });
-      }
-    });
+    return Object.assign(this.classMethods, {});
   }
 
   getInstanceMethods() {
-    return Object.assign(this.instanceMethods, {
+    const hiddenFields = this.hiddenFields;
+    return {
       json: function () {
         let json = this.toJSON();
-        delete json.id;
-        delete json.createdAt;
-        delete json.updatedAt;
+        hiddenFields.forEach(field => {
+          delete json[field]
+        });
         return json;
       }
-    });
+    };
   }
 
 }

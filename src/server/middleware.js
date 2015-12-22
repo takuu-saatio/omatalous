@@ -31,6 +31,12 @@ export function registerMiddleware(app) {
       entry: assets.app.js 
     };
     
+    const common = {};
+    if (req.session.error) {
+      common.error = req.session.error;
+      delete req.session.error;
+    }
+
     const messages = await readLocalizedMessages(req.locale);
     const context = {
       intlData: { 
@@ -38,6 +44,7 @@ export function registerMiddleware(app) {
         messages: messages
       },
       initialState: {},
+      common: common,
       reducers: [],
       css: [],
       statusCode: 200,

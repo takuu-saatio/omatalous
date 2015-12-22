@@ -2,6 +2,8 @@ import request from "superagent";
 import React, { Component, PropTypes } from "react";
 import s from "./LoginView.scss";
 import withStyles from "../../decorators/withStyles";
+import reactMixin from "react-mixin";
+import ReactIntl from "react-intl";
 import BaseComponent from "../BaseComponent";
 import Header from "../Header";
 import Feedback from "../Feedback";
@@ -10,6 +12,7 @@ import Footer from "../Footer";
 const title = "Log In";
 
 @withStyles(s)
+@reactMixin.decorate(ReactIntl.IntlMixin)
 class LoginPage extends BaseComponent {
   
   static contextTypes = {
@@ -65,7 +68,8 @@ class LoginPage extends BaseComponent {
     let errorElem = this.state.error ? this.createErrorElem(this.state.error) : null;
     console.log("login page", this.state, s);
     
-    let loginForm = this._renderLoginForm();
+    let loginForm = this.state.token ? 
+      this._renderTokenLoginForm() : this._renderLoginForm();
 
     return (
       <div>
@@ -84,7 +88,23 @@ class LoginPage extends BaseComponent {
     );
   }
   
-  
+  _renderTokenLoginForm() {
+
+    return (
+      <div>
+        <div>
+          Voit kirjautua tältä sivulta vain yhden kerran. Muista asettaa salasanasi tiliasetuksistasi, kirjauduttuasi sisään.
+        </div>
+        <form action="/login" method="post">
+          <input type="hidden" name="email" value="token" />
+          <input type="hidden" name="password" value={this.state.token} />
+          <button type="submit">Sisään</button>
+        </form>
+      </div>
+    );
+
+  }
+
   _renderLoginForm() {
 
     let loginParams = this.state.loginParams;
@@ -114,7 +134,7 @@ class LoginPage extends BaseComponent {
                 </a>  
               </div>
             </div>
-            <div className={s.pwdLogin}>
+            <form action="/login" method="post" className={s.pwdLogin}>
               <div className={s.formTitle}>
                 Kirjaudu sähköpostilla ja salasanalla
               </div>
@@ -137,9 +157,9 @@ class LoginPage extends BaseComponent {
                 </div>
               </div>
               <div className={s.formSubmit}>  
-                <button onClick={() => this._logIn()}>Sisään</button>
+                <button type="submit">Sisään</button>
               </div>
-            </div>
+            </form>
           </div>
       </div>
     );
@@ -150,7 +170,9 @@ class LoginPage extends BaseComponent {
 
   createErrorElem(error) {
     return (
-      <div className={s.error}>{error.message}</div>
+      <div className={s.error}> 
+        {this.getIntlMessage(error.id)}
+      </div>
     );
   }
 

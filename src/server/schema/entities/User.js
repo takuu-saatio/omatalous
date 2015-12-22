@@ -9,9 +9,8 @@ class User extends BaseEntity {
     
     super();
 
-    this.fields = {
+    this.fields = Object.assign(this.fields, {
 
-      uuid: { type: Sequelize.STRING },
       email: { type: Sequelize.STRING },
       username: { type: Sequelize.STRING },
       password: { type: Sequelize.STRING },
@@ -25,7 +24,9 @@ class User extends BaseEntity {
         field: "last_name"
       }
 
-    };
+    });
+
+    this.hiddenFields = this.hiddenFields.concat(["token", "password"]);
 
   }
 

@@ -16,8 +16,8 @@ export class LocalAuthServiceInterface extends ServiceInterface {
     return await this.service.login(loginParams);
   }
   
-  async register(regParams) {
-    return await this.service.register(regParams);
+  async sendRecoveryLink(recoveryParams) {
+    return await this.service.sendRecoveryLink(recoveryParams);
   }
 
 }

@@ -1,5 +1,7 @@
 {
   "hello_world": "Heya, Texas!",
   "about": "Sovellus",
-  "login": "Käytä"
+  "login": "Käytä",
+  "pwd_mismatch": "Väärä salasana",
+  "token_not_found": "Väärä kirjautumislinkki"
 }

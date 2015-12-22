@@ -20,19 +20,19 @@ export function registerRoutes(app) {
     }
  
   });
-  
-  app.post("/api/login", async (req, res, next) => { 
+   
+  app.post("/api/auth/recover", async (req, res, next) => {
     
     try {
        
       const { auth } = app.services;
-      const result = await auth.login(req.body);
-      res.json(Object.assign({ status: "ok" }, result));
+      const result = await auth.sendRecoveryLink(req.body);
+      res.json({ status: "ok" });
       
     } catch (err) {
       next(err);
     }
-
-  });
  
+  });
+
 }

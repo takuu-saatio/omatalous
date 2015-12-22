@@ -10,6 +10,10 @@ import * as HomeActions from "./actions/home";
 
 import LoginView from "./components/LoginView";
 import * as LoginActions from "./actions/login";
+import LoginRecoveryView from "./components/LoginRecoveryView";
+import * as LoginRecoveryActions from "./actions/recovery";
+import AccountView from "./components/AccountView";
+import * as AccountActions from "./actions/account";
 
 import * as AuthActions from "./actions/auth";
 
@@ -22,7 +26,9 @@ import ErrorPage from "./components/ErrorPage";
 
 const TestContainer = container(TestView, TestActions, "test");
 const HomeContainer = container(HomeView, HomeActions, "home");
-const LoginContainer = container(LoginView, AuthActions);
+const LoginContainer = container(LoginView, AuthActions, "login");
+const LoginRecoveryContainer = container(LoginRecoveryView, LoginRecoveryActions, "recovery");
+const AccountContainer = container(AccountView, AccountActions, "account");
 const ContentContainer = container(ContentView, {}, "content");
 
 export default new Router(on => {
@@ -38,7 +44,13 @@ export default new Router(on => {
 
   on("/test", () => <TestContainer />);
   on("/home", () => <HomeContainer />);
-  on("/login", () => <LoginContainer />);
+  on("/login/recovery", () => <LoginRecoveryContainer />);
+  on("/login/:token?", () => <LoginContainer />);
+  on("/account/:uuid?", () => <AccountContainer />);
+  on("/denied", (state) => {
+    return <ContentContainer path={state.path} />
+  });
+
   on("*", (state) => {
     return <ContentContainer path={state.path} />
   });
