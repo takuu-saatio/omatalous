@@ -17,6 +17,8 @@ export default function(app) {
   const FacebookStrategy = require("passport-facebook").Strategy;
   const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
   
+  const callbackHost = process.env.PG_PORT_5432_TCP_ADDR || "localhost";
+
   const loginWithProfile = async (method, profile) => {
     
     var email = (profile && profile.emails && profile.emails.length > 0) ? 
@@ -70,7 +72,7 @@ export default function(app) {
   app.passport.use("login-facebook", new FacebookStrategy({
     clientID: "1053035831402707",
     clientSecret: "e58adca988aee4b0a7dafd24de4d55d8",
-    callbackURL: "http://localhost:5000/login/fb/callback",
+    callbackURL: `http://${callbackHost}:8080/login/fb/callback`,
     profileFields: ["id", "emails", "name" ],
     passReqToCallback: true
   }, async (req, accessToken, refreshToken, profile, done) => {
@@ -87,7 +89,7 @@ export default function(app) {
   app.passport.use("login-google", new GoogleStrategy({
     clientID: "129466263199-h5gbqbl58ejjteeit62an452n1aitv41.apps.googleusercontent.com",
     clientSecret: "jPchRiQMPl9_-quc1xF4BQtc",
-    callbackURL: "http://localhost:5000/login/google/callback",
+    callbackURL: `http://${callbackHost}:5000/login/google/callback`,
     profileFields: ["id", "emails", "name" ],
     passReqToCallback: true
   }, (req, accessToken, refreshToken, profile, done) => {
