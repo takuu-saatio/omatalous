@@ -4,7 +4,10 @@ RUN apt-get install -y build-essential python curl git vim
 RUN curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
 RUN apt-get install -y nodejs
 RUN mkdir /takuu-saatio
-RUN 'cd /takuu-saatio; git clone https://github.com/takuu-saatio/omatalous.git; cd omatalous; npm install'
+RUN cd /takuu-saatio && \
+  git clone https://github.com/takuu-saatio/omatalous.git && \
+  cd omatalous && \
+  npm install
 ADD start.sh /tmp/
 RUN chmod +x /tmp/start.sh
 CMD /tmp/start.sh
