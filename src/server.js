@@ -27,7 +27,7 @@ const port = process.env.PORT || 5000;
 app.set("port", port);
 
 app.sequelize = new Sequelize("omatalous", "omatalous", "omatalous", {  
-  host: "localhost",
+  host: process.env.PG_PORT_5432_TCP_ADDR || "localhost",
   dialect: "postgres",
   pool: {
     max: 5,
