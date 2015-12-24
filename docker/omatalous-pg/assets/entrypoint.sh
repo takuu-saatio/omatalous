@@ -35,14 +35,14 @@ set_listen_addresses() {
     : ${POSTGRES_DB:=$POSTGRES_USER}
     export POSTGRES_USER POSTGRES_DB
 
-    psql --username postgres --command "ALTER USER postgres WITH SUPERUSER PASSWORD 'omatalous';"
-    psql --username postgres --command "CREATE ROLE omatalous WITH CREATEDB LOGIN PASSWORD 'omatalous';"
+    psql --username postgres --command "ALTER USER postgres WITH SUPERUSER PASSWORD '$DB_PASSWORD';"
+    psql --username postgres --command "CREATE ROLE $DB_USER WITH CREATEDB LOGIN PASSWORD '$DB_PASSWORD';"
     psql --username postgres --command "CREATE DATABASE omatalous;"
 
     echo
 
     echo
-    for f in /docker-entrypoint-initdb.d/*; do
+    for f in /entrypoint-initdb.d/*; do
       case "$f" in
         *.sh)  echo "$0: running $f"; . "$f" ;;
         *.sql) echo "$0: running $f"; psql --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" < "$f" && echo ;;

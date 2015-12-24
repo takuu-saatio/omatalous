@@ -17,7 +17,8 @@ class AuthService {
   
   constructor(app) {
     this.app = app;
-    this.sendgrid = require("sendgrid")("bsquared", "XXIIdiada");
+    const { SENDGRID_USER, SENDGRID_PASSWORD } = process.env;
+    this.sendgrid = require("sendgrid")(SENDGRID_USER, SENDGRID_PASSWORD);
   }
   
   sendRecoveryLink(recoveryParams) {

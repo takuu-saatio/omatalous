@@ -1,3 +1,4 @@
+#!/bin/bash
 cd /takuu-saatio/omatalous
 git pull
 npm install

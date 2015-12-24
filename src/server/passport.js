@@ -17,7 +17,7 @@ export default function(app) {
   const FacebookStrategy = require("passport-facebook").Strategy;
   const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
   
-  const callbackHost = "local.omatalous.fi";
+  const callbackHost = process.env.APP_HOSTNAME || "localhost";
 
   const loginWithProfile = async (method, profile) => {
     

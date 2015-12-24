@@ -8,7 +8,5 @@ RUN cd /takuu-saatio && \
   git clone https://github.com/takuu-saatio/omatalous.git && \
   cd omatalous && \
   npm install
-ADD start.sh /tmp/
-RUN chmod +x /tmp/start.sh
-CMD /tmp/start.sh
-
+ADD assets/start.sh /
+CMD /start.sh

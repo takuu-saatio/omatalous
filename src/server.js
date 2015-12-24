@@ -26,8 +26,10 @@ const app = global.app = express();
 const port = process.env.PORT || 5000;
 app.set("port", port);
 
-app.sequelize = new Sequelize("omatalous", "omatalous", "omatalous", {  
-  host: process.env.PG_PORT_5432_TCP_ADDR || "local.omatalous.fi",
+const dbUser = process.env.DB_USER || "omatalous";
+const dbPassword = process.env.DB_PASSWORD || "omatalous";
+app.sequelize = new Sequelize("omatalous", dbUser, dbPassword, {  
+  host: process.env.DB_HOSTNAME || process.env.PG_PORT_5432_TCP_ADDR || "localhost",
   dialect: "postgres",
   pool: {
     max: 5,
