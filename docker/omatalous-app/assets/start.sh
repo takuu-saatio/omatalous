@@ -1,5 +1,8 @@
 #!/bin/bash
 cd /takuu-saatio/omatalous
-git pull
-npm install
+if [ ! -z "$GIT_UPDATE" ]
+then
+  git pull
+  npm install
+fi
 npm start
