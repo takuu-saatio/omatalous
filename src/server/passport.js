@@ -72,7 +72,7 @@ export default function(app) {
   app.passport.use("login-facebook", new FacebookStrategy({
     clientID: "1053035831402707",
     clientSecret: "e58adca988aee4b0a7dafd24de4d55d8",
-    callbackURL: `http://${callbackHost}:8080/login/fb/callback`,
+    callbackURL: `http://${callbackHost}/login/fb/callback`,
     profileFields: ["id", "emails", "name" ],
     passReqToCallback: true
   }, async (req, accessToken, refreshToken, profile, done) => {
@@ -89,7 +89,7 @@ export default function(app) {
   app.passport.use("login-google", new GoogleStrategy({
     clientID: "129466263199-h5gbqbl58ejjteeit62an452n1aitv41.apps.googleusercontent.com",
     clientSecret: "jPchRiQMPl9_-quc1xF4BQtc",
-    callbackURL: `http://${callbackHost}:5000/login/google/callback`,
+    callbackURL: `http://${callbackHost}/login/google/callback`,
     profileFields: ["id", "emails", "name" ],
     passReqToCallback: true
   }, (req, accessToken, refreshToken, profile, done) => {

@@ -20,15 +20,34 @@ class Navigation extends Component {
 
     console.log("van props", this.props);
 
-    const { auth } = this.props; 
+    const { auth } = this.props;
+    
+    const adminElem = 
+      (auth && auth.user && auth.user.email === "vhalme@gmail.com") ?
+      (
+        <span>
+          <a className={s.link} href="/api/users">
+            Hallinta
+          </a>
+          <span className={s.spacer}> | </span>
+        </span>
+      ) : null;
+
     const loginElem = !(auth && auth.user) ? (
       <a className={s.link} href="/login" onClick={Link.handleClick}>
         {this.getIntlMessage("login")}
       </a>
     ) : (
-      <a className={s.link} href="/logout">
-        Ulos
-      </a>
+      <span>
+        {adminElem}  
+        <a className={s.link} href="/account">
+          {auth.user.email}
+        </a>
+        <span className={s.spacer}> | </span>
+        <a className={s.link} href="/logout">
+          Ulos
+        </a>
+      </span>
     )
 
     return (
