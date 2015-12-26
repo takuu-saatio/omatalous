@@ -15,8 +15,6 @@ class Header extends Component {
   
   render() {
     
-    console.log("render header", this.state, this.props);
-
     return (
       <div className={s.root}>
         <div className={s.container}>

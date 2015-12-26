@@ -14,6 +14,8 @@ import LoginRecoveryView from "./components/LoginRecoveryView";
 import * as LoginRecoveryActions from "./actions/recovery";
 import AccountView from "./components/AccountView";
 import * as AccountActions from "./actions/account";
+import AdminView from "./components/AdminView";
+import * as AdminActions from "./actions/admin";
 
 import * as AuthActions from "./actions/auth";
 
@@ -30,6 +32,7 @@ const LoginContainer = container(LoginView, AuthActions, "login");
 const LoginRecoveryContainer = container(LoginRecoveryView, LoginRecoveryActions, "recovery");
 const AccountContainer = container(AccountView, AccountActions, "account");
 const ContentContainer = container(ContentView, {}, "content");
+const AdminContainer = container(AdminView, AdminActions, "admin");
 
 export default new Router(on => {
   
@@ -47,6 +50,7 @@ export default new Router(on => {
   on("/login/recovery", () => <LoginRecoveryContainer />);
   on("/login/:token?", () => <LoginContainer />);
   on("/account/:uuid?", (state) => <AccountContainer params={state.params} />);
+  on("/admin", () => <AdminContainer />);
   on("/denied", (state) => {
     return <ContentContainer path={state.path} />
   });

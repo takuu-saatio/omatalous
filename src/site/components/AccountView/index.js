@@ -19,10 +19,25 @@ class AccountView extends BaseComponent {
 
   async fetchData(props = this.props) { 
 
+    if (props.state.status === "deleted") {
+      return;
+    }
+
     const uuid = this.props.params.uuid || this.state.auth.user.uuid; 
     console.log("fetching data for", uuid);
     this.props.fetchAccount(uuid);
 
+  }
+  
+  updateState(state) {
+    super.updateState(state);
+    if (state.status === "deleted") {
+      if (this.props.params.uuid) {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "/home";
+      }
+    }
   }
 
   _handleInputChange(event) {
@@ -30,7 +45,7 @@ class AccountView extends BaseComponent {
     let formParams = {};
     formParams[event.target.name] = event.target.value;
     let account = Object.assign(this.state.account, formParams);
-    this.setState(Object.assign(this.state, { account }));
+    this.setState(Object.assign(this.state, { account, messages: { editStatus: "changed" } }));
   
   }
   
@@ -45,15 +60,30 @@ class AccountView extends BaseComponent {
   render() {
      
     console.log("render account", this.props, this.state);
-    let { account } = this.state;
+    let { account, messages } = this.state;
     
     if (!account) {
       return null;
+    }
+    
+    let formError = null;
+    if (this.state.error) {
+      formError = (
+        <span>Error: {this.state.error.id}</span>
+      );
+    }
+    
+    let editStatus = null;
+    if (messages && messages.editStatus) {
+      editStatus = (
+        <span>{messages.editStatus}</span>
+      );
     }
 
     return (
       <div>
         <Header auth={this.state.auth} />
+        {formError}
         <div>
           <div>
             Sähköposti
@@ -91,6 +121,7 @@ class AccountView extends BaseComponent {
               onChange={this._handleInputChange.bind(this)} />
           </div>
           <div>
+            {editStatus}
             <button onClick={() => this._saveAccount()}>Tallenna</button>
             <button onClick={() => this._deleteAccount()}>Poista</button>
           </div>

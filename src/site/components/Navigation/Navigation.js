@@ -18,8 +18,6 @@ class Navigation extends Component {
 
   render() {
 
-    console.log("van props", this.props);
-
     const { auth } = this.props;
     
     let adminElem = null;
@@ -30,7 +28,7 @@ class Navigation extends Component {
       if (auth.user.email === "vhalme@gmail.com") {
         adminElem = (
           <span>
-            <a className={s.link} href="/api/users">
+            <a className={s.link} href="/admin" onClick={Link.handleClick}>
               Hallinta
             </a>
             <span className={s.spacer}> | </span>
@@ -38,11 +36,10 @@ class Navigation extends Component {
         );
       }
 
-      const accountUrl = `/account`; //${auth.user.uuid}`;
       loginElem = (
         <span>
           {adminElem}  
-          <a className={s.link} href={accountUrl} onClick={Link.handleClick}>
+          <a className={s.link} href="/account" onClick={Link.handleClick}>
             {auth.user.email}
           </a>
           <span className={s.spacer}> | </span>

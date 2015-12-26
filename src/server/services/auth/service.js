@@ -39,6 +39,7 @@ class AuthService {
         user.save()
         .then(() => {
           
+          let hostName = process.env.APP_HOSTNAME || "localhost:5000"; 
           this.sendgrid.send({
             to: user.email,
             from: "noreply@takuu-saatio.fi",
@@ -47,8 +48,8 @@ class AuthService {
               `<div>
                  <div>Kertakäyttöinen kirjautumislinkkisi</div>
                  <div>
-                  <a href="http://localhost:5000/login/${user.token}">
-                    http://localhost:5000/login/${user.token}
+                  <a href="http://${hostName}/login/${user.token}">
+                    http://${hostName}/login/${user.token}
                   </a>
                  </div>
                </div>`

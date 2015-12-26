@@ -32,7 +32,7 @@ export function registerRoutes(app) {
       const userService = app.services.user;
 
       const uuid = req.params.uuid || req.user.uuid;
-      if (uuid !== req.user.uuid && req.user.email !== "vhalme@gmail.com") {
+      if (uuid !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
         return res.redirect("/denied");
       }
 
@@ -40,6 +40,32 @@ export function registerRoutes(app) {
 
       const state = Object.assign({
         account: { account: user.json(), iso: true }
+      }, req.context.common);
+      
+      req.context.initialState = Object.assign(req.context.initialState, state);
+      app.renderPage(req, res);
+
+    } catch (err) {
+      next(err);
+    }
+
+  });
+  
+  app.get("/admin", requireAuth, async (req, res, next) => {
+
+    try {
+      
+      const userService = app.services.user;
+
+      const uuid = req.params.uuid || req.user.uuid;
+      if (req.user.email !== process.env.ADMIN_USER) {
+        return res.redirect("/denied");
+      }
+
+      const users = await userService.getUsers();
+
+      const state = Object.assign({
+        admin: { accounts: users.map(user => user.json()), iso: true }
       }, req.context.common);
       
       req.context.initialState = Object.assign(req.context.initialState, state);

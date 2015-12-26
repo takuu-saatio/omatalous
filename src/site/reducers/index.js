@@ -6,6 +6,7 @@ import login from "./login";
 import recovery from "./recovery";
 import account from "./account";
 import content from "./content";
+import admin from "./admin";
 
 export default function(reducers) {
   
@@ -25,7 +26,8 @@ export default function(reducers) {
     login,
     recovery,
     account,
-    content
+    content,
+    admin
   });
 
 }

@@ -32,26 +32,40 @@ class LoginRecovery extends BaseComponent {
   render() {
      
     console.log("render logrec", this.props, this.state);
-    let { recoveryParams } = this.state;
+    let { recoveryParams, status, error } = this.state;
+
+    let viewContent = null;
+
+    if (status === "email_sent") {
+      viewContent = (
+        <div>Kertakäyttöinen kirjautumislinkki lähetetty sähköpostissa!</div>
+      );
+    } else {
+      viewContent = (
+        <div>
+          <div>
+            Voit tilata sähköpostiisi kertakäyttöisen kirjautumislinkin. Muista asettaa salasanasi kirjauduttuasi.
+          </div>
+          <div>
+            <div>
+              Sähköposti
+              <input type="text" 
+                name="email" 
+                value={this.state.recoveryParams.email}
+                onChange={this._handleInputChange.bind(this)} />
+            </div>
+            <div>
+              <button onClick={() => this._sendLink()}>Lähetä</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div>
         <Header />
-        <div>
-          Voit tilata sähköpostiisi kertakäyttöisen kirjautumislinkin. Muista asettaa salasanasi kirjauduttuasi.
-        </div>
-        <div>
-          <div>
-            Sähköposti
-            <input type="text" 
-              name="email" 
-              value={this.state.recoveryParams.email}
-              onChange={this._handleInputChange.bind(this)} />
-          </div>
-          <div>
-            <button onClick={() => this._sendLink()}>Lähetä</button>
-          </div>
-        </div>
+          {viewContent}
         <Feedback />
         <Footer />
       </div>

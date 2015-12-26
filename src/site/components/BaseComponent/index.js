@@ -15,6 +15,8 @@ class BaseComponent extends Component {
   }
    
   componentDidMount() {
+    console.log("bc did mount");
+    this.props.state.isUpdated = false;
     this._fetchIfUpdated(this.props);
   }
   

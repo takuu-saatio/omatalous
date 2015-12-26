@@ -159,6 +159,11 @@ class LoginPage extends BaseComponent {
               <div className={s.formSubmit}>  
                 <button type="submit">Sisään</button>
               </div>
+              <div>
+                <a href="/login/recovery">
+                  Salasana unohtunut!
+                </a>
+              </div>
             </form>
           </div>
       </div>

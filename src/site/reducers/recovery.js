@@ -4,16 +4,14 @@ import * as actions from "../actions/recovery";
 
 export default function (state = {}, action) {
   
-  state = Object.assign({}, state);
-  state.error = null;
-  
+  state = {};
+
   console.log("action", action);
   switch (action.type) {
     case actions.RECOVERY_SUCCESS:
-      return { status: "ok" };
+      return { status: "email_sent" };
     case actions.RECOVERY_FAIL:
-      state.error = action.error;
-      return state;
+      return { error: action.error };
     default:
       return state;
   }
