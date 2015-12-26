@@ -3,8 +3,12 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/service/user/api");
 
-import { requireAuth } from "../../apiFilters";
+import { requireAuth, requireOwnership } from "../../apiFilters";
 import { NotFound, Forbidden, BaseError } from "../../../core/errors";
+
+function allowedToEdit(uuid, req) {
+  return uuid === req.user.uuid || req.user.email === process.env.ADMIN_USER;
+}
 
 export function registerRoutes(app) {
 
@@ -12,7 +16,7 @@ export function registerRoutes(app) {
    
   app.get("/api/users", requireAuth, async (req, res, next) => {
     
-    if (req.user.email !== "vhalme@gmail.com") {
+    if (!allowedToEdit(null, req)) {
       return next(new Forbidden());
     }
 
@@ -29,7 +33,7 @@ export function registerRoutes(app) {
 
   app.get("/api/users/:uuid", requireAuth, async (req, res, next) => {
  
-    if (req.params.uuid !== req.user.uuid && req.user.email !== "vhalme@gmail.com") {
+    if (!allowedToEdit(req.params.uuid, req)) {
       return next(new Forbidden());
     }
 
@@ -48,7 +52,7 @@ export function registerRoutes(app) {
   app.put("/api/users", requireAuth, async (req, res, next) => {
 
     const user = req.body;
-    if (user.uuid !== req.user.uuid && req.user.email !== "vhalme@gmail.com") {
+    if (!allowedToEdit(user.uuid, req)) {
       return next(new Forbidden());
     }
 
@@ -57,6 +61,24 @@ export function registerRoutes(app) {
       const userService = app.services.user;
     
       await userService.saveUser(user);
+      res.json({ status: "ok" });
+
+    } catch (err) {
+      next(err);
+    }
+  
+  });
+  
+  app.delete("/api/users/:uuid", requireAuth, async (req, res, next) => {
+
+    if (!allowedToEdit(req.params.uuid, req)) {
+      return next(new Forbidden());
+    }
+
+    try {
+      
+      const userService = app.services.user; 
+      await userService.deleteUser(req.params.uuid);
       res.json({ status: "ok" });
 
     } catch (err) {

@@ -70,15 +70,14 @@ export default function(app) {
   ));
 
   app.passport.use("login-facebook", new FacebookStrategy({
-    clientID: "1053035831402707",
-    clientSecret: "e58adca988aee4b0a7dafd24de4d55d8",
+    clientID: process.env.FB_CLIENT_ID,
+    clientSecret: process.env.FB_CLIENT_SECRET,
     callbackURL: `http://${callbackHost}/login/fb/callback`,
     profileFields: ["id", "emails", "name" ],
     passReqToCallback: true
   }, async (req, accessToken, refreshToken, profile, done) => {
 
-      log.debug("Invoke Facebook login strategy", accessToken, refreshToken, profile);
-      
+      log.debug("Invoke Facebook login strategy", accessToken, refreshToken, profile); 
       const result = await loginWithProfile("Facebook", profile);
       done(result.error, result.user);
 
@@ -87,15 +86,15 @@ export default function(app) {
   ));
 
   app.passport.use("login-google", new GoogleStrategy({
-    clientID: "129466263199-h5gbqbl58ejjteeit62an452n1aitv41.apps.googleusercontent.com",
-    clientSecret: "jPchRiQMPl9_-quc1xF4BQtc",
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: `http://${callbackHost}/login/google/callback`,
     profileFields: ["id", "emails", "name" ],
     passReqToCallback: true
-  }, (req, accessToken, refreshToken, profile, done) => {
+  }, async (req, accessToken, refreshToken, profile, done) => {
       
       log.debug("Invoke Google login strategy", accessToken, refreshToken, profile);
-      const result = loginWithProfile("Google", profile);
+      const result = await loginWithProfile("Google", profile);
       done(result.error, result.user);
 
     }

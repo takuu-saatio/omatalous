@@ -53,6 +53,8 @@ export function registerMiddleware(app) {
       onSetMeta: (key, value) => data[key] = value,
       onPageNotFound: () => context.statusCode = 404
     };
+  
+    log.debug("req authorized", req.isAuthenticated());
 
     if (req.isAuthenticated()) {
       context.initialState.auth = {

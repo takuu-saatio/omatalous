@@ -11,7 +11,6 @@ class BaseComponent extends Component {
   componentWillReceiveProps(nextProps) {
     console.log("bc will rec props", nextProps);
     this._fetchIfUpdated(nextProps);
-    //this.state = nextProps.state;
     this.updateState(nextProps.state);
   }
    
@@ -21,10 +20,11 @@ class BaseComponent extends Component {
   
   _fetchIfUpdated(props) { 
     
-    if (!props.state.iso) {
+    if (!props.state.iso && !props.state.isUpdated) {
       this.fetchData(props);
     } else {
       props.state.iso = false;
+      props.state.isUpdated = false;
     }
 
   }

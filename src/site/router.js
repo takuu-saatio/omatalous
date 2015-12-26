@@ -46,7 +46,7 @@ export default new Router(on => {
   on("/home", () => <HomeContainer />);
   on("/login/recovery", () => <LoginRecoveryContainer />);
   on("/login/:token?", () => <LoginContainer />);
-  on("/account/:uuid?", () => <AccountContainer />);
+  on("/account/:uuid?", (state) => <AccountContainer params={state.params} />);
   on("/denied", (state) => {
     return <ContentContainer path={state.path} />
   });

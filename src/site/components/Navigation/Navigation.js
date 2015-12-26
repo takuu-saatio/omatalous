@@ -22,33 +22,45 @@ class Navigation extends Component {
 
     const { auth } = this.props;
     
-    const adminElem = 
-      (auth && auth.user && auth.user.email === "vhalme@gmail.com") ?
-      (
+    let adminElem = null;
+    let loginElem = null;
+
+    if (auth && auth.user) {
+        
+      if (auth.user.email === "vhalme@gmail.com") {
+        adminElem = (
+          <span>
+            <a className={s.link} href="/api/users">
+              Hallinta
+            </a>
+            <span className={s.spacer}> | </span>
+          </span>
+        );
+      }
+
+      const accountUrl = `/account`; //${auth.user.uuid}`;
+      loginElem = (
         <span>
-          <a className={s.link} href="/api/users">
-            Hallinta
+          {adminElem}  
+          <a className={s.link} href={accountUrl} onClick={Link.handleClick}>
+            {auth.user.email}
           </a>
           <span className={s.spacer}> | </span>
+          <a className={s.link} href="/logout">
+            Ulos
+          </a>
         </span>
-      ) : null;
+      );
 
-    const loginElem = !(auth && auth.user) ? (
-      <a className={s.link} href="/login" onClick={Link.handleClick}>
-        {this.getIntlMessage("login")}
-      </a>
-    ) : (
-      <span>
-        {adminElem}  
-        <a className={s.link} href="/account">
-          {auth.user.email}
+    } else {
+
+      loginElem = (
+        <a className={s.link} href="/login" onClick={Link.handleClick}>
+          {this.getIntlMessage("login")}
         </a>
-        <span className={s.spacer}> | </span>
-        <a className={s.link} href="/logout">
-          Ulos
-        </a>
-      </span>
-    )
+      );
+
+    }
 
     return (
       <div className={cx(s.root, this.props.className)} role="navigation">

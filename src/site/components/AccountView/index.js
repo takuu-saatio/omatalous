@@ -17,6 +17,14 @@ class AccountView extends BaseComponent {
     });
   }
 
+  async fetchData(props = this.props) { 
+
+    const uuid = this.props.params.uuid || this.state.auth.user.uuid; 
+    console.log("fetching data for", uuid);
+    this.props.fetchAccount(uuid);
+
+  }
+
   _handleInputChange(event) {
 
     let formParams = {};
@@ -31,17 +39,21 @@ class AccountView extends BaseComponent {
   }
   
   _deleteAccount() {
-    this.props.deleteAccount(this.state.account.id)
+    this.props.deleteAccount(this.state.account.uuid)
   }
 
   render() {
      
     console.log("render account", this.props, this.state);
     let { account } = this.state;
+    
+    if (!account) {
+      return null;
+    }
 
     return (
       <div>
-        <Header />
+        <Header auth={this.state.auth} />
         <div>
           <div>
             Sähköposti

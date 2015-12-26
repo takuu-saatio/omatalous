@@ -3,6 +3,9 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/services/user/service");
 
+import bcrypt from "bcrypt-nodejs";
+import { Forbidden } from "../../../core/errors";
+
 class UserService {
 
   constructor(app) {
@@ -35,13 +38,32 @@ class UserService {
           reject(new NotFound(null, "user_not_found"));
           return;
         }
-        
-        delete updatedUser.uuid;
-        Object.assign(user, updatedUser);
-        user.save()
-        .then(() => resolve())
+
+        User.selectOne({ email: updatedUser.email })
+        .then((dupeUser) => {
+          
+          if (dupeUser && dupeUser.uuid !== updatedUser.uuid) {
+            reject(new Forbidden(null, "another_user_exists"));
+            return;
+          }
+                    
+          delete updatedUser.uuid;
+          const password = updatedUser.password;
+          if (password && password.length > 0) {
+            const pwdHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+            updatedUser.password = pwdHash;
+          } else {
+            delete updatedUser.password;
+          }
+          
+          Object.assign(user, updatedUser);
+          user.save()
+          .then(() => resolve())
+          .catch((err) => reject(err));
+
+        })
         .catch((err) => reject(err));
-  
+ 
       })
       .catch((err) => reject(err));
 
@@ -56,7 +78,19 @@ class UserService {
       const { User } = this.app.entities;
       
       User.findByUuid(uuid)
-      .then((user) => resolve(user))
+      .then((user) => {
+
+        if (!user) {
+          reject(new NotFound(null, "user_not_found"));
+          return;
+        }
+        
+        user.deleted = true; 
+        user.save()
+        .then(() => resolve())
+        .catch((err) => reject(err));
+      
+      })
       .catch((err) => reject(err));  
 
     });

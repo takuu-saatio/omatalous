@@ -39,7 +39,7 @@ export function registerRoutes(app) {
       const user = await userService.getUser(uuid);
 
       const state = Object.assign({
-        account: { account: user.json() }
+        account: { account: user.json(), iso: true }
       }, req.context.common);
       
       req.context.initialState = Object.assign(req.context.initialState, state);
@@ -128,10 +128,10 @@ export function registerRoutes(app) {
         return next(content.error);
       }
       
-      req.context.initialState = {
+      req.context.initialState = Object.assign(req.context.initialState, { 
         content: Object.assign(content.data, { iso: true })
-      };
-
+      });
+      
       app.renderPage(req, res);
 
     } catch(err) {
