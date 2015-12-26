@@ -8,6 +8,6 @@ fi
 
 ./shutdown.sh
 docker run -d -P \
-  -e DB_USER=devuser \
-  -e DB_PASSWORD=devpasswd \
+  -e DB_USER=<db_user> \
+  -e DB_PASSWORD=<db_password> \
   --volumes-from omatalous-data --name omatalous-pg vhalme/omatalous-pg$tag
