@@ -2,6 +2,8 @@ import request from "superagent";
 import React, { Component, PropTypes } from "react";
 import s from "./LoginView.scss";
 import withStyles from "../../decorators/withStyles";
+import TextField from "material-ui/lib/text-field";
+import FlatButton from "material-ui/lib/flat-button";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import BaseComponent from "../BaseComponent";
@@ -108,7 +110,10 @@ class LoginPage extends BaseComponent {
   _renderLoginForm() {
 
     let loginParams = this.state.loginParams;
-  
+    const textFieldCss = {
+      width: "100%"
+    }
+
     return (
       <div>
           <div>
@@ -139,25 +144,28 @@ class LoginPage extends BaseComponent {
                 Kirjaudu sähköpostilla ja salasanalla
               </div>
               <div className={s.formItem}>
-                <div className={s.formLabel}>Sähköposti</div>
                 <div className={s.formInput}>
-                  <input type="text" 
-                    name="email" 
+                  <TextField
+                    style={textFieldCss}
+                    name="email"
+                    floatingLabelText="Sähköposti"
                     value={loginParams.email} 
                     onChange={this.handleInputChange.bind(this)} />
                 </div>
               </div>
               <div className={s.formItem}>
-                <div className={s.formLabel}>Salasana</div>
                 <div className={s.formInput}>
-                  <input type="text"
+                  <TextField
+                    style={textFieldCss}
                     name="password"
+                    floatingLabelText="Salasana"
                     value={loginParams.password}
                     onChange={this.handleInputChange.bind(this)} /> 
                 </div>
               </div>
               <div className={s.formSubmit}>  
-                <button type="submit">Sisään</button>
+                <FlatButton type="submit" label="Sisään">
+                </FlatButton>
               </div>
               <div>
                 <a href="/login/recovery">

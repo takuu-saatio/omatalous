@@ -125,12 +125,11 @@
 
   .formItem {
     
-    width: 81%;  
+    width: 96%;  
     margin-left: auto;
     margin-right: auto;
     margin-top: 4px;
     display: flex;
-    justify-content: flex-end;
     align-content: center;
 
     .formLabel {
@@ -138,10 +137,7 @@
     }
 
     .formInput {
-      width: 176px;
-      input {
-        width: 100%;
-      }
+      width: 100%;
     }
   
   }

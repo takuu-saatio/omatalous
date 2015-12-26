@@ -5,6 +5,10 @@ import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import s from "./Header.scss";
 import withStyles from "../../decorators/withStyles";
+import AppBar from "material-ui/lib/app-bar";
+import IconButton from "material-ui/lib/icon-button";
+import NavigationClose from "material-ui/lib/svg-icons/navigation/close";
+import FlatButton from "material-ui/lib/flat-button";
 import Link from "../Link";
 import Navigation from "../Navigation";
 
@@ -12,7 +16,11 @@ import BaseComponent from "../BaseComponent";
 
 @withStyles(s)
 class Header extends Component {
-  
+
+  _handleTouchTap() {
+    console.log("tip-tap");
+  }
+
   render() {
     
     return (

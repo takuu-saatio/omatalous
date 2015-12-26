@@ -1,12 +1,6 @@
 @import '../../../../node_modules/normalize.css/normalize.css';
 
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
-
 @import '../variables.scss';
-
-/*
- * Base styles
- * ========================================================================== */
 
 html {
   color: #222;
@@ -82,7 +76,7 @@ textarea {
 
 /*
  * Browser upgrade prompt
- * ========================================================================== */
+ */
 
 .browserupgrade {
   margin: 0.2em 0;
@@ -95,7 +89,7 @@ textarea {
  * Print styles
  * Inlined to avoid the additional HTTP request:
  * http://www.phpied.com/delay-loading-your-print-css/
- * ========================================================================== */
+ */
 
 @media print {
   *,
