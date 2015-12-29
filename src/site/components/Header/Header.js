@@ -31,6 +31,14 @@ class Header extends Component {
 
   _handleToggle = () => this.setState({ navOpen: !this.state.navOpen });
   _handleClose = () => this.setState({ navOpen: false });
+  
+  _gotoAccountView() {
+    window.location.href = "/account";
+  }
+  
+  _logOut() {
+    window.location.href = "/logout";
+  }
 
   render() {
     
@@ -52,8 +60,8 @@ class Header extends Component {
           docked={false}
           width={200}
           onRequestChange={(open) => this.setState({ navOpen: open })}>
-          <MenuItem onTouchTap={this._handleClose}>Tili</MenuItem>
-          <MenuItem onTouchTap={this._handleClose}>Ulos</MenuItem>
+          <MenuItem onTouchTap={this._gotoAccountView}>Tili</MenuItem>
+          <MenuItem onTouchTap={this._logOut}>Ulos</MenuItem>
         </LeftNav>
       </div>
     );
