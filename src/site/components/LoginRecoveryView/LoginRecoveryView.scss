@@ -1,0 +1,39 @@
+.root {
+  padding: 12px;
+}
+
+.description {
+  width: 90%;
+  max-width: 420px;
+  margin: auto;
+  padding-bottom: 12px;
+  padding-top: 24px;
+}
+
+.form {
+  
+  width: 90%;
+  max-width: 420px;
+  margin: auto;
+  padding-bottom: 24px;
+   
+  display: flex;
+
+  .label {
+    flex: 0 1 auto;
+    padding-right: 4px;
+  }
+
+  .input {
+    flex: 1 1 auto;
+  }
+
+  .button {
+    flex: 0 1 auto;
+    display: flex;
+    align-items: flex-end;
+    padding-left: 4px;
+    padding-bottom: 8px;
+  }  
+
+}

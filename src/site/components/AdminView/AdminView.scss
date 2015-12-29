@@ -1,0 +1,33 @@
+@import "../variables.scss";
+
+.root {
+  margin-bottom: 24px;  
+}
+
+.content {
+}
+
+.accountList {
+
+  width: 90%;
+  max-width: 660px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 24px;
+ 
+  .accountRow {
+    
+    display: flex;
+
+    .accountUuid {
+      flex: 0 1 auto;
+    }
+
+    .accountEmail {
+      flex: 1 1 auto;
+      text-align: right;
+    }
+  
+  }
+
+}

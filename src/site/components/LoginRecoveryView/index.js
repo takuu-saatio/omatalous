@@ -1,9 +1,14 @@
 import React, { Component, PropTypes } from "react";
+import s from "./LoginRecoveryView.scss";
+import withStyles from "../../decorators/withStyles";
+import TextField from "material-ui/lib/text-field";
+import FlatButton from "material-ui/lib/flat-button";
 import BaseComponent from "../BaseComponent";
 import Header from "../Header";
 import Feedback from "../Feedback";
 import Footer from "../Footer";
 
+@withStyles(s)
 class LoginRecovery extends BaseComponent {
   
   static contextTypes = {
@@ -38,24 +43,26 @@ class LoginRecovery extends BaseComponent {
 
     if (status === "email_sent") {
       viewContent = (
-        <div>Kertakäyttöinen kirjautumislinkki lähetetty sähköpostissa!</div>
+        <div className={s.description}>Kertakäyttöinen kirjautumislinkki lähetetty sähköpostissa!</div>
       );
     } else {
       viewContent = (
         <div>
-          <div>
+          <div className={s.description}>
             Voit tilata sähköpostiisi kertakäyttöisen kirjautumislinkin. Muista asettaa salasanasi kirjauduttuasi.
           </div>
           <div>
-            <div>
-              Sähköposti
-              <input type="text" 
-                name="email" 
-                value={this.state.recoveryParams.email}
-                onChange={this._handleInputChange.bind(this)} />
-            </div>
-            <div>
-              <button onClick={() => this._sendLink()}>Lähetä</button>
+            <div className={s.form}>
+              <div className={s.input}>
+                <TextField style={{ width: "100%" }}
+                  name="email" 
+                  floatingLabelText="Sähköposti"
+                  value={this.state.recoveryParams.email}
+                  onChange={this._handleInputChange.bind(this)} />
+              </div>
+              <div className={s.button}>
+                <FlatButton onClick={() => this._sendLink()} label="Lähetä" />
+              </div>
             </div>
           </div>
         </div>
@@ -65,7 +72,9 @@ class LoginRecovery extends BaseComponent {
     return (
       <div>
         <Header />
-          {viewContent}
+          <div className={s.root}>
+            {viewContent}
+          </div>
         <Feedback />
         <Footer />
       </div>

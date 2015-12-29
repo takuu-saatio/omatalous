@@ -1,0 +1,107 @@
+@import "../variables.scss";
+
+.root {
+  margin-bottom: 24px;  
+}
+
+
+.profile {
+  
+  width: 90%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 24px;
+  
+  .profileTitle {
+  }
+
+  .profileRow {
+     
+    .profileCell {
+      
+      @media (min-width: 660px) {
+        display: inline-block;
+        width: 48%;
+        margin-left: 1%;
+        margin-right: 1%;
+      }
+
+      .textField {
+        width: 100%;
+      }
+
+    }
+
+  }
+
+  .saveProfile {
+    
+    display: flex;
+    
+    .editStatus {
+      flex: 1 1 auto;
+      padding-left: 1%;
+      display: flex;
+      align-items: center;
+    }
+    
+    .saveButton {
+      flex: 1 1 auto;
+      text-align: right;
+
+    }
+  
+  }
+
+}
+
+.password {
+
+  width: 90%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 24px;
+
+  .passwordTitle {
+  }
+  
+  .passwordInput {
+    position: relative;
+    a {
+      text-decoration: none;
+      color: black;
+    }
+  }
+
+  .changePassword {
+    
+    display: flex;
+    
+    .pwdStatus {
+      flex: 1 1 auto;
+      padding-left: 1%;
+      display: flex;
+      align-items: center;
+    }
+    
+    .changePwdButton {
+      flex: 1 1 auto;
+      text-align: right;
+    }
+
+  }
+
+}
+
+.deleteAccount {
+  
+  width: 90%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 24px;
+
+}
+

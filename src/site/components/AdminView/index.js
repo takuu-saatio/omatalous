@@ -1,12 +1,15 @@
 "use strict";
 
 import React, { Component, PropTypes } from "react";
+import s from "./AdminView.scss";
+import withStyles from "../../decorators/withStyles";
 import Link from "../Link";
 import BaseComponent from "../BaseComponent";
 import Header from "../Header";
 import Feedback from "../Feedback";
 import Footer from "../Footer";
 
+@withStyles(s)
 class AdminView extends BaseComponent {
   
   static contextTypes = {
@@ -45,10 +48,13 @@ class AdminView extends BaseComponent {
 
       const accountUrl = `/account/${account.uuid}`;
       return (
-        <div key={account.uuid}>
-          <a href={accountUrl} onClick={Link.handleClick}>{account.uuid}</a>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          {account.email}
+        <div key={account.uuid} className={s.accountRow}>
+          <div className={s.accountUuid}>
+            <a href={accountUrl} onClick={Link.handleClick}>{account.uuid}</a>
+          </div>
+          <div className={s.accountEmail}>
+            {account.email}
+          </div>
         </div>
       );
     
@@ -57,9 +63,21 @@ class AdminView extends BaseComponent {
     return (
       <div>
         <Header auth={this.state.auth} />
-        {errorElem}
-        <div>
-          {accountElems}
+        <div className={s.root}>
+          <div className={s.content}>
+            {errorElem}
+            <div className={s.accountList}>
+              <div className={s.accountRow}>
+                <div className={s.accountUuid}>
+                  <b>Tilin ID</b>
+                </div>
+                <div className={s.accountEmail}>
+                  <b>Sähköpostiosoite</b>
+                </div>
+              </div>
+              {accountElems}
+            </div>
+          </div>
         </div>
         <Feedback />
         <Footer />

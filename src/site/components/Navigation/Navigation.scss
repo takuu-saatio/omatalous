@@ -1,12 +1,31 @@
-/* React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
-
 .root {
+  
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  
+  .minHidden {
+    @media (max-width: 660px) {
+      display: none;
+    }
+  }
+
+  .navItem {
+    flex: 0 1 auto;
+  }
+
+  .iconItem {
+    padding: 6px;
+  }
+
+  .buttonItem {
+    padding-top: 6px;
+    margin-right: 6px;
+  }
 
 }
 
 .link {
-  display: inline-block;
-  padding: 3px 8px;
   text-decoration: none;
   font-size: 1.125em; /* ~18px */
 }
@@ -15,6 +34,9 @@
 .link:active,
 .link:visited {
   color: rgba(255, 255, 255, .6);
+  i {
+    font-size: 36px;
+  }
 }
 
 .link:hover {
@@ -22,8 +44,6 @@
 }
 
 .highlight {
-  margin-right: 8px;
-  margin-left: 8px;
   border-radius: 3px;
   background: rgba(0, 0, 0, .15);
   color: #fff;

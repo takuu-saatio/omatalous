@@ -6,6 +6,7 @@ import ReactIntl from "react-intl";
 import cx from "classnames";
 import s from "./Navigation.scss";
 import withStyles from "../../decorators/withStyles";
+import FlatButton from "material-ui/lib/flat-button";
 import Link from "../Link";
 
 @withStyles(s)
@@ -21,50 +22,53 @@ class Navigation extends Component {
     const { auth } = this.props;
     
     let adminElem = null;
+    let accountElem = null;
     let loginElem = null;
 
     if (auth && auth.user) {
         
       if (auth.user.email === "vhalme@gmail.com") {
         adminElem = (
-          <span>
+          <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
             <a className={s.link} href="/admin" onClick={Link.handleClick}>
-              Hallinta
+              <i className="material-icons">&#xE8D3;</i>  
             </a>
-            <span className={s.spacer}> | </span>
-          </span>
+          </div>
         );
       }
+      
+      accountElem = (
+        <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
+          <a className={s.link} href="/account" onClick={Link.handleClick}>
+            <i className="material-icons">&#xE87C;</i>
+          </a>
+        </div>
+      );
 
       loginElem = (
-        <span>
-          {adminElem}  
-          <a className={s.link} href="/account" onClick={Link.handleClick}>
-            {auth.user.email}
+        <div className={cx(s.navItem, s.buttonItem)}>
+          <a className={s.link} style={{ verticalAlign: "top" }} href="/logout">
+            <FlatButton label={this.getIntlMessage("logout")} labelStyle={{ color: "white" }} />
           </a>
-          <span className={s.spacer}> | </span>
-          <a className={s.link} href="/logout">
-            Ulos
-          </a>
-        </span>
+        </div>
       );
 
     } else {
-
-      loginElem = (
-        <a className={s.link} href="/login" onClick={Link.handleClick}>
-          {this.getIntlMessage("login")}
-        </a>
-      );
+      
+      loginElem = this.props.selection !== "login" ? (
+        <div className={cx(s.navItem, s.buttonItem)}>
+          <a className={s.link} href="/login" onClick={Link.handleClick}>
+            <FlatButton label={this.getIntlMessage("login")} labelStyle={{ color: "white" }} />
+          </a>
+        </div>
+      ) : null;
 
     }
 
     return (
       <div className={cx(s.root, this.props.className)} role="navigation">
-        <a className={s.link} href="/about" onClick={Link.handleClick}>
-          {this.getIntlMessage("about")}
-        </a>
-        <span className={s.spacer}> | </span>
+        {adminElem}
+        {accountElem}
         {loginElem}
       </div>
     );

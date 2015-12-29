@@ -26,7 +26,7 @@ class UserService {
   }
   
   saveUser(updatedUser) {
-     
+
     return new Promise((resolve, reject) => {
       
       const { User } = this.app.entities;
@@ -58,7 +58,9 @@ class UserService {
           
           Object.assign(user, updatedUser);
           user.save()
-          .then(() => resolve())
+          .then(() => {
+            resolve({ pwdChanged: (password && password.length > 0) })
+          })
           .catch((err) => reject(err));
 
         })

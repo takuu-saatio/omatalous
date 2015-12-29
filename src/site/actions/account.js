@@ -16,6 +16,9 @@ export function saveAccount(user) {
     
     let response = await http.put("/api/users", user);
     const action = processResponse(response, SAVE_SUCCESS, SAVE_FAIL);
+    if (action.type === SAVE_SUCCESS) {
+      action.pwdChanged = response.pwdChanged;
+    }
     dispatch(action);
   
   };

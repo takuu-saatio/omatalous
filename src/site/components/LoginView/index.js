@@ -63,6 +63,19 @@ class LoginPage extends BaseComponent {
 
   }
   
+  _togglePassword() {
+    const pwdContainer = document.getElementById("password");
+    const pwdField = pwdContainer.getElementsByTagName("input")[0];
+    const imageElem = pwdContainer.getElementsByTagName("i")[0];
+    if (pwdField.type === "password") {
+      pwdField.type = "text";
+      imageElem.innerHTML = "&#xE8F4;";
+    } else {
+      pwdField.type = "password";
+      imageElem.innerHTML = "&#xE8F5;";
+    }
+  }
+
   render() {
     
     const { register, logIn, test } = this.props;
@@ -75,11 +88,10 @@ class LoginPage extends BaseComponent {
 
     return (
       <div>
-        <Header auth={this.state.auth} />
+        <Header auth={this.state.auth} selection="login" />
         <div className={s.root}>
           {errorElem}
           <div className={s.container}>
-            <p>Kirjaudu sisään jollain alla olevista tavoista. Jos et ole käyttänyt palvelua aiemmin, tunnuksesi luodaan ensimmäisen kirjautumisen yhteydessä.</p>
             {loginForm}
           </div>
         </div>
@@ -94,13 +106,13 @@ class LoginPage extends BaseComponent {
 
     return (
       <div>
-        <div>
+        <div className={s.description}>
           Voit kirjautua tältä sivulta vain yhden kerran. Muista asettaa salasanasi tiliasetuksistasi, kirjauduttuasi sisään.
         </div>
-        <form action="/login" method="post">
+        <form className={s.renewForm} action="/login" method="post">
           <input type="hidden" name="email" value="token" />
           <input type="hidden" name="password" value={this.state.token} />
-          <button type="submit">Sisään</button>
+          <FlatButton type="submit" label="SISÄÄN" />
         </form>
       </div>
     );
@@ -112,11 +124,20 @@ class LoginPage extends BaseComponent {
     let loginParams = this.state.loginParams;
     const textFieldCss = {
       width: "100%"
-    }
+    };
+
+    const showPwdCss = {
+      position: "absolute",
+      right: "0px",
+      top: "40px"
+    };
 
     return (
       <div>
           <div>
+            <div className={s.description}>
+              Kirjaudu sisään jollain alla olevista tavoista. Jos et ole käyttänyt palvelua aiemmin, tunnuksesi luodaan ensimmäisen kirjautumisen yhteydessä.
+            </div>
             <div className={s.extLogin}>
               <div className={s.fbLogin}>
                 <a href="/login/fb">
@@ -154,23 +175,31 @@ class LoginPage extends BaseComponent {
                 </div>
               </div>
               <div className={s.formItem}>
-                <div className={s.formInput}>
+                <div className={s.formInput} id="password">
                   <TextField
                     style={textFieldCss}
+                    type="password"
                     name="password"
                     floatingLabelText="Salasana"
                     value={loginParams.password}
                     onChange={this.handleInputChange.bind(this)} /> 
+                  <a href="#" onClick={() => this._togglePassword()} style={showPwdCss}>
+                    <i className="material-icons">&#xE8F5;</i>
+                  </a>
                 </div>
               </div>
               <div className={s.formSubmit}>  
-                <FlatButton type="submit" label="Sisään">
-                </FlatButton>
+                <div className={s.recoveryLink}>
+                  <a href="/login/recovery">
+                    Salasana unohtunut!
+                  </a>
+                </div>
+                <div className={s.submitButton}>
+                  <FlatButton type="submit" label="Sisään">
+                  </FlatButton>
+                </div>
               </div>
               <div>
-                <a href="/login/recovery">
-                  Salasana unohtunut!
-                </a>
               </div>
             </form>
           </div>

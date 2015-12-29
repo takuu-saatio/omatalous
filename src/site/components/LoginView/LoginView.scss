@@ -18,7 +18,6 @@
 .container {
   
   margin: 0 auto;
-  padding-top: 40px;
   max-width: $max-content-width;
   
   p {
@@ -28,10 +27,25 @@
 
 }
 
+.description {
+  width: 90%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.renewForm {
+  width: 100%;
+  text-align: center;
+}
+
 .extLogin {
   
-  width: 80%;
-  max-width: 320px;
+  width: 90%;
+  max-width: 420px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 20px;
@@ -61,7 +75,7 @@
       .fbText {
         flex-grow: 1;
         text-align: center;
-        padding-top: 8px;
+        padding-top: 10px;
       }
 
     }
@@ -94,7 +108,7 @@
         color: #DC4E41;
         flex-grow: 1;
         text-align: center;
-        padding-top: 8px;
+        padding-top: 10px;
       }
 
     }
@@ -105,9 +119,8 @@
 
 .pwdLogin {
   
-  width: 80%;
-  min-width: 320px;
-  max-width: 320px;
+  width: 90%;
+  max-width: 420px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 12px;
@@ -118,8 +131,7 @@
     width: 96%;
     margin-left: 8px;
     margin-top: 4px;
-    margin-bottom: 8px;
-    font-weight: bold;
+    margin-bottom: 4px;
 
   }
 
@@ -137,18 +149,42 @@
     }
 
     .formInput {
+      
       width: 100%;
+      position: relative;
+      
+      a {
+        text-decoration: none;
+        color: black;
+      }
+
     }
   
   }
 
   .formSubmit {
-    width: 85%;
-    text-align: right;
+    
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     margin-top: 4px;
     margin-bottom: 8px;
+    display: flex;
+    
+    .recoveryLink {
+      flex: 0 1 auto;
+      display: flex;
+      align-items: center;
+      padding-left: 6px;
+    }
+
+    .submitButton {
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: flex-end;
+      padding-left: 4px;
+    }    
+
   }
 
 }

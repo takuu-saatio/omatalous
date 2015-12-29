@@ -1,9 +1,12 @@
 import React, { Component, PropTypes } from "react";
+import s from "./HomeView.scss";
+import withStyles from "../../decorators/withStyles";
 import BaseComponent from "../BaseComponent";
 import Header from "../Header";
 import Feedback from "../Feedback";
 import Footer from "../Footer";
 
+@withStyles(s)
 class HomeView extends BaseComponent {
   
   static contextTypes = {
@@ -21,8 +24,8 @@ class HomeView extends BaseComponent {
     const { doTest } = this.props;
     
     return (
-      <div>
-        <div>
+      <div className={s.root}>
+        <div className={s.content}>
           <h1>Tulot</h1>
           <p>123456</p>
           <h1>Menot</h1>
@@ -37,8 +40,13 @@ class HomeView extends BaseComponent {
 
   _renderUnauthenticated() {
     return (
-      <div>
-        <div>
+      <div className={s.root}>
+        <div className={s.banner}>
+          <h1>Takuu-Säätio</h1>
+          <h3>Omatalous</h3>
+          <p>Työkalu säästämiseen</p>
+        </div>
+        <div className={s.content}>
           <h1>Aloita säästäminen!</h1>
           <p>
             Omatalous-sovellus auttaa sinua hallitsemaan talouttasi paremmin!

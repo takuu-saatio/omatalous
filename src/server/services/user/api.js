@@ -60,8 +60,8 @@ export function registerRoutes(app) {
       
       const userService = app.services.user;
     
-      await userService.saveUser(user);
-      res.json({ status: "ok" });
+      let result = await userService.saveUser(user);
+      res.json({ status: "ok", pwdChanged: result.pwdChanged });
 
     } catch (err) {
       next(err);

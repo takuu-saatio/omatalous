@@ -9,27 +9,64 @@ $brand-color: #61dafb;
 
 .container {
   margin: 0 auto;
-  padding: 20px 0;
   max-width: $max-content-width;
+  position: relative;
+  display: flex;
 }
 
-.brand {
-  color: color($brand-color lightness(+10%));
-  text-decoration: none;
-  font-size: 1.75em; /* ~28px */
+.logo {
+  
+  padding: 6px; 
+  flex: 1 1 auto;
+
+  @media (max-width: 660px) {
+    text-align: center;
+  }
+
+  .brand {
+    color: color($brand-color lightness(+10%));
+    text-decoration: none;
+    font-size: 1.75em; /* ~28px */
+    img {
+      margin-top: -5px;
+    }
+  }
+
+  .brandTxt {
+    margin-left: 10px;
+  }
+
 }
 
-.brandTxt {
-  margin-left: 10px;
+.navFull {
+  flex: 0 1 auto;
 }
 
-.nav {
-  float: right;
+.navMin {
+  
   margin-top: 6px;
+  margin-left: 6px;
+  
+  flex: 0 1 auto;
+  
+  i {
+    font-size: 36px;
+  }
+  
+  @media (min-width: 661px) {
+    display: none;
+  }
+
 }
 
 .banner {
+  
   text-align: center;
+  
+  @media (max-width: 660px) {
+    display: none;
+  }
+
 }
 
 .bannerTitle {
@@ -46,3 +83,4 @@ $brand-color: #61dafb;
   font-size: 1.25em;
   margin: 0;
 }
+

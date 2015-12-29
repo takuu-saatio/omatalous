@@ -45,6 +45,7 @@ export default new Router(on => {
   
   });
 
+  on("/", () => <HomeContainer />);
   on("/test", () => <TestContainer />);
   on("/home", () => <HomeContainer />);
   on("/login/recovery", () => <LoginRecoveryContainer />);

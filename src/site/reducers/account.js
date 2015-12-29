@@ -13,7 +13,7 @@ export default function (state = {}, action) {
     case actions.FETCH_SUCCESS:
       return { account: action.account, isUpdated: true };
     case actions.SAVE_SUCCESS:
-      return { messages: { editStatus: "saved" } }
+      return { messages: { editStatus: "saved" }, pwdSaved: action.pwdChanged };
     case actions.DELETE_SUCCESS:
       return { status: "deleted" };
     case actions.SAVE_FAIL:

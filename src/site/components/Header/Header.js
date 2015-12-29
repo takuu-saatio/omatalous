@@ -3,8 +3,8 @@
 import React, { Component } from "react";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
-import s from "./Header.scss";
 import withStyles from "../../decorators/withStyles";
+import s from "./Header.scss";
 import AppBar from "material-ui/lib/app-bar";
 import IconButton from "material-ui/lib/icon-button";
 import NavigationClose from "material-ui/lib/svg-icons/navigation/close";
@@ -26,15 +26,16 @@ class Header extends Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <Navigation auth={this.props.auth} className={s.nav} />
-          <a className={s.brand} href="/" onClick={Link.handleClick}>
-            <img src={require("./logo-small.png")} width="38" height="38" alt="React" />
-            <span className={s.brandTxt}>Takuu-Säätiö</span>
-          </a>
-          <div className={s.banner}>
-            <h1 className={s.bannerTitle}>Oma Talous</h1>
-            <p className={s.bannerDesc}>Työkalu taloudenhallintaan</p>
+          <div className={s.navMin}>
+            <i className="material-icons">&#xE5D2;</i>
           </div>
+          <div className={s.logo}>
+            <a className={s.brand} href="/" onClick={Link.handleClick}>
+              <img src={require("./logo-small.png")} width="38" height="38" alt="React" />
+              <span className={s.brandTxt}>Omatalous</span>
+            </a>
+          </div>
+          <Navigation auth={this.props.auth} selection={this.props.selection} className={s.navFull} />
         </div>
       </div>
     );
