@@ -19,8 +19,15 @@
   }
 
   .buttonItem {
+  
     padding-top: 6px;
     margin-right: 6px;
+    
+    @media(max-width: 350px) {
+      min-width: initial;
+      max-width: 75px;
+    }
+  
   }
 
 }
