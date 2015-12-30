@@ -22,12 +22,15 @@
   
     padding-top: 6px;
     margin-right: 6px;
+     
+  }
+
+  .logoutItem {
     
-    @media(max-width: 350px) {
-      min-width: initial;
-      max-width: 75px;
+    @media(max-width: 660px) {
+      display: none;
     }
-  
+
   }
 
 }

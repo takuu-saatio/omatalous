@@ -40,13 +40,13 @@ class Navigation extends Component {
       accountElem = (
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
           <a className={s.link} href="/account" onClick={Link.handleClick}>
-            <i className="material-icons">&#xE87C;</i>
+            <i className="material-icons">&#xE853;</i>
           </a>
         </div>
       );
-
+      
       loginElem = (
-        <div className={cx(s.navItem, s.buttonItem)}>
+        <div className={cx(s.navItem, s.buttonItem, s.logoutItem)}>
           <a className={s.link} style={{ verticalAlign: "top" }} href="/logout">
             <FlatButton label={this.getIntlMessage("logout")} labelStyle={{ color: "white" }} />
           </a>

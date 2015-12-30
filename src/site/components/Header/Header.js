@@ -3,10 +3,11 @@
 import React, { Component } from "react";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
+import cx from "classnames";
 import withStyles from "../../decorators/withStyles";
 import s from "./Header.scss";
 import AppBar from "material-ui/lib/app-bar";
-import LeftNav from "material-ui/lib/left-nav";
+import Menu from "material-ui/lib/menus/menu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import IconButton from "material-ui/lib/icon-button";
 import NavigationClose from "material-ui/lib/svg-icons/navigation/close";
@@ -36,19 +37,59 @@ class Header extends Component {
     window.location.href = "/account";
   }
   
+  _gotoAdminView() {
+    window.location.href = "/admin";
+  }
+
   _logOut() {
     window.location.href = "/logout";
   }
 
   render() {
     
+    const { auth } = this.props;
+     
+    const fadeBgCss = {
+      opacity: this.state.navOpen ? "0.5" : "0",
+      left: this.state.navOpen ? "0px" : "-100%",
+    };
+ 
+    const leftNavCss = {
+      left: this.state.navOpen ? "0px" : "-200px",
+    };
+    
+    let leftNavIcon = null;
+    let adminNavItem = null;
+    let logoStyles = s.logo;
+    
+    if (auth && auth.user) {
+      
+      logoStyles = cx(s.logo, s.loggedIn);
+         
+      leftNavIcon = (
+        <div className={s.navMin}>
+          <i className="material-icons" onTouchTap={() => this._handleToggle()}>&#xE5D2;</i>
+        </div>
+      );
+      
+      if (auth.user.email === "vhalme@gmail.com") {
+        adminNavItem = (
+          <MenuItem onTouchTap={this._gotoAdminView}>
+            <div className={s.menuItem}>
+              <i className="material-icons">&#xE8D3;</i>
+              <span>Hallinta</span>
+            </div>
+          </MenuItem> 
+        );
+      }
+      
+    }
+     
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <div className={s.navMin}>
-            <i className="material-icons" onTouchTap={() => this._handleToggle()}>&#xE5D2;</i>
-          </div>
-          <div className={s.logo}>
+          {leftNavIcon}
+          <div className={logoStyles}>
             <a className={s.brand} href="/" onClick={Link.handleClick}>
               <img src={require("./logo-small.png")} width="38" height="38" alt="React" />
               <span className={s.brandTxt}>Omatalous</span>
@@ -56,13 +97,17 @@ class Header extends Component {
           </div>
           <Navigation auth={this.props.auth} selection={this.props.selection} className={s.navFull} />
         </div>
-        <LeftNav open={this.state.navOpen}
-          docked={false}
-          width={200}
-          onRequestChange={(open) => this.setState({ navOpen: open })}>
-          <MenuItem onTouchTap={this._gotoAccountView}>Tili</MenuItem>
-          <MenuItem onTouchTap={this._logOut}>Ulos</MenuItem>
-        </LeftNav>
+        <div className={s.fadeBg} style={fadeBgCss} onTouchTap={this._handleClose}></div>
+        <div className={s.leftNav} style={leftNavCss}>
+          <MenuItem onTouchTap={this._gotoAccountView}>
+            <div className={s.menuItem}>
+              <i className="material-icons">&#xE853;</i>
+              <span>Tili</span>
+            </div>
+          </MenuItem>
+          {adminNavItem}
+          <MenuItem primaryText="Ulos" onTouchTap={this._logOut} />
+        </div>
       </div>
     );
   }
