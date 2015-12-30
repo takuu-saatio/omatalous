@@ -6,13 +6,13 @@ import ReactIntl from "react-intl";
 import cx from "classnames";
 import withStyles from "../../decorators/withStyles";
 import s from "./Header.scss";
-import AppBar from "material-ui/lib/app-bar";
 import Menu from "material-ui/lib/menus/menu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import IconButton from "material-ui/lib/icon-button";
 import NavigationClose from "material-ui/lib/svg-icons/navigation/close";
 import FlatButton from "material-ui/lib/flat-button";
 import Link from "../Link";
+import Location from "../../../core/Location";
 import Navigation from "../Navigation";
 
 import BaseComponent from "../BaseComponent";
@@ -30,17 +30,14 @@ class Header extends Component {
     };
   }
 
-  _handleToggle = () => this.setState({ navOpen: !this.state.navOpen });
-  _handleClose = () => this.setState({ navOpen: false });
-  
-  _gotoAccountView() {
-    window.location.href = "/account";
+  _toggleLeftNav() {
+    this.setState({ navOpen: !this.state.navOpen });
   }
   
-  _gotoAdminView() {
-    window.location.href = "/admin";
+  _closeLeftNav() {
+    this.setState({ navOpen: false });
   }
-
+  
   _logOut() {
     window.location.href = "/logout";
   }
@@ -68,13 +65,13 @@ class Header extends Component {
          
       leftNavIcon = (
         <div className={s.navMin}>
-          <i className="material-icons" onTouchTap={() => this._handleToggle()}>&#xE5D2;</i>
+          <i className="material-icons" onTouchTap={() => this._toggleLeftNav()}>&#xE5D2;</i>
         </div>
       );
       
       if (auth.user.email === "vhalme@gmail.com") {
         adminNavItem = (
-          <MenuItem onTouchTap={this._gotoAdminView}>
+          <MenuItem onTouchTap={() => Location.go("/admin")}>
             <div className={s.menuItem}>
               <i className="material-icons">&#xE8D3;</i>
               <span>Hallinta</span>
@@ -97,9 +94,9 @@ class Header extends Component {
           </div>
           <Navigation auth={this.props.auth} selection={this.props.selection} className={s.navFull} />
         </div>
-        <div className={s.fadeBg} style={fadeBgCss} onTouchTap={this._handleClose}></div>
+        <div className={s.fadeBg} style={fadeBgCss} onTouchTap={() => this._closeLeftNav()}></div>
         <div className={s.leftNav} style={leftNavCss}>
-          <MenuItem onTouchTap={this._gotoAccountView}>
+          <MenuItem onTouchTap={() => Location.go("/account")}>
             <div className={s.menuItem}>
               <i className="material-icons">&#xE853;</i>
               <span>Tili</span>

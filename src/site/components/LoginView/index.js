@@ -129,7 +129,8 @@ class LoginPage extends BaseComponent {
     const showPwdCss = {
       position: "absolute",
       right: "0px",
-      top: "40px"
+      top: "40px",
+      cursor: "pointer"
     };
 
     return (
@@ -183,9 +184,9 @@ class LoginPage extends BaseComponent {
                     floatingLabelText="Salasana"
                     value={loginParams.password}
                     onChange={this.handleInputChange.bind(this)} /> 
-                  <a href="#" onClick={() => this._togglePassword()} style={showPwdCss}>
+                  <div onClick={() => this._togglePassword()} style={showPwdCss}>
                     <i className="material-icons">&#xE8F5;</i>
-                  </a>
+                  </div>
                 </div>
               </div>
               <div className={s.formSubmit}>  
