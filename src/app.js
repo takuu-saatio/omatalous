@@ -65,7 +65,8 @@ function run() {
 
   // Make taps on links and buttons work fast on mobiles
   FastClick.attach(document.body);
-
+  
+  /*
   // Re-render the app when window.location changes
   const unlisten = Location.listen(location => {
     
@@ -80,6 +81,7 @@ function run() {
     render(currentState);
   
   });
+  */
 
   // Save the page scroll position into the current location"s state
   const supportPageOffset = window.pageXOffset !== undefined;
