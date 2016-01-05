@@ -4,9 +4,6 @@ import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
 import BaseComponent from "../BaseComponent";
-import Header from "../Header";
-import Feedback from "../Feedback";
-import Footer from "../Footer";
 
 @withStyles(s)
 class AccountView extends BaseComponent {
@@ -160,7 +157,6 @@ class AccountView extends BaseComponent {
 
     return (
       <div>
-        <Header auth={this.state.auth} />
         {formError}
         <div className={s.root}>
           <div className={s.profile}>
@@ -236,8 +232,6 @@ class AccountView extends BaseComponent {
             <FlatButton style={deleteButtonCss} onClick={() => this._deleteAccount()} label="POISTA TILI" />
           </div>
         </div>
-        <Feedback />
-        <Footer />
       </div>
     );
   }

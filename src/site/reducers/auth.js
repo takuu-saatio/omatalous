@@ -7,7 +7,7 @@ export default function (state = {}, action) {
   state = Object.assign({}, state);
   state.error = null;
   
-  console.log("action", action);
+  //console.log("action", action);
   switch (action.type) {
     case actions.LOGIN_SUCCESS:
       return { user: action.user };

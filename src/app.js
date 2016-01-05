@@ -1,3 +1,5 @@
+"use strict";
+
 import "babel-core/polyfill";
 import ReactDOM from "react-dom";
 import FastClick from "fastclick";
@@ -7,13 +9,14 @@ import { addEventListener, removeEventListener } from "./core/DOMUtils";
 
 let cssContainer = document.getElementById("css");
 const appContainer = document.getElementById("app");
+let firstLoad = true;
 
 const context = {
-  
+
   insertCss: styles => styles._insertCss(),
   onSetTitle: value => document.title = value,
   onSetMeta: (name, content) => {
-    
+
     // Remove and create a new <meta /> tag in order to make it work
     // with bookmarks in Safari
     const elements = document.getElementsByTagName("meta");
@@ -22,22 +25,23 @@ const context = {
         element.parentNode.removeChild(element);
       }
     });
-    
+
     const meta = document.createElement("meta");
     meta.setAttribute("name", name);
     meta.setAttribute("content", content);
     document.getElementsByTagName("head")[0].appendChild(meta);
-  
+
   }
 
 };
 
 function render(state) {
-  
+
   Router.dispatch(state, (newState, component) => {
-    
+
+    //console.log("dispatching, reload=", component, newState);
     ReactDOM.render(component, appContainer, () => {
-      
+
       // Restore the scroll position if it was saved into the state
       if (state.scrollY !== undefined) {
         window.scrollTo(state.scrollX, state.scrollY);
@@ -59,16 +63,17 @@ function render(state) {
 }
 
 function run() {
-  
+
   let currentLocation = null;
   let currentState = null;
 
   // Make taps on links and buttons work fast on mobiles
   FastClick.attach(document.body);
-  
+
   // Re-render the app when window.location changes
   const unlisten = Location.listen(location => {
-    
+
+    //console.log("rerender", location);
     currentLocation = location;
     currentState = Object.assign({}, location.state, {
       path: location.pathname,
@@ -76,9 +81,12 @@ function run() {
       state: location.state,
       context,
     });
-    
-    render(currentState);
-  
+
+    if (firstLoad) {
+      render(currentState);
+      firstLoad = false;
+    }
+
   });
 
   // Save the page scroll position into the current location"s state

@@ -5,9 +5,6 @@ import s from "./AdminView.scss";
 import withStyles from "../../decorators/withStyles";
 import Link from "../Link";
 import BaseComponent from "../BaseComponent";
-import Header from "../Header";
-import Feedback from "../Feedback";
-import Footer from "../Footer";
 
 @withStyles(s)
 class AdminView extends BaseComponent {
@@ -62,7 +59,6 @@ class AdminView extends BaseComponent {
 
     return (
       <div>
-        <Header auth={this.state.auth} />
         <div className={s.root}>
           <div className={s.content}>
             {errorElem}
@@ -79,8 +75,6 @@ class AdminView extends BaseComponent {
             </div>
           </div>
         </div>
-        <Feedback />
-        <Footer />
       </div>
     );
   }

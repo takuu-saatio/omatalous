@@ -21,13 +21,13 @@ const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
 @withStyles(s)
-class Header extends Component {
+class Header extends BaseComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = Object.assign(props.state || {}, {
       navOpen: false
-    };
+    });
   }
 
   _toggleLeftNav() {
@@ -41,10 +41,16 @@ class Header extends Component {
   _logOut() {
     window.location.href = "/logout";
   }
-
+  
+  _menuGo(path) {
+    this.state.navOpen = false;
+    Location.go(path);
+  }
+  
   render() {
     
-    const { auth } = this.props;
+    console.log("HEADER", this.state, this.props); 
+    const { auth } = this.state;
      
     const fadeBgCss = {
       opacity: this.state.navOpen ? "0.5" : "0",
@@ -71,7 +77,7 @@ class Header extends Component {
       
       if (auth.user.email === "vhalme@gmail.com") {
         adminNavItem = (
-          <MenuItem onTouchTap={() => Location.go("/admin")}>
+          <MenuItem onTouchTap={() => this._menuGo("/admin")}>
             <div className={s.menuItem}>
               <i className="material-icons">&#xE8D3;</i>
               <span>Hallinta</span>
@@ -92,11 +98,11 @@ class Header extends Component {
               <span className={s.brandTxt}>Omatalous</span>
             </a>
           </div>
-          <Navigation auth={this.props.auth} selection={this.props.selection} className={s.navFull} />
+          <Navigation auth={auth} path={this.state.routing.path} className={s.navFull} />
         </div>
         <div className={s.fadeBg} style={fadeBgCss} onTouchTap={() => this._closeLeftNav()}></div>
         <div className={s.leftNav} style={leftNavCss}>
-          <MenuItem onTouchTap={() => Location.go("/account")}>
+          <MenuItem onTouchTap={() => this._menuGo("/account")}>
             <div className={s.menuItem}>
               <i className="material-icons">&#xE853;</i>
               <span>Tili</span>

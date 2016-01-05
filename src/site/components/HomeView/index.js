@@ -2,9 +2,6 @@ import React, { Component, PropTypes } from "react";
 import s from "./HomeView.scss";
 import withStyles from "../../decorators/withStyles";
 import BaseComponent from "../BaseComponent";
-import Header from "../Header";
-import Feedback from "../Feedback";
-import Footer from "../Footer";
 
 @withStyles(s)
 class HomeView extends BaseComponent {
@@ -67,10 +64,7 @@ class HomeView extends BaseComponent {
    
     return (
       <div>
-        <Header auth={auth}/>
         {content}
-        <Feedback />
-        <Footer />
       </div>
     );
 

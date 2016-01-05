@@ -8,7 +8,7 @@ export default function (state = {}, action) {
   state.error = null;
   state.messages = null;
   
-  console.log("action", action);
+  //console.log("action", action);
   switch (action.type) {
     case actions.FETCH_SUCCESS:
       return { account: action.account, isUpdated: true };

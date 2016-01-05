@@ -7,9 +7,6 @@ import FlatButton from "material-ui/lib/flat-button";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import BaseComponent from "../BaseComponent";
-import Header from "../Header";
-import Feedback from "../Feedback";
-import Footer from "../Footer";
 
 const title = "Log In";
 
@@ -81,14 +78,13 @@ class LoginPage extends BaseComponent {
     const { register, logIn, test } = this.props;
      
     let errorElem = this.state.error ? this.createErrorElem(this.state.error) : null;
-    console.log("login page", this.state, s);
+    console.log("login page", this.state, this.props);
     
     let loginForm = this.state.token ? 
       this._renderTokenLoginForm() : this._renderLoginForm();
 
     return (
       <div>
-        <Header auth={this.state.auth} selection="login" />
         <div className={s.root}>
           {errorElem}
           <div className={s.container}>
@@ -96,8 +92,7 @@ class LoginPage extends BaseComponent {
           </div>
         </div>
         <button onClick={() => test()}>Test</button>
-        <Feedback />
-        <Footer />
+        <a href="#" onClick={() => {this.props.go("/home")}}>TEST</a>
       </div>
     );
   }

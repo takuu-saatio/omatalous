@@ -55,7 +55,7 @@ class Navigation extends Component {
 
     } else {
       
-      loginElem = this.props.selection !== "login" ? (
+      loginElem = this.props.path !== "/login" ? (
         <div className={cx(s.navItem, s.buttonItem)}>
           <a className={s.link} href="/login" onClick={Link.handleClick}>
             <FlatButton label={this.getIntlMessage("login")} labelStyle={{ color: "white" }} />

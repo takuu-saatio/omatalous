@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from "react";
 import BaseComponent from "../BaseComponent";
-import Header from "../Header";
-import Feedback from "../Feedback";
-import Footer from "../Footer";
 
 class Test extends BaseComponent {
   
@@ -25,11 +22,8 @@ class Test extends BaseComponent {
     return (
       <div>
         <div>
-          <Header />
-          <h1>{this.state.testVal}</h1>
+          <h1>Testing</h1>
           <button onClick={() => doTest()}>Test</button>
-          <Feedback />
-          <Footer />
         </div>
       </div>
     );

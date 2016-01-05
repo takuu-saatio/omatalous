@@ -1,38 +1,21 @@
 import React from "react";
 import Router from "react-routing/src/Router";
 import http from "../core/HttpClient";
-import container from "./container";
 
 import App from "./components/App";
 
-import HomeView from "./components/HomeView";
-import * as HomeActions from "./actions/home";
-
-import LoginView from "./components/LoginView";
-import * as LoginActions from "./actions/login";
-import LoginRecoveryView from "./components/LoginRecoveryView";
-import * as LoginRecoveryActions from "./actions/recovery";
-import AccountView from "./components/AccountView";
-import * as AccountActions from "./actions/account";
-import AdminView from "./components/AdminView";
-import * as AdminActions from "./actions/admin";
-
-import * as AuthActions from "./actions/auth";
-
-import TestView from "./components/Test/Test";
-import * as TestActions from "./actions/test";
-
-import ContentView from "./components/ContentPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ErrorPage from "./components/ErrorPage";
 
-const TestContainer = container(TestView, TestActions, "test");
-const HomeContainer = container(HomeView, HomeActions, "home");
-const LoginContainer = container(LoginView, AuthActions, "login");
-const LoginRecoveryContainer = container(LoginRecoveryView, LoginRecoveryActions, "recovery");
-const AccountContainer = container(AccountView, AccountActions, "account");
-const ContentContainer = container(ContentView, {}, "content");
-const AdminContainer = container(AdminView, AdminActions, "admin");
+import {
+  HomeContainer,
+  TestContainer,
+  LoginContainer,
+  LoginRecoveryContainer,
+  AccountContainer,
+  AdminContainer,
+  ContentContainer
+} from "./containers";
 
 export default new Router(on => {
   
@@ -40,7 +23,7 @@ export default new Router(on => {
     
     const component = await next();
     let intlData = state.context.intlData;
-    console.log("intl data", intlData);
+    console.log("intl data", intlData, component);
     return component && <App context={state.context} {...intlData}>{component}</App>;
   
   });

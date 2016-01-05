@@ -6,7 +6,7 @@ export default function (state = {}, action) {
   
   state = {};
 
-  console.log("action", action);
+  //console.log("action", action);
   switch (action.type) {
     case actions.RECOVERY_SUCCESS:
       return { status: "email_sent" };

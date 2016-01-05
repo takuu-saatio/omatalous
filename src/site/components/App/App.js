@@ -1,6 +1,8 @@
 "use strict";
 
 import React, { Component, PropTypes } from "react";
+import { Router, Route } from "react-router";
+import { syncReduxAndRouter } from "redux-simple-router";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import emptyFunction from "fbjs/lib/emptyFunction";
@@ -12,16 +14,55 @@ import Footer from "../Footer";
 import { render } from "react-dom"
 import { Provider } from "react-redux"
 import configureStore from "../../configureStore"
+import container from "../../container";
+import Location from "../../../core/Location";
+import HomeView from "../HomeView";
+import LoginView from "../LoginView";
+import TestView from "../Test/Test";
+import { canUseDOM } from "fbjs/lib/ExecutionEnvironment";
+
+import {
+  HomeContainer,
+  TestContainer,
+  LoginContainer,
+  LoginRecoveryContainer,
+  AccountContainer,
+  AdminContainer,
+  ContentContainer
+} from "../../containers";
 
 @reactMixin.decorate(ReactIntl.IntlMixin)
 class Content extends Component {
-  
+   
   render() {  
+  
+    console.log("RERENDER CONTENT", canUseDOM, this.props); 
+    const HeaderContainer = container(Header, {});
+
+    let router = (
+      <Router history={Location}>
+        <Route path="/" component={HomeContainer} />
+        <Route path="/home" component={HomeContainer} />
+        <Route path="/login" component={LoginContainer} />
+        <Route path="/admin" component={AdminContainer} />
+        <Route path="/account" component={AccountContainer} />
+        <Route path="/account/:uuid" component={AccountContainer} />
+      </Router>
+    );
+
+    if (!canUseDOM) {
+      router = this.props.children;
+    }
+
     return (
       <div>
-        {this.props.children}
+        <HeaderContainer />
+        {router}
+        <Feedback />
+        <Footer />
       </div>
     );
+
   }
 
 }
@@ -33,6 +74,7 @@ class App extends Component {
     let initialState = props.context.initialState || window.__INITIAL_STATE__; 
     this.intlData = props.context.intlData || window.__INTL_DATA__;
     this.store = configureStore(initialState);
+    syncReduxAndRouter(Location, this.store);
   }
   
   static propTypes = {
@@ -78,10 +120,12 @@ class App extends Component {
 
   render() {
     
+    const state = this.store.getState();
+    console.log("render state", state); 
     return !this.props.error ? ( 
       <div>
         <Provider store={this.store}>
-          <Content {...this.intlData}>
+          <Content routed={state.routed} {...this.intlData}>    
             {this.props.children}
           </Content>
         </Provider> 
