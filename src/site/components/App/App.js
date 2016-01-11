@@ -16,9 +16,6 @@ import { Provider } from "react-redux"
 import configureStore from "../../configureStore"
 import container from "../../container";
 import Location from "../../../core/Location";
-import HomeView from "../HomeView";
-import LoginView from "../LoginView";
-import TestView from "../Test/Test";
 import { canUseDOM } from "fbjs/lib/ExecutionEnvironment";
 
 import {
@@ -28,7 +25,8 @@ import {
   LoginRecoveryContainer,
   AccountContainer,
   AdminContainer,
-  ContentContainer
+  ContentContainer,
+  TransactionsContainer
 } from "../../containers";
 
 @reactMixin.decorate(ReactIntl.IntlMixin)
@@ -44,9 +42,14 @@ class Content extends Component {
         <Route path="/" component={HomeContainer} />
         <Route path="/home" component={HomeContainer} />
         <Route path="/login" component={LoginContainer} />
+        <Route path="/login/recovery" component={LoginRecoveryContainer} />
+        <Route path="/login/:token" component={LoginContainer} />
         <Route path="/admin" component={AdminContainer} />
         <Route path="/account" component={AccountContainer} />
         <Route path="/account/:uuid" component={AccountContainer} />
+        <Route path="/transactions" component={TransactionsContainer} />
+        <Route path="/transactions/:user" component={TransactionsContainer} />
+        <Route path="*" component={ContentContainer} />
       </Router>
     );
 
@@ -74,7 +77,9 @@ class App extends Component {
     let initialState = props.context.initialState || window.__INITIAL_STATE__; 
     this.intlData = props.context.intlData || window.__INTL_DATA__;
     this.store = configureStore(initialState);
-    syncReduxAndRouter(Location, this.store);
+    if (canUseDOM) {
+      syncReduxAndRouter(Location, this.store);
+    }
   }
   
   static propTypes = {
@@ -125,7 +130,7 @@ class App extends Component {
     return !this.props.error ? ( 
       <div>
         <Provider store={this.store}>
-          <Content routed={state.routed} {...this.intlData}>    
+          <Content {...this.intlData}>    
             {this.props.children}
           </Content>
         </Provider> 

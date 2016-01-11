@@ -9,7 +9,7 @@ class BaseEntity {
     this.classMethods = {};
     this.instanceMethods = {};
     this.fields = {
-      uuid: { type: Sequelize.STRING },
+      uuid: { type: Sequelize.STRING, unique: true },
       deleted: { type: Sequelize.BOOLEAN }
     };
     this.hiddenFields = ["id", "deleted", "createdAt", "updatedAt"];

@@ -20,6 +20,7 @@ import SchemaLoader from "./server/schema/SchemaLoader";
 
 import { LocalAuthServiceInterface } from "./services/auth";
 import { LocalUserServiceInterface } from "./services/user";
+import { LocalFinanceServiceInterface } from "./services/finance";
 import { HttpCommonServiceInterface } from "./services/common";
 
 const app = global.app = express();
@@ -40,7 +41,8 @@ app.sequelize = new Sequelize("omatalous", dbUser, dbPassword, {
 
 app.schemaLoader = new SchemaLoader(app.sequelize);
 app.entities = {
-  User: app.schemaLoader.loadSchema("User")
+  User: app.schemaLoader.loadSchema("User"),
+  Transaction: app.schemaLoader.loadSchema("Transaction")
 };
 
 const passport = require("passport");
@@ -62,6 +64,9 @@ app.services = {
     provideService: true, provideRoutes: true 
   }),
   user: new LocalUserServiceInterface(app, { 
+    provideService: true, provideRoutes: true 
+  }),
+  finance: new LocalFinanceServiceInterface(app, { 
     provideService: true, provideRoutes: true 
   }),
   common: new HttpCommonServiceInterface(app, { provideRoutes: true })

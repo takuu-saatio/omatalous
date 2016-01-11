@@ -51,6 +51,32 @@ export function registerRoutes(app) {
 
   });
   
+  app.get("/transactions/:user?", requireAuth, async (req, res, next) => {
+    
+    try {
+      
+      const financeService = app.services.finance;
+
+      const user = req.params.user || req.user.uuid;
+      if (user !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
+        return res.redirect("/denied");
+      }
+
+      let transactions = await financeService.getTransactions(user);
+      transactions = transactions.map(transaction => transaction.json());
+      const state = Object.assign({ 
+        transactions: { transactions, iso: true }
+      }, req.context.common);
+      
+      req.context.initialState = Object.assign(req.context.initialState, state);
+      app.renderPage(req, res);
+
+    } catch (err) {
+      next(err);
+    }
+
+  });
+  
   app.get("/admin", requireAuth, async (req, res, next) => {
 
     try {
@@ -128,20 +154,26 @@ export function registerRoutes(app) {
     res.redirect("/home");
   });
 
+  app.get("/login/recovery", (req, res, next) => {
+    const recoveryState = Object.assign({}, req.context.common);
+    req.context.initialState = Object.assign(req.context.initialState, { 
+      recovery: recoveryState, 
+      routing: { path: "/login/recovery" } 
+    });
+    app.renderPage(req, res);
+  });
+
   app.get("/login/:token?", (req, res, next) => {
     
     const loginState = Object.assign({}, req.context.common);
     loginState.token = req.params.token;
      
-    req.context.initialState = Object.assign(req.context.initialState, { login: loginState });
+    req.context.initialState = Object.assign(req.context.initialState, { 
+      login: loginState,
+      routing: { path: "/login" } 
+    });
     app.renderPage(req, res);
   
-  });
-  
-  app.get("/login/recovery", (req, res, next) => {
-    const recoveryState = Object.assign({}, req.context.common);
-    req.context.initialState = Object.assign(req.context.initialState, { recovery: recoveryState });
-    app.renderPage(req, res);
   });
 
   app.get(/^(\/(?!_))(?!api\/?)/i, async (req, res, next) => {

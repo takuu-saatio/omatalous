@@ -14,7 +14,8 @@ import {
   LoginRecoveryContainer,
   AccountContainer,
   AdminContainer,
-  ContentContainer
+  ContentContainer,
+  TransactionsContainer
 } from "./containers";
 
 export default new Router(on => {
@@ -23,7 +24,7 @@ export default new Router(on => {
     
     const component = await next();
     let intlData = state.context.intlData;
-    console.log("intl data", intlData, component);
+    console.log("intl data", intlData, state);
     return component && <App context={state.context} {...intlData}>{component}</App>;
   
   });
@@ -34,6 +35,7 @@ export default new Router(on => {
   on("/login/recovery", () => <LoginRecoveryContainer />);
   on("/login/:token?", () => <LoginContainer />);
   on("/account/:uuid?", (state) => <AccountContainer params={state.params} />);
+  on("/transactions/:user?", (state) => <TransactionsContainer params={state.params} />);
   on("/admin", () => <AdminContainer />);
   on("/denied", (state) => {
     return <ContentContainer path={state.path} />

@@ -11,6 +11,8 @@ import LoginRecoveryView from "./components/LoginRecoveryView";
 import * as LoginRecoveryActions from "./actions/recovery";
 import AccountView from "./components/AccountView";
 import * as AccountActions from "./actions/account";
+import TransactionsView from "./components/TransactionsView";
+import * as TransactionsActions from "./actions/transactions";
 import AdminView from "./components/AdminView";
 import * as AdminActions from "./actions/admin";
 
@@ -26,5 +28,6 @@ export const HomeContainer = container(HomeView, HomeActions, "home");
 export const LoginContainer = container(LoginView, AuthActions, "login");
 export const LoginRecoveryContainer = container(LoginRecoveryView, LoginRecoveryActions, "recovery");
 export const AccountContainer = container(AccountView, AccountActions, "account");
+export const TransactionsContainer = container(TransactionsView, TransactionsActions, "transactions");
 export const ContentContainer = container(ContentView, {}, "content");
 export const AdminContainer = container(AdminView, AdminActions, "admin");

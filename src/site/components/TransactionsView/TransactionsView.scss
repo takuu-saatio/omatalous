@@ -1,0 +1,29 @@
+@import "../variables.scss";
+
+.root {
+  margin-bottom: 24px;  
+}
+
+
+.saveTransaction {
+}
+
+.transactions {
+   
+  width: 100%;
+  display: flex;
+
+  .income {
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+  
+  .expenses {
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+  
+  .transactionsList {
+  }
+
+}

@@ -6,6 +6,7 @@ import home from "./home";
 import login from "./login";
 import recovery from "./recovery";
 import account from "./account";
+import transactions from "./transactions";
 import content from "./content";
 import admin from "./admin";
 
@@ -28,6 +29,7 @@ export default function(reducers) {
     login,
     recovery,
     account,
+    transactions,
     content,
     admin
   });

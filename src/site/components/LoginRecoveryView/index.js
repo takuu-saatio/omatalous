@@ -4,9 +4,6 @@ import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
 import BaseComponent from "../BaseComponent";
-import Header from "../Header";
-import Feedback from "../Feedback";
-import Footer from "../Footer";
 
 @withStyles(s)
 class LoginRecovery extends BaseComponent {
@@ -71,12 +68,9 @@ class LoginRecovery extends BaseComponent {
 
     return (
       <div>
-        <Header />
-          <div className={s.root}>
-            {viewContent}
-          </div>
-        <Feedback />
-        <Footer />
+        <div className={s.root}>
+          {viewContent}
+        </div>
       </div>
     );
   }
