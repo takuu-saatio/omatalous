@@ -6,6 +6,34 @@
 
 
 .saveTransaction {
+  
+  width: 100%;
+  display: flex;
+
+  .amount {
+    flex: 1 1 0;
+    padding-left: 6px;
+  }
+  
+  .description {
+    flex: 1 1 0;
+    padding-left: 12px;
+  }
+
+  .category {
+    flex: 1 1 0;
+    padding-left: 12px;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 8px;
+  }
+
+  .submit {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 8px;
+  }
+
 }
 
 .transactions {

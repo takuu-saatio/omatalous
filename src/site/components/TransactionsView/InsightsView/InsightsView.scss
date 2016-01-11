@@ -1,0 +1,23 @@
+.insightContainer {
+
+  .circleContainer {
+    
+    width: 200px;
+    height: 200px;
+    position: relative;
+    
+    .circle {
+  
+      border-radius: 100%;
+      text-align: center;
+      display: block;
+      height: 0;
+      width: 100%;
+      padding: 50% 0;
+      background: lightgrey;
+   
+    }
+
+  }
+
+}

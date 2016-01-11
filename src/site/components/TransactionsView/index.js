@@ -3,7 +3,10 @@ import s from "./TransactionsView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
+import DropDownMenu from "material-ui/lib/DropDownMenu";
+import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
+import InsightsView from "./InsightsView";
 
 @withStyles(s)
 class TransactionsView extends BaseComponent {
@@ -18,8 +21,7 @@ class TransactionsView extends BaseComponent {
     this.state = Object.assign(props.state, {
       transaction: {
         type: "+",
-        amount: 0,
-        description: "testing"
+        category: 1
       }
     });
   }
@@ -112,17 +114,36 @@ class TransactionsView extends BaseComponent {
         {formError}
         <div className={s.root}>
           <div className={s.saveTransaction}>
-            <TextField style={fullWidth}
-              name="amount" 
-              floatingLabelText="Määrä"
-              value={transaction.amount}
-              onChange={this._handleInputChange.bind(this)} />
-            <TextField style={fullWidth}
-              name="description" 
-              floatingLabelText="Selite"
-              value={transaction.description}
-              onChange={this._handleInputChange.bind(this)} />
-            <FlatButton onClick={() => this._saveTransaction()} label="TALLENNA" />
+            <div className={s.amount}>
+              <TextField style={fullWidth}
+                name="amount" 
+                floatingLabelText="Määrä"
+                value={transaction.amount}
+                onChange={this._handleInputChange.bind(this)} />
+            </div>
+            <div className={s.category}>
+              <DropDownMenu value={this.state.transaction.category} 
+                onChange={this._handleInputChange.bind(this)}>
+                <MenuItem value={1} primaryText="Sekalaiset"/>
+                <MenuItem value={2} primaryText="Ruokakauppa"/>
+                <MenuItem value={3} primaryText="Ravintolat"/>
+                <MenuItem value={4} primaryText="Viihde"/>
+                <MenuItem value={5} primaryText="Matkustus"/>
+              </DropDownMenu>
+            </div>
+            <div className={s.description}>
+              <TextField style={fullWidth}
+                name="description" 
+                floatingLabelText="Selite"
+                value={transaction.description}
+                onChange={this._handleInputChange.bind(this)} />
+            </div>
+            <div className={s.submit}>
+              <FlatButton onClick={() => this._saveTransaction()} label="TALLENNA" />
+            </div>
+          </div>
+          <div>
+            <InsightsView />
           </div>
           <div className={s.transactions}>
             <div className={s.income}>
