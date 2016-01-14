@@ -51,7 +51,7 @@ export function registerRoutes(app) {
 
   });
   
-  app.get("/transactions/:user?", requireAuth, async (req, res, next) => {
+  app.get("/consumption/:user?", requireAuth, async (req, res, next) => {
     
     try {
       
@@ -65,7 +65,10 @@ export function registerRoutes(app) {
       let transactions = await financeService.getTransactions(user);
       transactions = transactions.map(transaction => transaction.json());
       const state = Object.assign({ 
-        transactions: { transactions, iso: true }
+        mainTabs: {
+          tab: 0,
+        },
+        consumption: { transactions, iso: true }
       }, req.context.common);
       
       req.context.initialState = Object.assign(req.context.initialState, state);

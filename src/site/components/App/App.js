@@ -26,7 +26,7 @@ import {
   AccountContainer,
   AdminContainer,
   ContentContainer,
-  TransactionsContainer
+  MainTabsContainer
 } from "../../containers";
 
 @reactMixin.decorate(ReactIntl.IntlMixin)
@@ -47,8 +47,8 @@ class Content extends Component {
         <Route path="/admin" component={AdminContainer} />
         <Route path="/account" component={AccountContainer} />
         <Route path="/account/:uuid" component={AccountContainer} />
-        <Route path="/transactions" component={TransactionsContainer} />
-        <Route path="/transactions/:user" component={TransactionsContainer} />
+        <Route path="/consumption" component={MainTabsContainer} />
+        <Route path="/consumption/:user" component={MainTabsContainer} />
         <Route path="*" component={ContentContainer} />
       </Router>
     );

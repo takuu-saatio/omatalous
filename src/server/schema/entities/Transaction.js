@@ -15,7 +15,7 @@ class Transaction extends BaseEntity {
       type: { type: Sequelize.CHAR(1) },
       amount: { type: Sequelize.FLOAT },
       description: { type: Sequelize.STRING },
-      category: { type: Sequelize.INTEGER },
+      category: { type: Sequelize.STRING },
 
     });
 

@@ -18,6 +18,33 @@ class FinanceService {
     this.sendgrid = require("sendgrid")(SENDGRID_USER, SENDGRID_PASSWORD);
   }
   
+  getTransaction(user, uuid) {
+  
+    return new Promise((resolve, reject) => {
+
+      const { Transaction } = this.app.entities;
+
+      Transaction.selectOne({
+        uuid: uuid
+      })
+      .then(transaction => {
+        
+        if (!transaction) {
+          return reject(new NotFound(null, "tx_not_found"));
+        }
+
+        if (user !== "admin" && transaction.user !== user) {
+          return reject(new Unauthorized());
+        }
+
+        resolve(transaction);
+      
+      })
+      .catch(err => reject(err));
+
+    });
+
+  }
   getTransactions(user, params) {
   
     return new Promise((resolve, reject) => {
@@ -72,8 +99,37 @@ class FinanceService {
     });
 
   }
+  
+  deleteTransaction(user, uuid) {
+    
+    return new Promise((resolve, reject) => {
+
+      const { Transaction } = this.app.entities;
+      
+      Transaction.selectOne({ uuid: uuid })
+      .then(transaction => {
+         
+        if (!transaction) {
+          return reject(new NotFound(null, "tx_not_found"));
+        }
+
+        if (user !== "admin" && transaction.user !== user) {
+          return reject(new Unauthorized());
+        }
+        
+        transaction.destroy({ force: true })
+        .then(() => resolve()) 
+        .catch(err => reject(err));
+
+      }) 
+      .catch(err => reject(err)); 
+
+    });
+
+  }
 
 }
+
 
 export default FinanceService;
 

@@ -6,21 +6,15 @@ import home from "./home";
 import login from "./login";
 import recovery from "./recovery";
 import account from "./account";
-import transactions from "./transactions";
+import MainTabsReducer from "./MainTabsReducer";
+import ConsumptionReducer from "./ConsumptionReducer";
+import TransactionReducer from "./TransactionReducer";
+import BudgetsReducer from "./BudgetsReducer";
 import content from "./content";
 import admin from "./admin";
 
 export default function(reducers) {
-  
-  /*
-  const reducerModules = {};
-  reducers.forEach(reducer => {
-    reducerModules[reducer] = require(`./${reducer}`);
-  });
-
-  return combineReducers(reducerModules);
-  */
-  
+   
   return combineReducers({
     routing: routeReducer,
     test,
@@ -29,7 +23,10 @@ export default function(reducers) {
     login,
     recovery,
     account,
-    transactions,
+    mainTabs: MainTabsReducer,
+    consumption: ConsumptionReducer,
+    transaction: TransactionReducer,
+    budgets: BudgetsReducer,
     content,
     admin
   });

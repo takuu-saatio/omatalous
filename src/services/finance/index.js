@@ -8,6 +8,10 @@ export class LocalFinanceServiceInterface extends ServiceInterface {
     super(app, "finance", Object.assign(options, { provideService: true }));
   }
   
+  async getTransaction(user, uuid) {
+    return await this.service.getTransaction(user, uuid);
+  }
+
   async getTransactions(uuid, params) {
     return await this.service.getTransactions(uuid, params);
   }
@@ -16,8 +20,8 @@ export class LocalFinanceServiceInterface extends ServiceInterface {
     return await this.service.saveTransaction(user, transaction);
   }
    
-  async deleteTransaction(uuid) {
-    return await this.service.deleteTransaction(transaction);
+  async deleteTransaction(user, uuid) {
+    return await this.service.deleteTransaction(user, uuid);
   }
 
   async getBudget() {

@@ -1,6 +1,6 @@
 "use strict";
 
-import * as actions from "../actions/transactions";
+import * as actions from "../actions/TransactionActions";
 
 export default function (state = {}, action) {
   
@@ -8,12 +8,13 @@ export default function (state = {}, action) {
   state.error = null;
   state.messages = null;
   
-  //console.log("action", action);
+  console.log("action", state, action);
   switch (action.type) {
     case actions.FETCH_SUCCESS:
-      return { transactions: action.transactions, isUpdated: true };
+      return { transaction: action.transaction, isUpdated: true };
     case actions.SAVE_SUCCESS:
-      return { messages: { editStatus: "saved" }, created: action.created };
+      console.log("return save state");
+      return { messages: { editStatus: "saved" }, created: action.created, isUpdated: true };
     case actions.DELETE_SUCCESS:
       return { status: "deleted" };
     case actions.SAVE_FAIL:

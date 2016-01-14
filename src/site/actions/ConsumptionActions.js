@@ -10,15 +10,15 @@ export const SAVE_FAIL = "SAVE_FAIL";
 export const DELETE_SUCCESS = "DELETE_SUCCESS";
 export const DELETE_FAIL = "DELETE_FAIL";
 
-export function saveTransaction(user, transaction) {
+export function quickSaveTransaction(user, quickTransaction) {
   
   return async (dispatch) => {
     
-    let response = await http.post(`/api/finance/transactions/${user}`, transaction);
+    let response = await http.post(`/api/finance/transactions/${user}`, quickTransaction);
     const action = processResponse(response, SAVE_SUCCESS, SAVE_FAIL);
     if (action.type === SAVE_SUCCESS) {
       action.created = response.created;
-      action.transaction = response.transaction;
+      action.quickTransaction = response.transaction;
     }
     dispatch(action);
   
@@ -27,11 +27,11 @@ export function saveTransaction(user, transaction) {
 }
 
 
-export function deleteTransaction(uuid) {
+export function quickDeleteTransaction(user, uuid) {
   
   return async (dispatch) => {
     
-    let response = await http.delete(`/api/finance/transactions/${uuid}`);
+    let response = await http.delete(`/api/finance/transactions/${user}/${uuid}`);
     const action = processResponse(response, DELETE_SUCCESS, DELETE_FAIL);
     dispatch(action);
   

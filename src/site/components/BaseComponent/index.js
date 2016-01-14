@@ -9,13 +9,13 @@ class BaseComponent extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    //console.log("bc will rec props", nextProps);
+    console.log("bc will rec props", nextProps);
     this._fetchIfUpdated(nextProps);
     this.updateState(nextProps.state);
   }
    
   componentDidMount() {
-    //console.log("bc did mount");
+    console.log("bc did mount");
     this.props.state.isUpdated = false;
     this._fetchIfUpdated(this.props);
   }
@@ -35,6 +35,7 @@ class BaseComponent extends Component {
   }
 
   updateState(state) {
+    console.log("UPDATE STATE", this.state, state);
     this.setState(Object.assign(this.state, state));
   }
 
