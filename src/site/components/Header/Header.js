@@ -109,8 +109,18 @@ class Header extends BaseComponent {
             </div>
           </MenuItem>
           {adminNavItem}
-          <MenuItem primaryText="Talous" onTouchTap={() => this._menuGo("/consumption")} />
-          <MenuItem primaryText="Tilastot" onTouchTap={() => this._menuGo("/stats")} />
+          <MenuItem onTouchTap={() => this._menuGo("/consumption")}>
+            <div className={s.menuItem}>
+              <i className="material-icons">&#xE870;</i>
+              <span>Kulutus</span>
+            </div>
+          </MenuItem>
+          <MenuItem onTouchTap={() => this._menuGo("/goals")}>
+            <div className={s.menuItem}>
+              <i className="material-icons">&#xE850;</i>
+              <span>Tavoitteet</span>
+            </div>
+          </MenuItem>
           <MenuItem primaryText="Ulos" onTouchTap={this._logOut} />
         </div>
       </div>

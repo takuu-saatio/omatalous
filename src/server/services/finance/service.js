@@ -45,15 +45,15 @@ class FinanceService {
     });
 
   }
+
   getTransactions(user, params) {
   
     return new Promise((resolve, reject) => {
 
       const { Transaction } = this.app.entities;
-
-      Transaction.selectAll({
-        user: user
-      })
+      
+      params = Object.assign((params || {}), { user });
+      Transaction.selectAll(params)
       .then(transactions => resolve(transactions))
       .catch(err => reject(err));
 

@@ -1,25 +1,34 @@
 .saveTransaction {
   
   width: 100%;
-  display: flex;
-  margin-top: -12px;
+  max-width: 420px;
+  margin: auto;
   margin-bottom: 16px;
   padding-bottom: 12px;
- 
+   
   .topGroup {
     display: flex;
-    width: 50%;
+    width: 100%;
   }
   
-  .bottomGroup {
-    display: flex;
-    width: 50%;
+  .descGroup {
+    width: 100%;
   }
-
+  
+  .buttonsGroup {
+    display: flex;
+    padding-top: 12px;
+    width: 100%;
+  }
+    
+  .status {
+    width: 100%;
+    text-align: center;
+  }
+  
   .type {
     
     flex: 1 1 0;
-    padding-left: 6px;
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
@@ -40,7 +49,8 @@
   }
   
   .description {
-    flex: 1 1 0;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .category {
@@ -50,7 +60,24 @@
     padding-bottom: 8px;
   }
 
+  .cancel {
+    
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    align-items: flex-end;
+    padding-bottom: 8px;
+    
+    > button { 
+      > div {
+        > i {
+          vertical-align: middle;
+        }
+      }
+    }
+  }
   .submit {
+    
     position: relative;
     display: flex;
     flex: 1 1 0;

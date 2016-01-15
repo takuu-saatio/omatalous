@@ -15,7 +15,8 @@ import {
   AccountContainer,
   AdminContainer,
   ContentContainer,
-  MainTabsContainer
+  MainTabsContainer,
+  GoalsContainer 
 } from "./containers";
 
 export default new Router(on => {
@@ -37,6 +38,7 @@ export default new Router(on => {
   on("/account/:uuid?", (state) => <AccountContainer params={state.params} />);
   on("/consumption/:user?", (state) => <MainTabsContainer params={state.params} tab="consumption" />);
   on("/budgets/:user?", (state) => <MainTabsContainer params={state.params} tab="budget" />);
+  on("/goals/:user?", (state) => <GoalsContainer params={state.params} />);
   on("/admin", () => <AdminContainer />);
   on("/denied", (state) => {
     return <ContentContainer path={state.path} />

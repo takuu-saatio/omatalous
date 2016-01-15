@@ -16,6 +16,7 @@ class Transaction extends BaseEntity {
       amount: { type: Sequelize.FLOAT },
       description: { type: Sequelize.STRING },
       category: { type: Sequelize.STRING },
+      repeats: { type: Sequelize.STRING }
 
     });
 

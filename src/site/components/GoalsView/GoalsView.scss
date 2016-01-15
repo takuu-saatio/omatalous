@@ -1,0 +1,81 @@
+.transactions {
+     
+  .transactionsLabel {
+    width: 100%;
+    text-align: center;
+  }
+
+  .transaction {
+    
+    display: inline-block;
+    margin: 6px;
+    background-color: #e0e0e0;
+    
+    .txTitle {
+      display: inline-block;
+      padding: 6px;
+    }
+    
+    .txDelete {
+      display: inline-block;
+      padding: 6px;
+      border-left: 1px solid #f0f0f0;
+    }
+    
+  }
+
+  .newTransaction {
+    display: inline-block;
+    border: 1px solid #e0e0e0;
+    padding: 6px;
+    margin: 6px;
+  }
+
+}
+
+.goals {
+  
+  .goalLabel {
+    width: 100%;
+  }
+  
+  .goal {
+  
+    display: flex;
+    
+    .goalAmount {
+      flex: 1 0 auto;
+    }
+  
+    .goalStart {
+      flex: 1 0 auto;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 8px;
+    }
+
+    .goalEnd {
+      flex: 1 0 auto; 
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 8px;
+    }
+
+  }
+
+  .goalsSubmit {
+    
+    display: flex;
+    
+    .editStatus {
+      flex: 1 1 auto;
+    }
+    
+    .saveButton {
+      flex: 1 1 auto;
+    } 
+
+  }
+
+}
+

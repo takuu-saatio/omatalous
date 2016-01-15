@@ -16,7 +16,10 @@ import * as MainTabsActions from "./actions/MainTabsActions";
 import ConsumptionView from "./components/ConsumptionView";
 import * as ConsumptionActions from "./actions/ConsumptionActions";
 import EditTransactionView from "./components/EditTransactionView";
+import EditRepeatingTransactionView from "./components/EditRepeatingTransactionView";
 import * as EditTransactionActions from "./actions/TransactionActions";
+import GoalsView from "./components/GoalsView";
+import * as GoalsActions from "./actions/GoalsActions";
 import AdminView from "./components/AdminView";
 import * as AdminActions from "./actions/admin";
 
@@ -35,5 +38,8 @@ export const AccountContainer = container(AccountView, AccountActions, "account"
 export const MainTabsContainer = container(MainTabsView, MainTabsActions, "mainTabs");
 export const ConsumptionContainer = container(ConsumptionView, ConsumptionActions, "consumption");
 export const EditTransactionContainer = container(EditTransactionView, EditTransactionActions, "transaction");
+export const EditRepeatingTransactionContainer = container(EditRepeatingTransactionView, EditTransactionActions, "transaction");
+export const GoalsContainer = container(GoalsView, 
+  Object.assign(GoalsActions, EditTransactionActions), "goals");
 export const ContentContainer = container(ContentView, {}, "content");
 export const AdminContainer = container(AdminView, AdminActions, "admin");

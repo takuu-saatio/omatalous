@@ -24,6 +24,8 @@ class Navigation extends Component {
     let adminElem = null;
     let accountElem = null;
     let loginElem = null;
+    let consumptionElem = null;
+    let goalsElem = null;
 
     if (auth && auth.user) {
         
@@ -45,6 +47,22 @@ class Navigation extends Component {
         </div>
       );
       
+      consumptionElem = (
+        <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
+          <a className={s.link} href="/consumption" onClick={Link.handleClick}>
+            <i className="material-icons">&#xE870;</i>
+          </a>
+        </div>
+      );
+      
+      goalsElem = (
+        <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
+          <a className={s.link} href="/goals" onClick={Link.handleClick}>
+            <i className="material-icons">&#xE850;</i>
+          </a>
+        </div>
+      );
+
       loginElem = (
         <div className={cx(s.navItem, s.buttonItem, s.logoutItem)}>
           <a className={s.link} style={{ verticalAlign: "top" }} href="/logout">
@@ -52,6 +70,7 @@ class Navigation extends Component {
           </a>
         </div>
       );
+      
 
     } else {
       
@@ -69,6 +88,8 @@ class Navigation extends Component {
       <div className={cx(s.root, this.props.className)} role="navigation">
         {adminElem}
         {accountElem}
+        {consumptionElem}
+        {goalsElem}
         {loginElem}
       </div>
     );

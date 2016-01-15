@@ -90,6 +90,11 @@ class ConsumptionView extends BaseComponent {
     this.setState(this.state);
   }
 
+  _closeEditTx() {
+    this.state.edit = false;
+    this.fetchData();
+  }
+
   render() {
      
     console.log("render consumption", this.props, this.state);
@@ -99,7 +104,7 @@ class ConsumptionView extends BaseComponent {
       let params = Object.assign(this.props.params, {
         uuid: this.state.edit 
       });
-      return <EditTransactionContainer params={params} />;
+      return <EditTransactionContainer close={() => this._closeEditTx()} params={params} />;
     }
  
     if (!transactions) {

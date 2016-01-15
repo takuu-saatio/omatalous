@@ -9,7 +9,6 @@ import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
 
-@withStyles(s)
 class EditTransactionView extends BaseComponent {
   
   static contextTypes = {
@@ -17,55 +16,74 @@ class EditTransactionView extends BaseComponent {
   };
 
   constructor(props) {
+    
     super(props);
     console.log("constr edit tx", props);
     let state = this.props.state;
-    this.state = props.state;
+    if (this.props.transaction) {
+      state.transaction = this.props.transaction;
+    }
+     
+    this.state = state;
+  
   }
 
   async fetchData(props = this.props) { 
     
     const { transaction } = this.state;
-    if (transaction && transaction.uuid) {
+    if (transaction) {
       return;
     }
         
     const user = this.props.params.user || this.state.auth.user.uuid;
     const uuid = this.props.params.uuid; 
     console.log("fetching tx", user, uuid);
+    
     this.props.fetchTransaction(user, uuid);
 
   }
   
   updateState(state) {
+    
     console.log("UPDATING TX STATE", state);
-    if (state.transaction) {
-      this.setState(Object.assign(this.state, { transaction: state.transaction }));
+        
+    if (state.messages) {
+      if (state.messages.editStatus === "saved") {
+        this.props.close();
+        return;
+      } else {
+         this.state.messages = state.messages;
+      
+      }
     }
+
+    if (state.transaction) {
+      this.state.transaction = state.transaction;
+    }
+     
+    if (state.transaction || state.messages) {
+      this.setState(this.state);
+    }
+    
   }
 
   _handleInputChange(event) {
-    
+    this._handleFormChange(event.target.name, event.target.value); 
+  }
+  
+  _handleCategoryDropdown(event, index, value) {
+    this._handleFormChange("category", value);
+  }
+
+  _handleFormChange(name, value) {
     let formParams = {};
-    formParams[event.target.name] = event.target.value;
+    formParams[name] = value;
     let transaction = Object.assign(this.state.transaction, formParams);
     let state = Object.assign(this.state, { transaction });
     state.messages = { editStatus: "changed" };
     this.setState(state);
-
   }
-  
-  _handleDropdownChange(event, index, value) {
-    
-    let formParams = {};
-    formParams["category"] = value;
-    let transaction = Object.assign(this.state.transaction, formParams);
-    let state = Object.assign(this.state, { transaction });
-    state.messages = { editStatus: "changed" };
-    this.setState(state);
 
-  }
-  
   _saveTransaction() {
     const user = this.props.params.user || this.state.auth.user.uuid; 
     const transaction = Object.assign({}, this.state.transaction);
@@ -87,8 +105,12 @@ class EditTransactionView extends BaseComponent {
     this.setState(this.state);
   }
 
+  renderChildren() {
+    return null;
+  }
+
   render() {
-     
+        
     console.log("render tx", this.props, this.state);
     let { transaction, messages } = this.state;
     
@@ -142,34 +164,55 @@ class EditTransactionView extends BaseComponent {
       <div>
         {formError}
         <div className={s.root}>
-          <div className={s.saveTransaction} style={txBorderCss}>
-            <div className={s.type}>
-              <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                onClick={() => this._toggleTxType()}>
-                {txTypeSymbol}
-              </FlatButton>
-            </div> 
-            <div className={s.amount}>
-              <TextField style={fullWidth} 
-                name="amount" 
-                floatingLabelText="Määrä"
-                value={this.state.transaction.amount}
-                onChange={this._handleInputChange.bind(this)} />
+          <div className={s.saveTransaction}>
+            <div className={s.topGroup}>
+              <div className={s.type}>
+                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+                  onClick={() => this._toggleTxType()}>
+                  {txTypeSymbol}
+                </FlatButton>
+              </div> 
+              <div className={s.amount}>
+                <TextField style={fullWidth} 
+                  name="amount" 
+                  floatingLabelText="Määrä"
+                  value={this.state.transaction.amount}
+                  onChange={this._handleInputChange.bind(this)} />
+              </div>
+              <div className={s.category}>
+                <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+                  name="category" 
+                  value={this.state.transaction.category} 
+                  onChange={this._handleCategoryDropdown.bind(this)}>
+                  <MenuItem value="misc" primaryText="Sekalaiset" />
+                  <MenuItem value="groceries" primaryText="Ruokakauppa" />
+                </DropDownMenu>
+              </div>
             </div>
-            <div className={s.category}>
-              <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-                name="category" 
-                value={this.state.transaction.category} 
-                onChange={this._handleDropdownChange.bind(this)}>
-                <MenuItem value="misc" primaryText="Sekalaiset" />
-                <MenuItem value="groceries" primaryText="Ruokakauppa" />
-              </DropDownMenu>
+            <div className={s.descGroup}>
+              <div className={s.description}>
+                <TextField style={fullWidth} 
+                  name="description" 
+                  floatingLabelText="Selite"
+                  value={this.state.transaction.description}
+                  onChange={this._handleInputChange.bind(this)} />
+              </div>
             </div>
-            <div className={s.submit}>
-              <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                onClick={() => this._saveTransaction()}>
-                <i style={fullWidth} className="material-icons">&#xE163;</i>
-              </FlatButton>
+            <div>
+              {this.renderChildren()}
+            </div>
+            <div className={s.status}>
+              {editStatus}
+            </div>
+            <div className={s.buttonsGroup}>
+              <div className={s.cancel}>
+                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+                  onClick={() => this.props.close()} label="PERUUTA"/>
+              </div>
+              <div className={s.submit}>
+                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+                  onClick={() => this._saveTransaction()} label="TALLENNA"/>
+              </div>
             </div>
           </div>
         </div>
@@ -179,4 +222,7 @@ class EditTransactionView extends BaseComponent {
 
 }
 
-export default EditTransactionView;
+export const EditTransactionViewClass = EditTransactionView;
+
+@withStyles(s)
+export default class StyledEditTransactionView extends EditTransactionView {};

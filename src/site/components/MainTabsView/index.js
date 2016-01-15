@@ -58,7 +58,7 @@ export default class MainTabsView extends BaseComponent {
           onChange={this._setTab}
           value={this.state.tab}>
           <Tab label="Kulutus" value={0} />
-          <Tab label="Budjetit" value={1} />
+          <Tab label="Graafit" value={1} />
         </Tabs>
         <div>
           <div className={s.insightContainer}>
