@@ -23,7 +23,21 @@ export function registerRoutes(app) {
       
       let user = req.params.user || req.user.uuid;
       const { finance } = app.services;
-      let transactions = await finance.getTransactions(user, req.query);
+      let params = req.query;
+      if (params && params.repeats) {
+        if (params.repeats === "1") {
+          params.repeats = {
+            $ne: null
+          };
+        } else if(params.repeats === "0") {
+          params.repeats = {
+            $eq: null
+          };
+        } else {
+          delete params.repeats;
+        }
+      }
+      let transactions = await finance.getTransactions(user, params);
       transactions = transactions.map(transaction => transaction.json());
       res.json({ status: "ok", transactions });
       
@@ -46,7 +60,7 @@ export function registerRoutes(app) {
       user = req.user.email === process.env.ADMIN_USER ? "admin" : user;
       const { finance } = app.services;
       const transaction = await finance.getTransaction(user, req.params.uuid);
-      res.json({ status: "ok", transaction });
+      res.json({ status: "ok", transaction: transaction.json() });
       
     } catch (err) {
       next(err);

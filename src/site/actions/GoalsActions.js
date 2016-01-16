@@ -5,6 +5,8 @@ import { processResponse } from "./utils";
 
 export const FETCH_SUCCESS = "FETCH_SUCCESS";
 export const FETCH_FAIL = "FETCH_FAIL";
+export const TX_FETCH_SUCCESS = "TX_FETCH_SUCCESS";
+export const TX_FETCH_FAIL = "TX_FETCH_FAIL";
 export const SAVE_SUCCESS = "SAVE_SUCCESS";
 export const SAVE_FAIL = "SAVE_FAIL";
 export const DELETE_SUCCESS = "DELETE_SUCCESS";
@@ -29,4 +31,19 @@ export function saveGoal(user, goal) {
 
 }
 
+export function fetchTransactions(user) {
+  
+  return async (dispatch) => {
+    
+    let response = await http.get(`/api/finance/transactions/${user}?repeats=1`);
+    const action = processResponse(response, TX_FETCH_SUCCESS, TX_FETCH_FAIL);
+    if (action.type === TX_FETCH_SUCCESS) {
+      action.transactions = response.transactions;
+    }
+    
+    dispatch(action);
+  
+  };
+
+}
 

@@ -43,7 +43,7 @@ export function fetchTransactions(user) {
   
   return async (dispatch) => {
     
-    let response = await http.get(`/api/finance/transactions/${user}`);
+    let response = await http.get(`/api/finance/transactions/${user}?repeats=0`);
     const action = processResponse(response, FETCH_SUCCESS, FETCH_FAIL);
     if (action.type === FETCH_SUCCESS) {
       action.transactions = response.transactions;

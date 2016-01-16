@@ -33,14 +33,19 @@ class GoalsView extends BaseComponent {
 
   async fetchData(props = this.props) { 
     
+    if (this.state.edit) {
+      return;
+    }
+     
     const user = this.props.params.user || this.state.auth.user.uuid;
     const uuid = this.props.params.uuid; 
     console.log("fetching goals", user, uuid);
+    this.props.fetchTransactions(user);
 
   }
   
   updateState(state) {
-    super.updateState(state); 
+    super.updateState(state);
   }
 
   _handleInputChange(event) {
@@ -85,7 +90,7 @@ class GoalsView extends BaseComponent {
   }
   
   _editTransaction(uuid) {
-    this.state.edit = uuid || "new";
+    this.state.edit = uuid;
     this.setState(this.state);
   }
 
@@ -105,8 +110,8 @@ class GoalsView extends BaseComponent {
         uuid: edit 
       });
       
-      let transaction = edit === "new" ? {
-        type: "+",
+      let transaction = (edit === "+" || edit === "-") ? {
+        type: edit,
         category: "misc",
         repeats: "M1"
       } : null;
@@ -147,7 +152,34 @@ class GoalsView extends BaseComponent {
     }
  
     let fullWidth = { width: "100%", minWidth: "initial" };
-      
+
+    let incomeTxElems = [];
+    let expenseTxElems = [];
+    
+    if (transactions) {
+
+      transactions.forEach(transaction => {
+        
+        const txElem = (
+          <div className={s.transaction} key={transaction.uuid}>
+            <div className={s.txTitle}>
+              {transaction.description}
+              {transaction.amount} €
+            </div>
+            <div className={s.txDelete}>X</div>
+          </div>
+        );
+        
+        if (transaction.type === "+") {
+          incomeTxElems.push(txElem);
+        } else {
+          expenseTxElems.push(txElem);
+        }
+
+      });
+
+    }
+
     return (
       <div>
         {formError}
@@ -156,11 +188,18 @@ class GoalsView extends BaseComponent {
             <div>
               <div className={s.transactionsLabel}>Toistuvat tulot</div>
               <div className={s.transactions}>
-                <div className={s.transaction}>
-                  <div className={s.txTitle}>Palkka 800 €</div>
-                  <div className={s.txDelete}>X</div>
+                {incomeTxElems}
+                <div onClick={() => this._editTransaction("+")} className={s.newTransaction}>
+                  + UUSI
                 </div>
-                <div onClick={() => this._editTransaction()} className={s.newTransaction}>
+              </div>
+              <div></div>
+            </div>
+            <div>
+              <div className={s.transactionsLabel}>Toistuvat menot</div>
+              <div className={s.transactions}>
+                {expenseTxElems}
+                <div onClick={() => this._editTransaction("-")} className={s.newTransaction}>
                   + UUSI
                 </div>
               </div>

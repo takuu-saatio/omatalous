@@ -62,7 +62,8 @@ export function registerRoutes(app) {
         return res.redirect("/denied");
       }
 
-      let transactions = await financeService.getTransactions(user);
+      const params = { repeats: { $eq: null } };
+      let transactions = await financeService.getTransactions(user, params);
       transactions = transactions.map(transaction => transaction.json());
       const state = Object.assign({ 
         mainTabs: {
