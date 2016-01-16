@@ -151,8 +151,8 @@ class GoalsView extends BaseComponent {
 
     }
  
-    let fullWidth = { width: "100%", minWidth: "initial" };
-
+    const fullWidth = { width: "100%", minWidth: "initial" };
+    const cursorCss = { cursor: "pointer" }; 
     let incomeTxElems = [];
     let expenseTxElems = [];
     
@@ -161,7 +161,7 @@ class GoalsView extends BaseComponent {
       transactions.forEach(transaction => {
         
         const txElem = (
-          <div className={s.transaction} key={transaction.uuid}>
+          <div className={s.transaction} style={cursorCss} key={transaction.uuid}>
             <div onClick={() => this._editTransaction(transaction.uuid)} 
               className={s.txTitle}>
               {transaction.description}
