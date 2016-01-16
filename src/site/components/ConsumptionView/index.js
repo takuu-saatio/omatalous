@@ -143,20 +143,22 @@ class ConsumptionView extends BaseComponent {
     let transactionElems = transactions.map(transaction => {
       return (
         <div key={transaction.uuid} className={s.transaction}>
-          <div>
-            <i className="material-icons"
-              onClick={() => this._editTransaction(transaction.uuid)}>&#xE150;</i>
-          </div>
           <div style={{ color: transaction.type === "+" ? "green" : "red" }}>
             {transaction.type}{transaction.amount}
           </div>
           <div>{transaction.category}</div>
           <div>{transaction.description}</div>
-          <div>
-            <i className="material-icons"
-              onClick={() => this._deleteTransaction(transaction.uuid)}>
-              &#xE14A;
-            </i>
+          <div className={s.txControls}>
+            <div>
+              <i className="material-icons"
+                onClick={() => this._deleteTransaction(transaction.uuid)}>
+                &#xE14A;
+              </i>
+            </div>
+            <div>
+              <i className="material-icons"
+                onClick={() => this._editTransaction(transaction.uuid)}>&#xE150;</i>
+            </div>
           </div>
         </div>
       );
