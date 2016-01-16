@@ -128,8 +128,88 @@ class FinanceService {
 
   }
 
+  getGoals(user) {
+
+    return new Promise((resolve, reject) => {
+
+      const { Goal } = this.app.entities;
+      
+      Goal.selectAll({ user })
+      .then(goals => resolve(goals))
+      .catch(err => reject(err));
+
+    });
+
+  }
+
+  saveGoal(user, goal) {
+  
+    return new Promise((resolve, reject) => {
+
+      const { Goal } = this.app.entities;
+      
+      if (goal.uuid) {
+        
+        Goal.selectOne({ uuid: goal.uuid })
+        .then(existingGoal => {
+          
+          delete goal.id;
+          delete goal.uuid;
+          delete goal.user;
+          Object.assign(existingGoal, goal);
+          
+          existingGoal.save()
+          .then(() => resolve({ created: false })) 
+          .catch(err => reject(err));
+
+        }) 
+        .catch(err => reject(err));
+        
+      } else {
+
+        goal.user = user;
+        Goal.schema.create(goal)
+        .then(goal => resolve({
+          created: true,
+          goal
+        }))
+        .catch(err => reject(err));
+      
+      }
+
+    });
+
+  }
+  
+  deleteGoal(user, uuid) {
+    
+    return new Promise((resolve, reject) => {
+
+      const { Goal } = this.app.entities;
+      
+      Goal.selectOne({ uuid: uuid })
+      .then(goal => {
+         
+        if (!goal) {
+          return reject(new NotFound(null, "goal_not_found"));
+        }
+
+        if (user !== "admin" && goal.user !== user) {
+          return reject(new Unauthorized());
+        }
+        
+        goal.destroy({ force: true })
+        .then(() => resolve()) 
+        .catch(err => reject(err));
+
+      }) 
+      .catch(err => reject(err)); 
+
+    });
+
+  }
+
+
 }
 
-
 export default FinanceService;
-

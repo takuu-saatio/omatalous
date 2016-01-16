@@ -94,11 +94,19 @@ export function registerRoutes(app) {
       
       const params = { repeats: { $ne: null } };
       let transactions = await financeService.getTransactions(user, params);
-      transactions = transactions.map(transaction => transaction.json());
       const state = Object.assign({ 
-        goals: { transactions, iso: true }
+        goals: { 
+          transactions,
+          iso: true 
+        }
       }, req.context.common);
       
+      let goals = await financeService.getGoals(user);
+      goals = goals.map(goal => goal.json());
+      if (goals.length > 0) {
+        state.goals.goal = goals[0];
+      }
+       
       req.context.initialState = Object.assign(req.context.initialState, state);
       app.renderPage(req, res);
 

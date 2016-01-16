@@ -12,6 +12,12 @@ export default function (state = {}, action) {
   switch (action.type) {
     case goalsActions.TXS_FETCH_SUCCESS:
       return { transactions: action.transactions, isUpdated: true };
+    case goalsActions.GOAL_FETCH_SUCCESS:
+      const state = { isUpdated: true };
+      if (action.goal) {
+        state.goal = action.goal;
+      }
+      return state;
     case goalsActions.GOAL_SAVE_SUCCESS:
       return { messages: { editStatus: "saved" }, created: action.created, isUpdated: true };
     case txActions.DELETE_SUCCESS:

@@ -42,7 +42,8 @@ app.sequelize = new Sequelize("omatalous", dbUser, dbPassword, {
 app.schemaLoader = new SchemaLoader(app.sequelize);
 app.entities = {
   User: app.schemaLoader.loadSchema("User"),
-  Transaction: app.schemaLoader.loadSchema("Transaction")
+  Transaction: app.schemaLoader.loadSchema("Transaction"),
+  Goal: app.schemaLoader.loadSchema("Goal")
 };
 
 const passport = require("passport");

@@ -23,6 +23,18 @@ export class LocalFinanceServiceInterface extends ServiceInterface {
   async deleteTransaction(user, uuid) {
     return await this.service.deleteTransaction(user, uuid);
   }
+  
+  async getGoals(uuid) {
+    return await this.service.getGoals(uuid);
+  }
+
+  async saveGoal(user, goal) {
+    return await this.service.saveGoal(user, goal);
+  }
+   
+  async deleteGoal(user, uuid) {
+    return await this.service.deleteGoal(user, uuid);
+  }
 
   async getBudget() {
   }

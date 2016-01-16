@@ -41,6 +41,7 @@ class GoalsView extends BaseComponent {
     const uuid = this.props.params.uuid; 
     console.log("fetching goals", user, uuid);
     this.props.fetchTransactions(user);
+    this.props.fetchGoal(user);
 
   }
   
@@ -78,10 +79,7 @@ class GoalsView extends BaseComponent {
   _handleEndDropdown(event, index, value) {
     this._handleDropdownChange("end", value);
   }
-  
-  _handleEndDropdown(event, index, value) {
-  }  
- 
+   
   _deleteTransaction(uuid) {
     if (window.confirm("Oletko varma, että haluat poistaa tapahtuman?")) {
       const user = this.props.params.user || this.state.auth.user.uuid; 
@@ -97,6 +95,11 @@ class GoalsView extends BaseComponent {
   _closeEditTx() {
     this.state.edit = false;
     this.fetchData();
+  }
+  
+  _saveGoal() {
+    const user = this.props.params.user || this.state.auth.user.uuid; 
+    this.props.saveGoal(user, this.state.goal);
   }
 
   render() {
@@ -213,9 +216,9 @@ class GoalsView extends BaseComponent {
             <div className={s.goal}>
               <div className={s.goalAmount}>
                 <TextField style={fullWidth} 
-                  name="description"
-                  floatingLabelText="Selite"
-                  value={this.state.description}
+                  name="amount"
+                  floatingLabelText="Summa"
+                  value={this.state.goal.amount}
                   onChange={this._handleInputChange.bind(this)} />
               </div>
               <div className={s.goalStart}>
@@ -223,8 +226,8 @@ class GoalsView extends BaseComponent {
                   id="start" 
                   value={this.state.goal.start} 
                   onChange={this._handleStartDropdown.bind(this)}>
-                  <MenuItem value="1" primaryText="Tammi 2016" />
-                  <MenuItem value="2" primaryText="Helmi 2016" />
+                  <MenuItem value="2016-01" primaryText="Tammi 2016" />
+                  <MenuItem value="2016-02" primaryText="Helmi 2016" />
                 </DropDownMenu>
               </div>
               <div className={s.goalEnd}>
@@ -232,8 +235,8 @@ class GoalsView extends BaseComponent {
                   id="end" 
                   value={this.state.goal.end} 
                   onChange={this._handleEndDropdown.bind(this)}>
-                  <MenuItem value="1" primaryText="Tammi 2016" />
-                  <MenuItem value="2" primaryText="Helmi 2016" />
+                  <MenuItem value="2016-01" primaryText="Tammi 2016" />
+                  <MenuItem value="2016-02" primaryText="Helmi 2016" />
                 </DropDownMenu>
               </div>
             </div>
@@ -243,7 +246,7 @@ class GoalsView extends BaseComponent {
               </div>
               <div className={s.saveButton}> 
                 <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                  onClick={() => this._saveTransaction()} label="TALLENNA"/>
+                  onClick={() => this._saveGoal()} label="TALLENNA"/>
               </div>
             </div>
           </div>

@@ -104,5 +104,63 @@ export function registerRoutes(app) {
     }
  
   });
+  
+  app.get("/api/finance/goals/:user?", requireAuth, 
+          async (req, res, next) => {
+    
+    if (!allowedAccess(req.params.user, req)) {
+      return next(new Forbidden());
+    }
+
+    try {
+      
+      let user = req.params.user || req.user.uuid;
+      const { finance } = app.services;
+      let goals = await finance.getGoals(user);
+      goals = goals.map(goal => goal.json());
+      res.json({ status: "ok", goals });
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
+ 
+  app.post("/api/finance/goals/:user?", requireAuth, 
+          async (req, res, next) => {
+    
+    if (!allowedAccess(req.params.user, req)) {
+      return next(new Forbidden());
+    }
+
+    try {
+      
+      let user = req.params.user || req.user.uuid;
+      const { finance } = app.services;
+      const result = await finance.saveGoal(user, req.body);
+      res.json(Object.assign({ status: "ok" }, result));
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
+  
+  app.delete("/api/finance/goals/:user/:uuid", requireAuth, 
+          async (req, res, next) => {
+    
+    try {
+      
+      let user = req.params.user || req.user.uuid;
+      user = req.user.email === process.env.ADMIN_USER ? "admin" : user;
+      const { finance } = app.services;
+      const result = await finance.deleteGoal(user, req.params.uuid);
+      res.json({ status: "ok" });
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
 
 } 
