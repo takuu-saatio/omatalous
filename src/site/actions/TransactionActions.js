@@ -3,12 +3,12 @@
 import http from "../tools/http-client";
 import { processResponse } from "./utils";
 
-export const FETCH_SUCCESS = "FETCH_SUCCESS";
-export const FETCH_FAIL = "FETCH_FAIL";
-export const SAVE_SUCCESS = "SAVE_SUCCESS";
-export const SAVE_FAIL = "SAVE_FAIL";
-export const DELETE_SUCCESS = "DELETE_SUCCESS";
-export const DELETE_FAIL = "DELETE_FAIL";
+export const FETCH_SUCCESS = "TX_FETCH_SUCCESS";
+export const FETCH_FAIL = "TX_FETCH_FAIL";
+export const SAVE_SUCCESS = "TX_SAVE_SUCCESS";
+export const SAVE_FAIL = "TX_SAVE_FAIL";
+export const DELETE_SUCCESS = "TX_DELETE_SUCCESS";
+export const DELETE_FAIL = "TX_DELETE_FAIL";
 
 export function saveTransaction(user, transaction) {
   

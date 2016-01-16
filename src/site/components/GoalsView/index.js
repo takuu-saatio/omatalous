@@ -162,11 +162,13 @@ class GoalsView extends BaseComponent {
         
         const txElem = (
           <div className={s.transaction} key={transaction.uuid}>
-            <div className={s.txTitle}>
+            <div onClick={() => this._editTransaction(transaction.uuid)} 
+              className={s.txTitle}>
               {transaction.description}
               {transaction.amount} €
             </div>
-            <div className={s.txDelete}>X</div>
+            <div onClick={() => this._deleteTransaction(transaction.uuid)} 
+              className={s.txDelete}>X</div>
           </div>
         );
         
