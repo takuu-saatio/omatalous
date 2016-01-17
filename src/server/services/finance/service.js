@@ -53,7 +53,7 @@ class FinanceService {
       const { Transaction } = this.app.entities;
       
       params = Object.assign((params || {}), { user });
-      Transaction.selectAll(params)
+      Transaction.selectAll(params, { order: "\"createdAt\" DESC" })
       .then(transactions => resolve(transactions))
       .catch(err => reject(err));
 

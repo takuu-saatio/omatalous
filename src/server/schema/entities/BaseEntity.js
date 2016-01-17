@@ -31,11 +31,11 @@ class BaseEntity {
     });
   }
   
-  selectAll(query) {
+  selectAll(query, params) {
     query.deleted = false;
-    return this.schema.findAll({
+    return this.schema.findAll(Object.assign({
       where: query
-    });
+    }, params || {}));
   }
   
   findByUuid(uuid) {
