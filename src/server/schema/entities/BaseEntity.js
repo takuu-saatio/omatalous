@@ -54,7 +54,7 @@ class BaseEntity {
         hiddenFields.forEach(field => {
           delete json[field]
         });
-        return json;
+        return Object.assign(json, this.extras || {});
       }
     };
   }

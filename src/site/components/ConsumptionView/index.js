@@ -98,7 +98,7 @@ class ConsumptionView extends BaseComponent {
   render() {
      
     console.log("render consumption", this.props, this.state);
-    let { transactions, transaction, quickTransaction, messages } = this.state;
+    let { transactions, goal, quickTransaction, messages } = this.state;
     
     if (this.state.edit) {
       let params = Object.assign(this.props.params, {
@@ -175,7 +175,25 @@ class ConsumptionView extends BaseComponent {
       txBorderCss.borderBottom = "2px solid green";
       txTypeSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
     }
-    
+
+    let goalElem = null;
+    let currentMonthElem = null;
+    if (goal) {
+      
+      goalElem = (
+        <div className={s.goal}>
+          {goal.totalSaved}/{goal.amount}
+        </div>
+      );
+
+      currentMonthElem = (
+        <div className={s.currentMonth}>
+          {goal.currentMonthAvailable} - {goal.currentMonthSavingGoal}
+        </div>
+      );
+
+    }
+
     return (
       <div>
         {formError}
@@ -209,6 +227,10 @@ class ConsumptionView extends BaseComponent {
                 <i style={fullWidth} className="material-icons">&#xE163;</i>
               </FlatButton>
             </div>
+          </div>
+          <div>
+            {goalElem}
+            {currentMonthElem}
           </div>
           <div className={s.transactions}>
             <div className={s.transactionsList}>

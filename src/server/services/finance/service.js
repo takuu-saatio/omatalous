@@ -87,6 +87,10 @@ class FinanceService {
       } else {
 
         transaction.user = user;
+        const date = new Date();
+        const monthPadding = date.getMonth() < 9 ? "0" : "";
+        transaction.month = date.getFullYear() + "-" +
+          monthPadding + (date.getMonth() + 1);
         Transaction.schema.create(transaction)
         .then(transaction => resolve({
           created: true,
@@ -130,12 +134,93 @@ class FinanceService {
 
   getGoals(user) {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
 
-      const { Goal } = this.app.entities;
-      
+      const { Goal, Transaction } = this.app.entities;
+       
       Goal.selectAll({ user })
-      .then(goals => resolve(goals))
+      .then(async (goals) => {
+        
+        for(let goal of goals) {
+          
+          if (goal.start && goal.end) {
+              
+            const date = new Date();
+            const monthPadding = date.getMonth() < 9 ? "0" : "";
+            const currentMonth = date.getFullYear() + "-" +
+              monthPadding + (date.getMonth() + 1);
+             
+            let params = {
+              user: user,
+              repeats: { $eq: null },
+              month: { 
+                $gte: goal.start,
+                $lte: goal.end
+              }
+            };
+            
+            try {
+              
+              const nonRepeating = await Transaction.selectAll(params);
+              
+              let nonRepeatingTotal = 0;
+              let nonRepeatingCurrentMonthTotal = 0;
+              
+              nonRepeating.forEach(transaction => {  
+                if (transaction.month !== currentMonth) {
+                  nonRepeatingTotal += transaction.type === "-" ? 
+                    -transaction.amount : transaction.amount;
+                } else {
+                  nonRepeatingCurrentMonthTotal += transaction.type === "-" ? 
+                    -transaction.amount : transaction.amount;
+                }
+              });
+              
+              params = {
+                user: user,
+                repeats: { $ne: null }
+              };
+
+              const repeating = await Transaction.selectAll(params);
+              let repeatingTotal = 0;
+              repeating.forEach(transaction => { 
+                repeatingTotal += transaction.type === "-" ? 
+                  -transaction.amount : transaction.amount;
+              });
+
+              const startMonth = goal.start > currentMonth ? goal.start : currentMonth;
+              const startYYYY = parseInt(startMonth.substring(0, 4));
+              const startMM = parseInt(startMonth.substring(5, 7));
+              const endYYYY = parseInt(goal.end.substring(0, 4));
+              const endMM = parseInt(goal.end.substring(5, 7));
+
+              const remainingYears = endYYYY - startYYYY;
+              let remainingMonths = (endMM - startMM) + (remainingYears * 12);
+              
+              const currentMonthSavingGoal =
+                (goal.amount - nonRepeatingTotal) / remainingMonths;
+
+              const currentMonthAvailable =
+                (repeatingTotal + nonRepeatingCurrentMonthTotal);
+
+              goal.extras = {
+                totalSaved: nonRepeatingTotal,
+                currentMonthAvailable,
+                currentMonthSavingGoal
+              };
+            
+            } catch(err) { 
+              log.debug("SAVINGS PROJ ERROR", err); 
+            }
+
+          }
+
+        }
+        
+        log.debug("RESOLVING GOALS");
+        resolve(goals)
+      
+      })
       .catch(err => reject(err));
 
     });

@@ -11,7 +11,10 @@ export default function (state = {}, action) {
   //console.log("action", action);
   switch (action.type) {
     case actions.FETCH_SUCCESS:
-      return { transactions: action.transactions, isUpdated: true };
+      return Object.assign({ 
+        transactions: action.transactions, 
+        isUpdated: true 
+      }, action.goal ? { goal: action.goal } : {});
     case actions.SAVE_SUCCESS:
       return { messages: { editStatus: "saved" }, created: action.created };
     case actions.DELETE_SUCCESS:

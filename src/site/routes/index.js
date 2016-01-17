@@ -72,6 +72,12 @@ export function registerRoutes(app) {
         consumption: { transactions, iso: true }
       }, req.context.common);
       
+      let goals = await financeService.getGoals(user);
+      goals = goals.map(goal => goal.json());
+      if (goals.length > 0) {
+        state.consumption.goal = goals[0];
+      }
+
       req.context.initialState = Object.assign(req.context.initialState, state);
       app.renderPage(req, res);
 

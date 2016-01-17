@@ -228,6 +228,9 @@ class GoalsView extends BaseComponent {
                   onChange={this._handleStartDropdown.bind(this)}>
                   <MenuItem value="2016-01" primaryText="Tammi 2016" />
                   <MenuItem value="2016-02" primaryText="Helmi 2016" />
+                  <MenuItem value="2016-03" primaryText="Maalis 2016" />
+                  <MenuItem value="2016-04" primaryText="Huhti 2016" />
+                  <MenuItem value="2016-05" primaryText="Touko 2016" />
                 </DropDownMenu>
               </div>
               <div className={s.goalEnd}>
@@ -237,6 +240,9 @@ class GoalsView extends BaseComponent {
                   onChange={this._handleEndDropdown.bind(this)}>
                   <MenuItem value="2016-01" primaryText="Tammi 2016" />
                   <MenuItem value="2016-02" primaryText="Helmi 2016" />
+                  <MenuItem value="2016-03" primaryText="Maalis 2016" />
+                  <MenuItem value="2016-04" primaryText="Huhti 2016" />
+                  <MenuItem value="2016-05" primaryText="Touko 2016" />
                 </DropDownMenu>
               </div>
             </div>
