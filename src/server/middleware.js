@@ -38,7 +38,11 @@ export function registerMiddleware(app) {
       delete req.session.error;
     }
 
-    const messages = await readLocalizedMessages(req.locale);
+    let messages = await readLocalizedMessages(req.locale);
+    if (!messages) {
+      messages = await readLocalizedMessages("en");
+    }
+
     const context = {
       intlData: { 
         locales: ["en-US"],
