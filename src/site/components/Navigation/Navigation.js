@@ -66,7 +66,7 @@ class Navigation extends Component {
       loginElem = (
         <div className={cx(s.navItem, s.buttonItem, s.logoutItem)}>
           <a className={s.link} style={{ verticalAlign: "top" }} href="/logout">
-            <FlatButton label={this.getIntlMessage("logout")} labelStyle={{ color: "white" }} />
+            <FlatButton label={this.getIntlMessage("logout")} />
           </a>
         </div>
       );
@@ -77,7 +77,7 @@ class Navigation extends Component {
       loginElem = this.props.path !== "/login" ? (
         <div className={cx(s.navItem, s.buttonItem)}>
           <a className={s.link} href="/login" onClick={Link.handleClick}>
-            <FlatButton label={this.getIntlMessage("login")} labelStyle={{ color: "white" }} />
+            <FlatButton label={this.getIntlMessage("login")} />
           </a>
         </div>
       ) : null;

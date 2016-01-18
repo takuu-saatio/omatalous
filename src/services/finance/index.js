@@ -36,6 +36,10 @@ export class LocalFinanceServiceInterface extends ServiceInterface {
     return await this.service.deleteGoal(user, uuid);
   }
 
+  async getCurrentMonthStats(user) {
+    return await this.service.getCurrentMonthStats(user);
+  }
+
   async getBudget() {
   }
 

@@ -162,5 +162,26 @@ export function registerRoutes(app) {
     }
  
   });
+  
+  app.get("/api/finance/month/:user?", requireAuth, 
+          async (req, res, next) => {
+    
+    if (!allowedAccess(req.params.user, req)) {
+      return next(new Forbidden());
+    }
+
+    try {
+      
+      let user = req.params.user || req.user.uuid;
+      const { finance } = app.services;
+
+      const month = await finance.getCurrentMonthStats(user);
+      res.json({ status: "ok", month });
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
 
 } 

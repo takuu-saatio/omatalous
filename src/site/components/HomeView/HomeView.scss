@@ -1,20 +1,23 @@
-.root {
-  margin: 0px;
-}
-
-.content {
-  padding: 24px;
+.root {  
+  padding-bottom: 24px;
 }
 
 .banner {
 
-  background: #373277;
-  color: #fff;
+  background-color: #e0e0e0;
+  color: black;
   text-align: center;
   padding-bottom: 12px;
+  padding-top: 20px;
 
   h1 {
     margin: 0px;
   }
 
+}
+
+.content {
+  max-width: 660px;
+  padding: 24px;
+  margin: auto;
 }

@@ -16,14 +16,22 @@ class ConsumptionView extends BaseComponent {
   };
 
   constructor(props) {
+    
     super(props);
     console.log("constr consumption", props);
+
+    this.categoryLabels = {
+      "misc": "Sekalaiset",
+      "groceries": "Ruokakauppa"
+    };
+
     this.state = Object.assign(props.state, {
       quickTransaction: {
         type: "-",
         category: "misc"
       }
     });
+
   }
 
   async fetchData(props = this.props) { 
@@ -98,7 +106,7 @@ class ConsumptionView extends BaseComponent {
   render() {
      
     console.log("render consumption", this.props, this.state);
-    let { transactions, goal, quickTransaction, messages } = this.state;
+    let { transactions, goal, month, quickTransaction, messages } = this.state;
     
     if (this.state.edit) {
       let params = Object.assign(this.props.params, {
@@ -139,30 +147,51 @@ class ConsumptionView extends BaseComponent {
     }
  
     let fullWidth = { width: "100%", minWidth: "initial" };
+
+    let dayNames = [
+      "Ma", "Ti", "Ke", "To", "Pe", "La", "Su"
+    ];
+
+    let transactionElems = null;
     
-    let transactionElems = transactions.map(transaction => {
-      return (
-        <div key={transaction.uuid} className={s.transaction}>
-          <div style={{ color: transaction.type === "+" ? "green" : "red" }}>
-            {transaction.type}{transaction.amount}
-          </div>
-          <div>{transaction.category}</div>
-          <div>{transaction.description}</div>
-          <div className={s.txControls}>
+    if (transactions && transactions.length > 0) {
+      transactionElems = transactions.map(transaction => {
+        return (
+          <div key={transaction.uuid} className={s.transaction}>
             <div>
-              <i className="material-icons"
-                onClick={() => this._deleteTransaction(transaction.uuid)}>
-                &#xE14A;
-              </i>
+              {transaction.createdAt}
             </div>
-            <div>
-              <i className="material-icons"
-                onClick={() => this._editTransaction(transaction.uuid)}>&#xE150;</i>
+            <div style={{ color: transaction.type === "+" ? "green" : "red" }}>
+              {transaction.type}{transaction.amount}
+            </div>
+            <div>{this.categoryLabels[transaction.category]}</div>
+            <div>{transaction.description}</div>
+            <div className={s.txControls}>
+              <div className={s.txControlContainer}>
+                <div>
+                  <i className="material-icons"
+                    onClick={() => this._editTransaction(transaction.uuid)}>
+                    &#xE150;
+                  </i>
+                </div>
+                <div>
+                  <i className="material-icons"
+                    onClick={() => this._deleteTransaction(transaction.uuid)}>
+                    &#xE14A;
+                  </i>
+                </div>
+              </div>
             </div>
           </div>
+        );
+      });
+    } else {
+      transactionElems = (
+        <div className={s.noTransactions}>
+          Ei tapahtumia
         </div>
       );
-    });
+    }
     
     const txBorderCss = {
       transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
@@ -177,7 +206,6 @@ class ConsumptionView extends BaseComponent {
     }
 
     let goalElem = null;
-    let currentMonthElem = null;
     if (goal) {
       
       goalElem = (
@@ -186,12 +214,59 @@ class ConsumptionView extends BaseComponent {
         </div>
       );
 
-      currentMonthElem = (
-        <div className={s.currentMonth}>
-          {goal.currentMonthAvailable} - {goal.currentMonthSavingGoal}
+    } else {
+
+      goalElem = (
+        <div className={s.noGoal}>
+          Ei tavoitetta
         </div>
       );
 
+    }
+
+    console.log("RENDER MONTH", month); 
+    let currentMonthElem = null; 
+    if (month) {
+
+      let available = 
+        month.fixedIncome - 
+        month.fixedExpenses - 
+        month.expenses +
+        month.income;
+      //available = Math.round(available * 100) / 100;
+      available = Math.floor(available);
+      let spendable = available;
+      
+      let monthContent = "" + available;
+      let savingGoal = 0;
+      if (goal) {
+        //savingGoal = Math.round(goal.currentMonthSavingGoal * 100) / 100;
+        savingGoal = Math.floor(goal.currentMonthSavingGoal);
+        monthContent += " - " + savingGoal;
+        //spendable = Math.round((spendable - savingGoal) * 100) / 100;
+        spendable = Math.floor(spendable - savingGoal);
+      }
+      
+      currentMonthElem = (
+        <div className={s.month}>
+          <div className={s.monthLine}></div>
+          <div className={s.monthData}>
+            <div>
+              {available}
+            </div>
+            <div>
+              {savingGoal}
+            </div>
+            <div>
+              {month.label}
+            </div>
+            <div>
+              {spendable}
+            </div>
+          </div>
+        </div>
+      );
+      
     }
 
     return (
@@ -220,6 +295,13 @@ class ConsumptionView extends BaseComponent {
                 <MenuItem value="misc" primaryText="Sekalaiset" />
                 <MenuItem value="groceries" primaryText="Ruokakauppa" />
               </DropDownMenu>
+            </div>
+            <div className={s.description}>
+              <TextField style={fullWidth} 
+                name="description"
+                floatingLabelText="Selite"
+                value={quickTransaction.description}
+                onChange={this._handleInputChange.bind(this)} />
             </div>
             <div className={s.submit}>
               <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 

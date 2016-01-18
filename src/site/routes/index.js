@@ -78,6 +78,9 @@ export function registerRoutes(app) {
         state.consumption.goal = goals[0];
       }
 
+      let month = await financeService.getCurrentMonthStats(user);
+      state.consumption.month = month;
+
       req.context.initialState = Object.assign(req.context.initialState, state);
       app.renderPage(req, res);
 
@@ -161,7 +164,7 @@ export function registerRoutes(app) {
       req.logIn(user, (err) => {
         if (err) return next(err);
         req.session.newUser = user.isNew;
-        res.redirect("/home");
+        res.redirect("/consumption");
       });
     
     })(req, res, next);
@@ -177,7 +180,7 @@ export function registerRoutes(app) {
     }
 
     req.session.newUser = req.user.isNew; 
-    res.redirect("/home");
+    res.redirect("/consumption");
 
   });
 
@@ -190,7 +193,7 @@ export function registerRoutes(app) {
     }
 
     req.session.newUser = req.user.isNew; 
-    res.redirect("/home");
+    res.redirect("/consumption");
     
   });
 

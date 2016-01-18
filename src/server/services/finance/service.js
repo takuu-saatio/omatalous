@@ -10,6 +10,8 @@ import {
   UnprocessableEntity
 } from "../../../core/errors"
 
+const DAY_NAMES = [ "Ma", "Ti", "Ke", "To", "Pe", "La", "Su" ];
+
 class FinanceService {
   
   constructor(app) {
@@ -54,7 +56,18 @@ class FinanceService {
       
       params = Object.assign((params || {}), { user });
       Transaction.selectAll(params, { order: "\"createdAt\" DESC" })
-      .then(transactions => resolve(transactions))
+      .then(transactions => {
+        
+        for (let transaction of transactions) {
+          transaction.extras = {
+            createdAt: DAY_NAMES[transaction.createdAt.getDay()] + " " +
+              transaction.createdAt.getDate()
+          };
+        }
+
+        resolve(transactions)
+      
+      })
       .catch(err => reject(err));
 
     });
@@ -217,7 +230,6 @@ class FinanceService {
 
         }
         
-        log.debug("RESOLVING GOALS");
         resolve(goals)
       
       })
@@ -294,6 +306,65 @@ class FinanceService {
 
   }
 
+  getCurrentMonthStats(user) {
+    
+    return new Promise(async (resolve, reject) => {
+
+      const { Transaction } = this.app.entities;
+       
+      const date = new Date();
+      const monthPadding = date.getMonth() < 9 ? "0" : "";
+      const currentMonth = date.getFullYear() + "-" +
+        monthPadding + (date.getMonth() + 1);
+        
+      Transaction.selectAll({ user, month: currentMonth })
+      .then((transactions) => {
+
+        let fixedIncome = 0;
+        let fixedExpenses = 0;
+        let income = 0;
+        let expenses = 0;
+        let rawIncome = 0;
+        let rawExpenses = 0;
+
+        for(let transaction of transactions) {
+
+          if (transaction.type === "+") {
+            
+            if (transaction.repeats) {
+              fixedIncome += transaction.amount;
+            } else {
+              if (!transaction.copy) {
+                income += transaction.amount;
+              }
+              rawIncome += transaction.amount;
+            }
+
+          } else {
+            
+            if (transaction.repeats) {
+              fixedExpenses += transaction.amount;
+            } else {
+              if (!transaction.copy) {
+                expenses += transaction.amount;
+              }
+              rawExpenses += transaction.amount;
+            }
+          }
+
+        }
+
+        resolve({ 
+          label: currentMonth,
+          fixedIncome, fixedExpenses, income, expenses, rawIncome, rawExpenses 
+        });
+
+      })
+      .catch(err => reject(err));
+
+    });
+
+  }
 
 }
 

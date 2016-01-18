@@ -1,24 +1,29 @@
+.transactionsLabel {
+  width: 100%;
+  text-align: center;
+  padding: 6px;
+  background-color: #f0f0f0;
+}
+
 .transactions {
-     
-  .transactionsLabel {
-    width: 100%;
-    text-align: center;
-  }
+  
+  margin-bottom: 24px;
 
   .transaction {
     
     display: inline-block;
     margin: 6px;
     background-color: #e0e0e0;
-    
+    cursor: pointer;
+
     .txTitle {
       display: inline-block;
-      padding: 6px;
+      padding: 8px;
     }
     
     .txDelete {
       display: inline-block;
-      padding: 6px;
+      padding: 8px;
       border-left: 1px solid #f0f0f0;
     }
     
@@ -27,16 +32,22 @@
   .newTransaction {
     display: inline-block;
     border: 1px solid #e0e0e0;
-    padding: 6px;
+    padding: 8px;
     margin: 6px;
+    cursor: pointer;
   }
 
 }
 
 .goals {
   
+  margin-bottom: 24px;
+
   .goalLabel {
     width: 100%;
+    text-align: center;
+    padding: 6px;
+    background-color: #f0f0f0;
   }
   
   .goal {
@@ -44,21 +55,27 @@
     display: flex;
     
     .goalAmount {
-      flex: 1 0 auto;
+      padding-left: 8px;
+      padding-right: 4px;
+      flex: 1 1 0;
     }
   
     .goalStart {
-      flex: 1 0 auto;
+      flex: 2 1 0;
       display: flex;
+      padding-left: 4px;
+      padding-right: 4px;
       align-items: flex-end;
       padding-bottom: 8px;
     }
 
     .goalEnd {
-      flex: 1 0 auto; 
+      flex: 2 1 0; 
       display: flex;
       align-items: flex-end;
       padding-bottom: 8px;
+      padding-left: 4px;
+      padding-right: 8px;
     }
 
   }
@@ -66,13 +83,14 @@
   .goalsSubmit {
     
     display: flex;
-    
+    padding: 8px;
+
     .editStatus {
-      flex: 1 1 auto;
+      flex: 1 1 0;
     }
     
     .saveButton {
-      flex: 1 1 auto;
+      flex: 1 1 0;
     } 
 
   }

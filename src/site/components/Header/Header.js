@@ -94,7 +94,7 @@ class Header extends BaseComponent {
           {leftNavIcon}
           <div className={logoStyles}>
             <a className={s.brand} href="/" onClick={Link.handleClick}>
-              <img src={require("./logo-small.png")} width="38" height="38" alt="React" />
+              <i className="material-icons">&#xE251;</i>
               <span className={s.brandTxt}>Omatalous</span>
             </a>
           </div>

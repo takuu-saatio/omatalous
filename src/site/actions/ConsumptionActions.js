@@ -45,13 +45,23 @@ export function fetchTransactions(user) {
     
     let response = await http.get(`/api/finance/transactions/${user}?repeats=0`);
     const action = processResponse(response, FETCH_SUCCESS, FETCH_FAIL);
+    
     if (action.type === FETCH_SUCCESS) {
+      
       action.transactions = response.transactions;  
+      
       response = await http.get(`/api/finance/goals/${user}`);
       if (response.goals && response.goals.length > 0) {
         action.goal = response.goals[0];
       }
-    } 
+      
+      response = await http.get(`/api/finance/month/${user}`);
+      if (response.month) {
+        action.month = response.month;
+      }
+    
+    }
+
     dispatch(action);
   
   };

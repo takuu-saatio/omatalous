@@ -3,6 +3,7 @@
   height: 100%;
   display: flex;
   justify-content: center;
+  padding-top: 2px;
   
   .minHidden {
     @media (max-width: 660px) {
@@ -11,6 +12,8 @@
   }
 
   .navItem {
+    padding-top: 6px;
+    pading-right: 10px;
     flex: 0 1 auto;
   }
 
@@ -43,14 +46,14 @@
 .link,
 .link:active,
 .link:visited {
-  color: rgba(255, 255, 255, .6);
+  color: rgba(0, 0, 0, .6);
   i {
     font-size: 36px;
   }
 }
 
 .link:hover {
-  color: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 1);
 }
 
 .highlight {

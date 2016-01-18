@@ -3,8 +3,9 @@
 $brand-color: #61dafb;
 
 .root {
-  background: #373277;
-  color: #fff;
+  background: #e0e0e0;
+  color: black;
+  border-bottom: 1px dashed black;
 }
 
 .container {
@@ -16,21 +17,27 @@ $brand-color: #61dafb;
 
 .logo {
   
-  padding: 6px; 
   flex: 1 1 auto;
-
+  
   .brand {
-    color: color($brand-color lightness(+10%));
+    
     text-decoration: none;
+    color: black;
     font-size: 1.75em; /* ~28px */
-    img {
-      margin-top: -5px;
-    }
+    display: block;
+    padding-top: 6px;
+    padding-left: 6px;
+    vertical-align: top;
 
+    > i {
+      font-size: 40px;
+    }
+  
   }
 
   .brandTxt {
     margin-left: 10px;
+    vertical-align: super;
   }
 
 }

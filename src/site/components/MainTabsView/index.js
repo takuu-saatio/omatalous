@@ -41,6 +41,14 @@ export default class MainTabsView extends BaseComponent {
     });
   };
 
+  _tabLabelCss(index) {
+    if (this.state.tab === index) {
+      return { color: "black" };
+    } else {
+      return { color: "rgba(0, 0, 0, 0.6)" };
+    }
+  }
+
   render() {
 
     console.log("render main tabs", this.state);
@@ -51,14 +59,16 @@ export default class MainTabsView extends BaseComponent {
     } else {
       contentElem = (<div>hsjdjadj</div>);
     }
- 
+    
+     
     return (
       <div>
-        <Tabs
+        <Tabs inkBarStyle={{ backgroundColor: "#a0a0a0" }} 
+          tabItemContainerStyle={{ backgroundColor: "#f0f0f0" }}
           onChange={this._setTab}
           value={this.state.tab}>
-          <Tab label="Kulutus" value={0} />
-          <Tab label="Graafit" value={1} />
+          <Tab label="Kulutus" value={0} style={this._tabLabelCss(0)}/>
+          <Tab label="Graafit" value={1} style={this._tabLabelCss(1)} />
         </Tabs>
         <div>
           <div className={s.insightContainer}>

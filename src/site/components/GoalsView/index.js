@@ -102,6 +102,47 @@ class GoalsView extends BaseComponent {
     this.props.saveGoal(user, this.state.goal);
   }
 
+  _renderDropdown(value, handler) {
+  
+    const dropdownLabelCss = {
+      paddingLeft: "initial",
+      paddingRight: "initial"
+    };
+    
+    const dropdownUnderlineCss = {
+      width: "100%",
+      margin: "initial",
+      marginBottom: "-1px"
+    };
+    
+    const iconStyleCss = {
+      right: "0px"
+    };
+
+    return (
+      <DropDownMenu style={Object.assign({ height: "43px" }, { width: "100%" })}
+        labelStyle={dropdownLabelCss} 
+        underlineStyle={dropdownUnderlineCss} 
+        iconStyle={iconStyleCss}
+        value={value}
+        onChange={handler.bind(this)}>
+        <MenuItem value="2016-01" primaryText="Tammi 2016" />
+        <MenuItem value="2016-02" primaryText="Helmi 2016" />
+        <MenuItem value="2016-03" primaryText="Maalis 2016" />
+        <MenuItem value="2016-04" primaryText="Huhti 2016" />
+        <MenuItem value="2016-05" primaryText="Touko 2016" />
+        <MenuItem value="2016-06" primaryText="Kesä 2016" />
+        <MenuItem value="2016-07" primaryText="Heinä 2016" />
+        <MenuItem value="2016-08" primaryText="Elo 2016" />
+        <MenuItem value="2016-09" primaryText="Syys 2016" />
+        <MenuItem value="2016-10" primaryText="Loka 2016" />
+        <MenuItem value="2016-11" primaryText="Marras 2016" />
+        <MenuItem value="2016-12" primaryText="Joulu 2016" />
+      </DropDownMenu>
+    );
+
+  }
+
   render() {
      
     console.log("render goals", this.props, this.state);
@@ -167,7 +208,7 @@ class GoalsView extends BaseComponent {
           <div className={s.transaction} style={cursorCss} key={transaction.uuid}>
             <div onClick={() => this._editTransaction(transaction.uuid)} 
               className={s.txTitle}>
-              {transaction.description}
+              {transaction.description}&nbsp;
               {transaction.amount} €
             </div>
             <div onClick={() => this._deleteTransaction(transaction.uuid)} 
@@ -184,7 +225,7 @@ class GoalsView extends BaseComponent {
       });
 
     }
-
+    
     return (
       <div>
         {formError}
@@ -222,28 +263,12 @@ class GoalsView extends BaseComponent {
                   onChange={this._handleInputChange.bind(this)} />
               </div>
               <div className={s.goalStart}>
-                <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-                  id="start" 
-                  value={this.state.goal.start} 
-                  onChange={this._handleStartDropdown.bind(this)}>
-                  <MenuItem value="2016-01" primaryText="Tammi 2016" />
-                  <MenuItem value="2016-02" primaryText="Helmi 2016" />
-                  <MenuItem value="2016-03" primaryText="Maalis 2016" />
-                  <MenuItem value="2016-04" primaryText="Huhti 2016" />
-                  <MenuItem value="2016-05" primaryText="Touko 2016" />
-                </DropDownMenu>
+                {this._renderDropdown(this.state.goal.start, 
+                                      this._handleStartDropdown)}
               </div>
               <div className={s.goalEnd}>
-                <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-                  id="end" 
-                  value={this.state.goal.end} 
-                  onChange={this._handleEndDropdown.bind(this)}>
-                  <MenuItem value="2016-01" primaryText="Tammi 2016" />
-                  <MenuItem value="2016-02" primaryText="Helmi 2016" />
-                  <MenuItem value="2016-03" primaryText="Maalis 2016" />
-                  <MenuItem value="2016-04" primaryText="Huhti 2016" />
-                  <MenuItem value="2016-05" primaryText="Touko 2016" />
-                </DropDownMenu>
+                {this._renderDropdown(this.state.goal.end,
+                                      this._handleEndDropdown)}
               </div>
             </div>
             <div className={s.goalsSubmit}>
