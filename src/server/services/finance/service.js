@@ -48,14 +48,17 @@ class FinanceService {
 
   }
 
-  getTransactions(user, params) {
+  getTransactions(user, params, order) {
   
     return new Promise((resolve, reject) => {
 
       const { Transaction } = this.app.entities;
       
       params = Object.assign((params || {}), { user });
-      Transaction.selectAll(params, { order: "\"createdAt\" DESC" })
+      if (!order) {
+        order = "\"createdAt\" DESC";
+      }
+      Transaction.selectAll(params, { order })
       .then(transactions => {
         
         for (let transaction of transactions) {
@@ -100,10 +103,14 @@ class FinanceService {
       } else {
 
         transaction.user = user;
-        const date = new Date();
-        const monthPadding = date.getMonth() < 9 ? "0" : "";
-        transaction.month = date.getFullYear() + "-" +
-          monthPadding + (date.getMonth() + 1);
+        
+        if (!transaction.month) {
+          const date = new Date();
+          const monthPadding = date.getMonth() < 9 ? "0" : "";
+          transaction.month = date.getFullYear() + "-" +
+            monthPadding + (date.getMonth() + 1);
+        }
+        
         Transaction.schema.create(transaction)
         .then(transaction => resolve({
           created: true,
@@ -165,7 +172,10 @@ class FinanceService {
              
             let params = {
               user: user,
-              repeats: { $eq: null },
+              $or: [
+                { type: "single" },
+                { type: "copy" }
+              ],
               month: { 
                 $gte: goal.start,
                 $lte: goal.end
@@ -181,11 +191,11 @@ class FinanceService {
               
               nonRepeating.forEach(transaction => {  
                 if (transaction.month !== currentMonth) {
-                  nonRepeatingTotal += transaction.type === "-" ? 
-                    -transaction.amount : transaction.amount;
+                  nonRepeatingTotal += transaction.sign === "+" ? 
+                    transaction.amount : -transaction.amount;
                 } else {
-                  nonRepeatingCurrentMonthTotal += transaction.type === "-" ? 
-                    -transaction.amount : transaction.amount;
+                  nonRepeatingCurrentMonthTotal += transaction.sign === "+" ?
+                    transaction.amount : -transaction.amount;
                 }
               });
               
@@ -197,8 +207,8 @@ class FinanceService {
               const repeating = await Transaction.selectAll(params);
               let repeatingTotal = 0;
               repeating.forEach(transaction => { 
-                repeatingTotal += transaction.type === "-" ? 
-                  -transaction.amount : transaction.amount;
+                repeatingTotal += transaction.sign === "+" ?
+                  transaction.amount : -transaction.amount;
               });
 
               const startMonth = goal.start > currentMonth ? goal.start : currentMonth;
@@ -329,12 +339,12 @@ class FinanceService {
 
         for(let transaction of transactions) {
 
-          if (transaction.type === "+") {
+          if (transaction.sign === "+") {
             
             if (transaction.repeats) {
               fixedIncome += transaction.amount;
             } else {
-              if (!transaction.copy) {
+              if (transaction.type !== "copy") {
                 income += transaction.amount;
               }
               rawIncome += transaction.amount;
@@ -345,7 +355,7 @@ class FinanceService {
             if (transaction.repeats) {
               fixedExpenses += transaction.amount;
             } else {
-              if (!transaction.copy) {
+              if (transaction.type != "copy") {
                 expenses += transaction.amount;
               }
               rawExpenses += transaction.amount;

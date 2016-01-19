@@ -10,6 +10,7 @@ import MainTabsReducer from "./MainTabsReducer";
 import ConsumptionReducer from "./ConsumptionReducer";
 import TransactionReducer from "./TransactionReducer";
 import GoalsReducer from "./GoalsReducer";
+import PlanningReducer from "./PlanningReducer";
 import BudgetsReducer from "./BudgetsReducer";
 import content from "./content";
 import admin from "./admin";
@@ -29,6 +30,7 @@ export default function(reducers) {
     transaction: TransactionReducer,
     budgets: BudgetsReducer,
     goals: GoalsReducer,
+    planning: PlanningReducer,
     content,
     admin
   });

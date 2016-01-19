@@ -12,13 +12,13 @@ class Transaction extends BaseEntity {
     this.fields = Object.assign(this.fields, {
       
       user: { type: Sequelize.STRING },
-      type: { type: Sequelize.CHAR(1) },
+      sign: { type: Sequelize.CHAR(1) },
+      type: { type: Sequelize.STRING },
       amount: { type: Sequelize.FLOAT },
       description: { type: Sequelize.STRING },
       category: { type: Sequelize.STRING },
       repeats: { type: Sequelize.STRING },
-      month: { type: Sequelize.STRING },
-      copy: { type: Sequelize.BOOLEAN }
+      month: { type: Sequelize.STRING }
 
     });
 

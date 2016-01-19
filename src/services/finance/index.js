@@ -12,8 +12,8 @@ export class LocalFinanceServiceInterface extends ServiceInterface {
     return await this.service.getTransaction(user, uuid);
   }
 
-  async getTransactions(uuid, params) {
-    return await this.service.getTransactions(uuid, params);
+  async getTransactions(user, params, order) {
+    return await this.service.getTransactions(user, params, order);
   }
 
   async saveTransaction(user, transaction) {

@@ -98,10 +98,10 @@ class EditTransactionView extends BaseComponent {
     }
   }
   
-  _toggleTxType() {
-    let type = this.state.transaction.type;
-    type = type === "-" ? "+" : "-"; 
-    this.state.transaction.type = type;
+  _toggleTxSign() {
+    let sign = this.state.transaction.sign;
+    sign = sign === "-" ? "+" : "-"; 
+    this.state.transaction.sign = sign;
     this.setState(this.state);
   }
 
@@ -151,13 +151,13 @@ class EditTransactionView extends BaseComponent {
     const txBorderCss = {
       transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
     };
-    let txTypeSymbol = null;
-    if (transaction.type === "-") {
+    let txSignSymbol = null;
+    if (transaction.sign === "-") {
       txBorderCss.borderBottom = "2px solid red";
-      txTypeSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
+      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
     } else {
       txBorderCss.borderBottom = "2px solid green";
-      txTypeSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
+      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
     }
     
     return (
@@ -166,10 +166,10 @@ class EditTransactionView extends BaseComponent {
         <div className={s.root}>
           <div className={s.saveTransaction}>
             <div className={s.topGroup}>
-              <div className={s.type}>
+              <div className={s.sign}>
                 <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
                   onClick={() => this._toggleTxType()}>
-                  {txTypeSymbol}
+                  {txSignSymbol}
                 </FlatButton>
               </div> 
               <div className={s.amount}>

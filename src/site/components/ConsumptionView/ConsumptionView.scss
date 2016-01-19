@@ -22,7 +22,7 @@
     width: 50%;
   }
 
-  .type {
+  .sign {
     
     flex: 1 1 0;
     padding-left: 6px;
@@ -187,12 +187,21 @@
       }       
       
       > div:nth-child(3) {
-        flex: 3 1 0;
+        flex: 2 1 0;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+        @media (max-width: 660px) {
+          flex: 3 1 0;
+        }
       }       
       
       > div:nth-child(4) {
         
-        flex: 1 1 0;
+        flex: 2 1 0;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
         @media (max-width: 660px) {
           display: none;
         }

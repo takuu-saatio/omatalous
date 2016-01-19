@@ -24,20 +24,29 @@ export function registerRoutes(app) {
       let user = req.params.user || req.user.uuid;
       const { finance } = app.services;
       let params = req.query;
-      if (params && params.repeats) {
-        if (params.repeats === "1") {
-          params.repeats = {
-            $ne: null
-          };
-        } else if(params.repeats === "0") {
-          params.repeats = {
-            $eq: null
-          };
-        } else {
+      let order = null;
+      if (params) {
+        
+        if (params.repeats) {
+          if (params.repeats === "1") {
+            params.type = "repeating";
+          } else if(params.repeats === "0") {
+            params.$or = [
+              { type: "single" },
+              { type: "copy" }
+            ];
+          }
           delete params.repeats;
         }
+        
+        if (params.type === "planned") {
+          order = "\"month\" ASC";
+          log.debug("SETTING ORDER", order);
+        }
+     
       }
-      let transactions = await finance.getTransactions(user, params);
+ 
+      let transactions = await finance.getTransactions(user, params, order);
       transactions = transactions.map(transaction => transaction.json());
       res.json({ status: "ok", transactions });
       

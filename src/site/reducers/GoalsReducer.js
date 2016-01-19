@@ -20,11 +20,12 @@ export default function (state = {}, action) {
       return state;
     case goalsActions.GOAL_SAVE_SUCCESS:
       return { messages: { editStatus: "saved" }, created: action.created, isUpdated: true };
+    case goalsActions.TXS_FETCH_FAIL:
+      return { error: action.error, isUpdated: true };
     case txActions.DELETE_SUCCESS:
       return { status: "deleted" };
     case goalsActions.GOAL_SAVE_FAIL:
       state.messages = { editStatus: "save_failed" };
-    case goalsActions.TXS_FETCH_FAIL:
     case txActions.DELETE_FAIL:
       state.error = action.error;
       return state;

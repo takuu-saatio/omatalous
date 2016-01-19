@@ -125,6 +125,36 @@ export function registerRoutes(app) {
 
   });
   
+  app.get("/planning/:user?", requireAuth, async (req, res, next) => {
+    
+    try {
+      
+      const financeService = app.services.finance;
+
+      const user = req.params.user || req.user.uuid;
+      if (user !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
+        return res.redirect("/denied");
+      }
+      
+      const params = { type: "planned" };
+      const order = "\"month\" ASC";
+      let transactions = await financeService.getTransactions(user, params, order);
+      const state = Object.assign({ 
+        planning: {
+          transactions,
+          iso: true 
+        }
+      }, req.context.common);
+       
+      req.context.initialState = Object.assign(req.context.initialState, state);
+      app.renderPage(req, res);
+
+    } catch (err) {
+      next(err);
+    }
+
+  });
+
   app.get("/admin", requireAuth, async (req, res, next) => {
 
     try {

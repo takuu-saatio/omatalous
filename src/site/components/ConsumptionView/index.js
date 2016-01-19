@@ -27,7 +27,8 @@ class ConsumptionView extends BaseComponent {
 
     this.state = Object.assign(props.state, {
       quickTransaction: {
-        type: "-",
+        sign: "-",
+        type: "single",
         category: "misc"
       }
     });
@@ -46,7 +47,7 @@ class ConsumptionView extends BaseComponent {
     super.updateState(state);
     if (state.messages && state.messages.editStatus === "saved") {
       this.setState(Object.assign(state, { 
-        quickTransaction: { type: "-", category: "misc", amount: "" } 
+        quickTransaction: { sign: "-", type: "single", category: "misc", amount: "" } 
       }));
     }
   }
@@ -75,8 +76,8 @@ class ConsumptionView extends BaseComponent {
   
   _saveTransaction() {
     const user = this.props.params.user || this.state.auth.user.uuid; 
-    const quickTransaction = Object.assign({}, this.state.quickTransaction);
-    this.props.quickSaveTransaction(user, quickTransaction);
+    const transaction = Object.assign({}, this.state.quickTransaction);
+    this.props.quickSaveTransaction(user, transaction);
   } 
 
   _deleteTransaction(uuid) {
@@ -86,10 +87,10 @@ class ConsumptionView extends BaseComponent {
     }
   }
   
-  _toggleTxType() {
-    let type = this.state.quickTransaction.type;
-    type = type === "-" ? "+" : "-"; 
-    this.state.quickTransaction.type = type;
+  _toggleTxSign() {
+    let sign = this.state.quickTransaction.sign;
+    sign = sign === "-" ? "+" : "-"; 
+    this.state.quickTransaction.sign = sign;
     this.setState(this.state);
   }
 
@@ -161,8 +162,8 @@ class ConsumptionView extends BaseComponent {
             <div>
               {transaction.createdAt}
             </div>
-            <div style={{ color: transaction.type === "+" ? "green" : "red" }}>
-              {transaction.type}{transaction.amount}
+            <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
+              {transaction.amount}
             </div>
             <div>{this.categoryLabels[transaction.category]}</div>
             <div>{transaction.description}</div>
@@ -196,13 +197,13 @@ class ConsumptionView extends BaseComponent {
     const txBorderCss = {
       transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
     };
-    let txTypeSymbol = null;
-    if (quickTransaction.type === "-") {
+    let txSignSymbol = null;
+    if (quickTransaction.sign === "-") {
       txBorderCss.borderBottom = "2px solid red";
-      txTypeSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
+      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
     } else {
       txBorderCss.borderBottom = "2px solid green";
-      txTypeSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
+      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
     }
 
     let goalElem = null;
@@ -274,10 +275,10 @@ class ConsumptionView extends BaseComponent {
         {formError}
         <div className={s.root}>
           <div className={s.saveTransaction} style={txBorderCss}>
-            <div className={s.type}>
+            <div className={s.sign}>
               <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                onClick={() => this._toggleTxType()}>
-                {txTypeSymbol}
+                onTouchTap={() => this._toggleTxSign()}>
+                {txSignSymbol}
               </FlatButton>
             </div> 
             <div className={s.amount}>
@@ -305,7 +306,7 @@ class ConsumptionView extends BaseComponent {
             </div>
             <div className={s.submit}>
               <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                onClick={() => this._saveTransaction()}>
+                onTouchTap={() => this._saveTransaction()}>
                 <i style={fullWidth} className="material-icons">&#xE163;</i>
               </FlatButton>
             </div>

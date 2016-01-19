@@ -16,7 +16,8 @@ import {
   AdminContainer,
   ContentContainer,
   MainTabsContainer,
-  GoalsContainer 
+  GoalsContainer,
+  PlanningContainer 
 } from "./containers";
 
 export default new Router(on => {
@@ -39,6 +40,7 @@ export default new Router(on => {
   on("/consumption/:user?", (state) => <MainTabsContainer params={state.params} tab="consumption" />);
   on("/budgets/:user?", (state) => <MainTabsContainer params={state.params} tab="budget" />);
   on("/goals/:user?", (state) => <GoalsContainer params={state.params} />);
+  on("/planning/:user?", (state) => <PlanningContainer params={state.params} />);
   on("/admin", () => <AdminContainer />);
   on("/denied", (state) => {
     return <ContentContainer path={state.path} />
@@ -48,20 +50,6 @@ export default new Router(on => {
     return <ContentContainer path={state.path} />
   });
   
-  /*
-  on("*", async (state) => {
-    console.log("loading content: ", state.path);
-    const source = await http.get(`/api/content?path=${state.path}`);
-    let data = {
-      path: state.path,
-      content: source,
-      title: state.path
-    };
-    console.log("returning content");
-    return <ContentPage {...data} />;
-  });
-  */
-
   on("error", (state, error) => state.statusCode === 404 ?
     <App context={state.context} error={error}><NotFoundPage /></App> :
     <App context={state.context} error={error}><ErrorPage /></App>

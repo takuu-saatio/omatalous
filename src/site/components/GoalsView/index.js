@@ -155,7 +155,8 @@ class GoalsView extends BaseComponent {
       });
       
       let transaction = (edit === "+" || edit === "-") ? {
-        type: edit,
+        sign: edit,
+        type: "repeating",
         category: "misc",
         repeats: "M1"
       } : null;
@@ -216,7 +217,7 @@ class GoalsView extends BaseComponent {
           </div>
         );
         
-        if (transaction.type === "+") {
+        if (transaction.sign === "+") {
           incomeTxElems.push(txElem);
         } else {
           expenseTxElems.push(txElem);
@@ -277,7 +278,7 @@ class GoalsView extends BaseComponent {
               </div>
               <div className={s.saveButton}> 
                 <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                  onClick={() => this._saveGoal()} label="TALLENNA"/>
+                  onTouchTap={() => this._saveGoal()} label="TALLENNA"/>
               </div>
             </div>
           </div>
