@@ -92,6 +92,7 @@ app.renderPage = async (req, res, next) => {
       log.debug("rendering output page");      
       data.initialState = context.initialState;
       data.intlData = context.intlData;
+      data.userAgent = req.headers["user-agent"];
       const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
       res.status(context.statusCode).send("<!doctype html>\n" + html);
     

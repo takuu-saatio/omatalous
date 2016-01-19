@@ -17,7 +17,7 @@ class Html extends Component {
     title: "",
     description: "",
   };
-
+  
   trackingCode() {
     return ({ __html:
       `(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=` +
@@ -35,8 +35,19 @@ class Html extends Component {
        window.__INTL_DATA__ = ${JSON.stringify(this.props.intlData)};`
     });
   }
-  
+
   render() {
+    
+    let intlPolyfill = null;
+    
+    const { userAgent } = this.props;  
+    console.log("HTML USER AGENT", userAgent);
+    if (userAgent.indexOf("Safari") !== -1 && userAgent.indexOf("Chrome") === -1) {
+      intlPolyfill = (
+        <script src="/polyfill.js"></script>
+      );
+    }
+
     return (
       <html className="no-js" lang="">
       <head>
@@ -49,6 +60,7 @@ class Html extends Component {
         <link href="/fonts.css" rel="stylesheet" type="text/css" />
         <style id="css" dangerouslySetInnerHTML={{ __html: this.props.css }} />
         <script dangerouslySetInnerHTML={this.initialState()} />
+        {intlPolyfill}
       </head>
       <body>
         <div id="app" dangerouslySetInnerHTML={{ __html: this.props.body }} />

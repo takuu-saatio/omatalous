@@ -1,15 +1,24 @@
 "use strict";
 
+console.log("PRESTARTING APP.....");
+
 import "babel-core/polyfill";
 import ReactDOM from "react-dom";
 import FastClick from "fastclick";
 import Router from "./site/router";
 import Location from "./core/Location";
 import { addEventListener, removeEventListener } from "./core/DOMUtils";
+import { canUseDOM } from "fbjs/lib/ExecutionEnvironment";
 
 let cssContainer = document.getElementById("css");
 const appContainer = document.getElementById("app");
 let firstLoad = true;
+
+console.log("STARTING APP.....");
+if (canUseDOM && !window.Intl) {
+  console.log("POLYFILLING INTL");
+  require("intl");
+}
 
 const context = {
 
