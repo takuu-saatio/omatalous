@@ -21,6 +21,7 @@ import SchemaLoader from "./server/schema/SchemaLoader";
 import { LocalAuthServiceInterface } from "./services/auth";
 import { LocalUserServiceInterface } from "./services/user";
 import { LocalFinanceServiceInterface } from "./services/finance";
+import { LocalStatsServiceInterface } from "./services/stats";
 import { HttpCommonServiceInterface } from "./services/common";
 
 const app = global.app = express();
@@ -68,6 +69,9 @@ app.services = {
     provideService: true, provideRoutes: true 
   }),
   finance: new LocalFinanceServiceInterface(app, { 
+    provideService: true, provideRoutes: true 
+  }),
+  stats: new LocalStatsServiceInterface(app, { 
     provideService: true, provideRoutes: true 
   }),
   common: new HttpCommonServiceInterface(app, { provideRoutes: true })

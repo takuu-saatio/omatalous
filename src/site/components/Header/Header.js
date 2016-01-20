@@ -88,6 +88,11 @@ class Header extends BaseComponent {
       
     }
      
+    let accountIcon = <i className="material-icons">&#xE853;</i>;
+    if (auth.user && auth.user.icon) {
+      accountIcon = <img src={auth.user.icon}/>;
+    }
+
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -104,11 +109,10 @@ class Header extends BaseComponent {
         <div className={s.leftNav} style={leftNavCss}>
           <MenuItem onTouchTap={() => this._menuGo("/account")}>
             <div className={s.menuItem}>
-              <i className="material-icons">&#xE853;</i>
+              {accountIcon}
               <span>Tili</span>
             </div>
           </MenuItem>
-          {adminNavItem}
           <MenuItem onTouchTap={() => this._menuGo("/consumption")}>
             <div className={s.menuItem}>
               <i className="material-icons">&#xE870;</i>
@@ -121,6 +125,13 @@ class Header extends BaseComponent {
               <span>Tavoitteet</span>
             </div>
           </MenuItem>
+          <MenuItem onTouchTap={() => this._menuGo("/planning")}>
+            <div className={s.menuItem}>
+              <i className="material-icons">&#xE878;</i>
+              <span>Suunnittelu</span>
+            </div>
+          </MenuItem>
+          {adminNavItem}
           <MenuItem primaryText="Ulos" onTouchTap={this._logOut} />
         </div>
       </div>

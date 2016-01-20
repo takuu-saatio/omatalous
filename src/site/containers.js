@@ -23,6 +23,8 @@ import GoalsView from "./components/GoalsView";
 import * as GoalsActions from "./actions/GoalsActions";
 import PlanningView from "./components/PlanningView";
 import * as PlanningActions from "./actions/PlanningActions";
+import GraphsView from "./components/GraphsView";
+import * as GraphsActions from "./actions/GraphsActions";
 import AdminView from "./components/AdminView";
 import * as AdminActions from "./actions/admin";
 
@@ -47,5 +49,6 @@ export const GoalsContainer = container(GoalsView,
   Object.assign(GoalsActions, EditTransactionActions), "goals");
 export const PlanningContainer = container(PlanningView, 
   Object.assign(PlanningActions, EditTransactionActions), "planning");
+export const GraphsContainer = container(GraphsView, GraphsActions, "graphs");
 export const ContentContainer = container(ContentView, {}, "content");
 export const AdminContainer = container(AdminView, AdminActions, "admin");

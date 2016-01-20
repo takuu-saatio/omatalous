@@ -5,6 +5,7 @@ export default function status(state = { testVal: "test-def" }, action) {
     case TEST:
       return { testVal: "test-testing" };
     default:
+      state.pass = true;
       return state
   }
 }

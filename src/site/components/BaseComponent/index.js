@@ -10,8 +10,10 @@ class BaseComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     console.log("bc will rec props", nextProps);
-    this._fetchIfUpdated(nextProps);
-    this.updateState(nextProps.state);
+    if (!nextProps.state.pass) {
+      this._fetchIfUpdated(nextProps);
+      this.updateState(nextProps.state);
+    }
   }
    
   componentDidMount() {

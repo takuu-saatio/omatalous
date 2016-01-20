@@ -40,10 +40,14 @@ class Navigation extends Component {
         );
       }
       
+      let accountIcon = auth.user.icon ?
+        <img src={auth.user.icon}/> :
+        <i className="material-icons">&#xE853;</i>
+        
       accountElem = (
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
           <a className={s.link} href="/account" onClick={Link.handleClick}>
-            <i className="material-icons">&#xE853;</i>
+            {accountIcon}
           </a>
         </div>
       );
@@ -95,11 +99,11 @@ class Navigation extends Component {
 
     return (
       <div className={cx(s.root, this.props.className)} role="navigation">
-        {adminElem}
         {accountElem}
         {consumptionElem}
         {goalsElem}
         {planningElem}
+        {adminElem}
         {loginElem}
       </div>
     );

@@ -77,7 +77,10 @@ class AuthService {
       
       const { User } = this.app.entities;
     
-      let { method, email, password } = loginParams;
+      let { 
+        method, email, password, firstName, lastName,
+        extId, gender, username, icon 
+      } = loginParams;
       
       const searchCriteria = email === "token" ?
         { token: password } : { email: email };
@@ -98,7 +101,8 @@ class AuthService {
           password = password || generatePassword(8, false);
           const pwdHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
           user = {
-            email: email,
+            email, password, firstName, lastName,
+            extId, username, gender, icon,
             password: pwdHash
           };
         

@@ -201,7 +201,7 @@ export function registerRoutes(app) {
     
   });
 
-  app.get("/login/fb", app.passport.authenticate("login-facebook", { scope: ["email"] }));
+  app.get("/login/fb", app.passport.authenticate("login-facebook", { scope: ["email", "public_profile" ] }));
   
   app.get("/login/fb/callback", app.passport.authenticate("login-facebook"), (req, res, next) => { 
     
@@ -214,7 +214,7 @@ export function registerRoutes(app) {
 
   });
 
-  app.get("/login/google", app.passport.authenticate("login-google", { scope: ["email"] }));
+  app.get("/login/google", app.passport.authenticate("login-google", { scope: ["email", "profile" ] }));
   
   app.get("/login/google/callback", app.passport.authenticate("login-google"), (req, res, next) => { 
  

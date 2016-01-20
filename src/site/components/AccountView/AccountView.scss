@@ -17,9 +17,11 @@
   }
 
   .profileRow {
-     
+      
     .profileCell {
       
+      vertical-align: top;
+           
       @media (min-width: 660px) {
         display: inline-block;
         width: 48%;
@@ -30,7 +32,15 @@
       .textField {
         width: 100%;
       }
-
+      
+      .dropdownLabel {
+        margin-bottom: -10px;
+        margin-top: 10px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 12px;
+        margin-left: 26px; 
+      }
+      
     }
 
   }

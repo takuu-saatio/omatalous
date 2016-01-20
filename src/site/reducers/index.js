@@ -11,6 +11,7 @@ import ConsumptionReducer from "./ConsumptionReducer";
 import TransactionReducer from "./TransactionReducer";
 import GoalsReducer from "./GoalsReducer";
 import PlanningReducer from "./PlanningReducer";
+import GraphsReducer from "./GraphsReducer";
 import BudgetsReducer from "./BudgetsReducer";
 import content from "./content";
 import admin from "./admin";
@@ -31,6 +32,7 @@ export default function(reducers) {
     budgets: BudgetsReducer,
     goals: GoalsReducer,
     planning: PlanningReducer,
+    graphs: GraphsReducer,
     content,
     admin
   });

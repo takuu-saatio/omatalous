@@ -7,7 +7,8 @@ import SwipeableViews from "react-swipeable-views";
 import BaseComponent from "../BaseComponent";
 
 import {
-  ConsumptionContainer
+  ConsumptionContainer,
+  GraphsContainer
 } from "../../containers";
 
 const styles = {
@@ -55,9 +56,9 @@ export default class MainTabsView extends BaseComponent {
     
     let contentElem = null;
     if (this.state.tab === 0) {
-      contentElem = <ConsumptionContainer params={this.props.params} />
+      contentElem = <ConsumptionContainer params={this.props.params} />;
     } else {
-      contentElem = (<div>hsjdjadj</div>);
+      contentElem = <GraphsContainer params={this.props.params} />;
     }
     
      

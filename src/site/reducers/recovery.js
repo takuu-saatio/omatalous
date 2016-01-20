@@ -13,6 +13,7 @@ export default function (state = {}, action) {
     case actions.RECOVERY_FAIL:
       return { error: action.error };
     default:
+      state.pass = true;
       return state;
   }
 

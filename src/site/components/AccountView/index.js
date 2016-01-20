@@ -3,6 +3,8 @@ import s from "./AccountView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
+import DropDownMenu from "material-ui/lib/DropDownMenu";
+import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
 
 @withStyles(s)
@@ -48,12 +50,18 @@ class AccountView extends BaseComponent {
     }
   }
 
-  _handleInputChange(event) {
-
+  _handleFormChange(name, value) {
     let formParams = {};
-    formParams[event.target.name] = event.target.value;
+    formParams[name] = value;
     let account = Object.assign(this.state.account, formParams);
-    let state = { account: Object.assign({}, account) };
+    let state = Object.assign(this.state, { account });
+    state.messages = { editStatus: "changed" };
+    return state;
+  }
+  
+  _handleInputChange(event) {
+    
+    let state = this._handleFormChange(event.input.name, event.input.value);
     
     if (event.target.name === "password") {
       state = { account: Object.assign(account, { password: account.password }) };
@@ -63,9 +71,17 @@ class AccountView extends BaseComponent {
       state.messages = { editStatus: "changed" };
       this.setState(state);
     }
-
+    
   }
   
+  _handleGenderDropdown(event, index, value) {
+    this.setState(this._handleFormChange("gender", value));
+  }
+  
+  _handleAgeDropdown(event, index, value) {
+    this.setState(this._handleFormChange("age", value));
+  }
+
   _saveAccount() {
     const account = Object.assign({}, this.state.account);
     delete account.password;
@@ -193,6 +209,28 @@ class AccountView extends BaseComponent {
                   floatingLabelText="Sukunimi"
                   value={account.lastName}
                   onChange={this._handleInputChange.bind(this)} />
+              </div>
+            </div>
+            <div className={s.profileRow}>
+              <div className={s.profileCell}>
+                <div className={s.dropdownLabel}>Sukupuoli</div>
+                <DropDownMenu style={Object.assign({ width: "100%", height: "43px" })}
+                  name="gender"
+                  value={account.gender} 
+                  onChange={this._handleGenderDropdown.bind(this)}>
+                  <MenuItem value="M" primaryText="Mies" />
+                  <MenuItem value="F" primaryText="Nainen" />
+                </DropDownMenu>
+              </div>
+              <div className={s.profileCell}>
+                <div className={s.dropdownLabel}>Ikä</div>
+                <DropDownMenu style={Object.assign({ width: "100%", height: "43px" })}
+                  name="age"
+                  value={account.age} 
+                  onChange={this._handleAgeDropdown.bind(this)}>
+                  <MenuItem value="1" primaryText="alle 21" />
+                  <MenuItem value="2" primaryText= "21 tai vanhempi" />
+                </DropDownMenu>
               </div>
             </div>
             <div className={s.saveProfile}>

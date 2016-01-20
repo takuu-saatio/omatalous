@@ -12,6 +12,7 @@ export default function status(state = defaultState, action) {
     case REGISTER:
       return { title: "HO", content: "ipsum" };
     default:
+      state.pass = true;
       return state
   }
 }

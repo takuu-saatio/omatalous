@@ -11,6 +11,7 @@ export default function status(state = defaultState, action) {
     case REGISTER:
       return { status: "registering" };
     default:
+      state.pass = true;
       return state
   }
 }

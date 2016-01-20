@@ -1,0 +1,22 @@
+.root {
+}
+
+.graph {
+  
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding-top: 24px;
+  padding-bottom: 24px;
+   
+  .graphLabel {
+    width: 100%;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+
+  .graphContainer {
+    margin: auto;
+  }
+
+}

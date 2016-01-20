@@ -7,21 +7,23 @@ export default function (state = {}, action) {
   state = Object.assign({}, state);
   state.error = null;
   
-  //console.log("action", action);
+  console.log("action", action);
   switch (action.type) {
     case actions.LOGIN_SUCCESS:
       return { user: action.user };
     case actions.LOGOUT_SUCCESS:
       state.user = null;
       return state;
-    default:
+    case actions.LOGIN_FAIL:
       return Object.assign(state, action.error ? { 
           error: {
             cause: action.error,
             message: "Log-in failed"
           }
       } : {});
-
+    default:
+      state.pass = true;
+      return state;
   }
 
 }

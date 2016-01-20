@@ -19,11 +19,14 @@ export default function (state = {}, action) {
       return { status: "deleted" };
     case actions.SAVE_FAIL:
       state.messages = { editStatus: "save_failed" };
+      return state;
     case actions.FETCH_FAIL:
     case actions.DELETE_FAIL:
       state.error = action.error;
       return state;
     default:
+      console.log("set pass to true");
+      state.pass = true;
       return state;
   }
 

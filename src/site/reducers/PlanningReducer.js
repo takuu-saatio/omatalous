@@ -20,6 +20,7 @@ export default function (state = {}, action) {
       state.error = action.error;
       return state;
     default:
+      state.pass = true;
       return state;
   }
 

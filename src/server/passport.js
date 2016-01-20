@@ -8,6 +8,8 @@ import bcrypt from "bcrypt-nodejs";
 
 import { BaseError, Unauthorized } from "../core/errors";
 
+const FB_GRAPH_API_URL = "https://graph.facebook.com/v2.5";
+
 export default function(app) {
    
   const { User } = app.entities; 
@@ -21,15 +23,24 @@ export default function(app) {
 
   const loginWithProfile = async (method, profile) => {
     
-    var email = (profile && profile.emails && profile.emails.length > 0) ? 
+    let email = (profile && profile.emails && profile.emails.length > 0) ? 
       profile.emails[0].value : null;
-
+    let username = profile.username;
+    let extId = profile.id;
+    let gender = profile.gender ? (profile.gender === "male" ? "M" : "F") : null;
+    let icon = profile.icon;
+    let firstName = profile.name.givenName;
+    let lastName = profile.name.familyName;
+    
     if (!email) {
       return { error: new Unauthorized(null, "missing_provider_data") };
     }
 
     try {
-      const result = await auth.login({ method, email });
+      const result = await auth.login({ 
+        method, email, firstName, lastName, 
+        extId, username, gender, icon 
+      });
       return result;
     } catch (err) {
       return { error: err };
@@ -73,11 +84,12 @@ export default function(app) {
     clientID: process.env.FB_CLIENT_ID,
     clientSecret: process.env.FB_CLIENT_SECRET,
     callbackURL: `http://${callbackHost}/login/fb/callback`,
-    profileFields: ["id", "emails", "name" ],
+    profileFields: ["id", "emails", "name", "gender", "age_range" ],
     passReqToCallback: true
   }, async (req, accessToken, refreshToken, profile, done) => {
 
       log.debug("Invoke Facebook login strategy", accessToken, refreshToken, profile); 
+      profile.icon = `${FB_GRAPH_API_URL}/${profile.id}/picture`;
       const result = await loginWithProfile("Facebook", profile);
       done(result.error, result.user);
 
@@ -89,12 +101,15 @@ export default function(app) {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: `http://${callbackHost}/login/google/callback`,
-    profileFields: ["id", "emails", "name" ],
+    profileFields: ["id", "emails", "name", "username", "gender", "birthday" ],
     passReqToCallback: true
   }, async (req, accessToken, refreshToken, profile, done) => {
       
       log.debug("Invoke Google login strategy", accessToken, refreshToken, profile);
+      profile.icon = (profile.photos && profile.photos.length > 0) ? 
+        profile.photos[0].value : null;
       const result = await loginWithProfile("Google", profile);
+      
       done(result.error, result.user);
 
     }

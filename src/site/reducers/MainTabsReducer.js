@@ -8,7 +8,8 @@ export default function (state = {}, action) {
     case actions.TAB_CHANGED:
       return { tab: action.tab };
     default:
-      return { tab: 0 };
+      state.pass = true;
+      return state;
   }
 
 }

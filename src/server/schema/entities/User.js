@@ -14,7 +14,11 @@ class User extends BaseEntity {
       email: { type: Sequelize.STRING },
       username: { type: Sequelize.STRING },
       password: { type: Sequelize.STRING },
+      extId: { type: Sequelize.STRING },
       token: { type: Sequelize.STRING },
+      age: { type: Sequelize.STRING },
+      gender: { type: Sequelize.CHAR(1) },
+      icon: { type: Sequelize.STRING },
       firstName: {
         type: Sequelize.STRING,
         field: "first_name"
