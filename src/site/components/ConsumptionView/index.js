@@ -39,10 +39,12 @@ class ConsumptionView extends BaseComponent {
 
     const user = this.props.params.user || this.state.auth.user.uuid; 
     console.log("fetching transactions for", user);
-    this.props.fetchTransactions(user);
+    let { month, monthStats } = this.state;
+    month = month || (monthStats ? monthStats.label : null);
+    this.props.fetchTransactions(user, this.state.month);
 
   }
-  
+ 
   updateState(state) {
     super.updateState(state);
     if (state.messages && state.messages.editStatus === "saved") {
@@ -50,6 +52,40 @@ class ConsumptionView extends BaseComponent {
         quickTransaction: { sign: "-", type: "single", category: "misc", amount: "" } 
       }));
     }
+  }
+
+  _loadNextMonth() {
+    
+    let monthElems = this.state.month.split("-");
+    let [ nextYear, nextMonth ] = monthElems;
+    if (nextMonth === "12") {
+      nextYear = parseInt(nextYear) + 1;
+      nextMonth = "01";
+    } else {
+      let monthPadding = parseInt(nextMonth) < 9 ? "0" : "";
+      nextMonth = monthPadding + (parseInt(nextMonth) + 1);
+    }
+
+    this.state.month = nextYear + "-" + nextMonth;
+    this.fetchData();
+
+  }
+  
+  _loadPrevMonth() {
+    
+    let monthElems = this.state.month.split("-");
+    let [ prevYear, prevMonth ] = monthElems;
+    if (prevMonth === "01") {
+      prevYear = parseInt(prevYear) - 1;
+      prevMonth = "12";
+    } else {
+      let monthPadding = parseInt(prevMonth) < 11 ? "0" : "";
+      prevMonth = monthPadding + (parseInt(prevMonth) - 1);
+    }
+    
+    this.state.month = prevYear + "-" + prevMonth;
+    this.fetchData();
+
   }
 
   _handleInputChange(event) {
@@ -107,7 +143,7 @@ class ConsumptionView extends BaseComponent {
   render() {
      
     console.log("render consumption", this.props, this.state);
-    let { transactions, goal, month, quickTransaction, messages } = this.state;
+    let { transactions, goal, monthStats, quickTransaction, messages } = this.state;
     
     if (this.state.edit) {
       let params = Object.assign(this.props.params, {
@@ -153,9 +189,9 @@ class ConsumptionView extends BaseComponent {
       "Ma", "Ti", "Ke", "To", "Pe", "La", "Su"
     ];
 
-    let transactionElems = null;
-    
+    let transactionElems = null; 
     if (transactions && transactions.length > 0) {
+
       transactionElems = transactions.map(transaction => {
         return (
           <div key={transaction.uuid} className={s.transaction}>
@@ -163,7 +199,7 @@ class ConsumptionView extends BaseComponent {
               {transaction.createdAt}
             </div>
             <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
-              {transaction.amount}
+              {transaction.sign}{transaction.amount}
             </div>
             <div>{this.categoryLabels[transaction.category]}</div>
             <div>{transaction.description}</div>
@@ -186,6 +222,7 @@ class ConsumptionView extends BaseComponent {
           </div>
         );
       });
+
     } else {
       transactionElems = (
         <div className={s.noTransactions}>
@@ -199,10 +236,10 @@ class ConsumptionView extends BaseComponent {
     };
     let txSignSymbol = null;
     if (quickTransaction.sign === "-") {
-      txBorderCss.borderBottom = "2px solid red";
+      //txBorderCss.borderBottom = "2px solid red";
       txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
     } else {
-      txBorderCss.borderBottom = "2px solid green";
+      //txBorderCss.borderBottom = "2px solid green";
       txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
     }
 
@@ -211,7 +248,7 @@ class ConsumptionView extends BaseComponent {
       
       goalElem = (
         <div className={s.goal}>
-          {goal.totalSaved}/{goal.amount}
+          {goal.totalSaved}/{goal.amount} €
         </div>
       );
 
@@ -225,15 +262,15 @@ class ConsumptionView extends BaseComponent {
 
     }
 
-    console.log("RENDER MONTH", month); 
+    console.log("RENDER MONTH", monthStats); 
     let currentMonthElem = null; 
-    if (month) {
+    if (monthStats) {
 
       let available = 
-        month.fixedIncome - 
-        month.fixedExpenses - 
-        month.expenses +
-        month.income;
+        monthStats.fixedIncome - 
+        monthStats.fixedExpenses - 
+        monthStats.expenses +
+        monthStats.income;
       //available = Math.round(available * 100) / 100;
       available = Math.floor(available);
       let spendable = available;
@@ -252,22 +289,66 @@ class ConsumptionView extends BaseComponent {
         <div className={s.month}>
           <div className={s.monthLine}></div>
           <div className={s.monthData}>
-            <div>
-              {available}
+            <div className={s.section}>
+              <div className={s.sectionLabel}>
+                Jäljellä
+              </div>
+              <div className={s.sectionValue}>
+                {available} €
+              </div>
             </div>
-            <div>
-              {savingGoal}
+            <div className={s.section}>
+              <div className={s.sectionLabel}>
+                Käytettävissä
+              </div>
+              <div className={s.sectionValue}>
+                {spendable} €
+              </div>
             </div>
-            <div>
-              {month.label}
-            </div>
-            <div>
-              {spendable}
+            <div className={s.section}>
+              <div className={s.sectionLabel}>
+                Kk-säästö
+              </div>
+              <div className={s.sectionValue}>
+                {savingGoal} €
+              </div>
             </div>
           </div>
         </div>
       );
       
+    }
+    
+    let floatLabelCss = {
+      //transform: "perspective(1px) scale(0.75) translate3d(2px, -20px, 0px)"
+    };
+    
+    let bottomMonthNav = null;
+    let topMonthNav = null;
+    if (this.state.month !== monthStats.label) {
+      topMonthNav = (
+        <div className={s.topMonthNav}>
+          <div>
+            <FlatButton style={Object.assign({ lineHeight: "28px" })} 
+              onTouchTap={() => this._loadNextMonth()}
+              label="&lt; MYÖHEMPI" />
+          </div>
+          <div>{this.state.month}</div>
+          <div>
+            <FlatButton style={Object.assign({ lineHeight: "28px" })} 
+              onTouchTap={() => this._loadPrevMonth()}
+              label="AIKAISEMPI &gt;" />
+          </div>
+        </div>
+      );
+    } else if (transactions && transactions.length > 0) {
+      bottomMonthNav = (
+        <div className={s.bottomMonthNav}>
+          <FlatButton style={Object.assign({ lineHeight: "28px" })} 
+            onTouchTap={() => this._loadPrevMonth()}
+            label="Selaa historiaa" />
+        </div>
+      ); 
     }
 
     return (
@@ -285,6 +366,7 @@ class ConsumptionView extends BaseComponent {
               <TextField style={fullWidth} 
                 name="amount" 
                 floatingLabelText="Määrä"
+                floatingLabelStyle={floatLabelCss}
                 value={quickTransaction.amount}
                 onChange={this._handleInputChange.bind(this)} />
             </div>
@@ -315,11 +397,13 @@ class ConsumptionView extends BaseComponent {
             {goalElem}
             {currentMonthElem}
           </div>
+          {topMonthNav}
           <div className={s.transactions}>
             <div className={s.transactionsList}>
               {transactionElems}
             </div>
           </div>
+          {bottomMonthNav}
         </div>
       </div>
     );

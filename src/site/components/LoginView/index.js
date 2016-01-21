@@ -91,8 +91,6 @@ class LoginPage extends BaseComponent {
             {loginForm}
           </div>
         </div>
-        <button onClick={() => test()}>Test</button>
-        <a href="#" onClick={() => {this.props.go("/home")}}>TEST</a>
       </div>
     );
   }

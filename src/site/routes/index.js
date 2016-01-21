@@ -3,7 +3,7 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/routes");
 
-import { readContent } from "../../core/utils";
+import { getCurrentMonth, readContent } from "../../core/utils";
 import { requireAuth } from "../../server/siteFilters";
 import { Unauthorized } from "../../core/errors";
 
@@ -61,15 +61,20 @@ export function registerRoutes(app) {
       if (user !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
         return res.redirect("/denied");
       }
-
-      const params = { repeats: { $eq: null } };
+      
+      const currentMonth = getCurrentMonth();
+      const params = { repeats: { $eq: null }, month: currentMonth };
       let transactions = await financeService.getTransactions(user, params);
       transactions = transactions.map(transaction => transaction.json());
       const state = Object.assign({ 
         mainTabs: {
           tab: 0,
         },
-        consumption: { transactions, iso: true }
+        consumption: { 
+          transactions,
+          month: currentMonth, 
+          iso: true 
+        }
       }, req.context.common);
       
       let goals = await financeService.getGoals(user);
@@ -78,8 +83,8 @@ export function registerRoutes(app) {
         state.consumption.goal = goals[0];
       }
 
-      let month = await financeService.getCurrentMonthStats(user);
-      state.consumption.month = month;
+      let monthStats = await financeService.getCurrentMonthStats(user);
+      state.consumption.monthStats = monthStats;
 
       req.context.initialState = Object.assign(req.context.initialState, state);
       app.renderPage(req, res);

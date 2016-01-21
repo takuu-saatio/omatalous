@@ -74,38 +74,76 @@ class PlanningView extends BaseComponent {
     
     }
     
+    const groupedTxs = [];
+    let txGroup = { transactions: [] };
+    transactions.forEach(transaction => {
+      
+      if (transaction.month !== txGroup.month) {
+        groupedTxs.push(Object.assign({}, txGroup));
+        txGroup = { month: transaction.month, transactions: [] };
+      }
+
+      txGroup.transactions.push(transaction);
+
+    });
+
+    groupedTxs.push(txGroup);
     let transactionElems = null;
     if (transactions && transactions.length > 0) {
-      transactionElems = transactions.map(transaction => {
-        return (
-          <div key={transaction.uuid} className={s.transaction}>
-            <div>
-              {transaction.month}
-            </div>
-            <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
-              {transaction.amount}
-            </div>
-            <div>{this.categoryLabels[transaction.category]}</div>
-            <div>{transaction.description}</div>
-            <div className={s.txControls}>
-              <div className={s.txControlContainer}>
-                <div>
-                  <i className="material-icons"
-                    onClick={() => this._editTransaction(transaction.uuid)}>
-                    &#xE150;
-                  </i>
-                </div>
-                <div>
-                  <i className="material-icons"
-                    onClick={() => this._deleteTransaction(transaction.uuid)}>
-                    &#xE14A;
-                  </i>
+
+      transactionElems = [];
+      groupedTxs.forEach((group, i) => {
+        
+        const groupTransactionElems = group.transactions.map(transaction => {
+          return (
+            <div key={transaction.uuid} className={s.transaction}>
+              <div>
+                {transaction.month}
+              </div>
+              <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
+                {transaction.sign}{transaction.amount}
+              </div>
+              <div>{this.categoryLabels[transaction.category]}</div>
+              <div>{transaction.description}</div>
+              <div className={s.txControls}>
+                <div className={s.txControlContainer}>
+                  <div>
+                    <i className="material-icons"
+                      onClick={() => this._editTransaction(transaction.uuid)}>
+                      &#xE150;
+                    </i>
+                  </div>
+                  <div>
+                    <i className="material-icons"
+                      onClick={() => this._deleteTransaction(transaction.uuid)}>
+                      &#xE14A;
+                    </i>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
+          );
+        });
+      
+        transactionElems = transactionElems.concat(groupTransactionElems);
+        if (groupedTxs.length > i+1) {
+
+          let nextMonth = groupedTxs[i+1].month;
+          const monthHeaderElem = (
+            <div className={s.monthHeader} key={nextMonth}>
+              <div className={s.monthHeaderLine}></div>
+              <div className={s.monthHeaderLabel}>
+                {nextMonth}
+              </div>
+            </div>
+          );
+
+          transactionElems.push(monthHeaderElem);
+        
+        }
+
       });
+
     } else {
       transactionElems = (
         <div className={s.noTransactions}>

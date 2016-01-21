@@ -3,6 +3,9 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/services/finance/service");
 
+import { getCurrentMonth } from "../../../core/utils";
+import * as utils from "../../../core/utils";
+
 import { 
   BaseError,
   NotFound, 
@@ -55,6 +58,7 @@ class FinanceService {
       const { Transaction } = this.app.entities;
       
       params = Object.assign((params || {}), { user });
+      log.debug("GET TXS!!!!!", params, order);
       if (!order) {
         order = "\"createdAt\" DESC";
       }
@@ -165,11 +169,8 @@ class FinanceService {
           
           if (goal.start && goal.end) {
               
-            const date = new Date();
-            const monthPadding = date.getMonth() < 9 ? "0" : "";
-            const currentMonth = date.getFullYear() + "-" +
-              monthPadding + (date.getMonth() + 1);
-             
+            const currentMonth = getCurrentMonth();
+
             let params = {
               user: user,
               $or: [
@@ -321,12 +322,8 @@ class FinanceService {
     return new Promise(async (resolve, reject) => {
 
       const { Transaction } = this.app.entities;
-       
-      const date = new Date();
-      const monthPadding = date.getMonth() < 9 ? "0" : "";
-      const currentMonth = date.getFullYear() + "-" +
-        monthPadding + (date.getMonth() + 1);
-        
+      const currentMonth = getCurrentMonth();
+
       Transaction.selectAll({ user, month: currentMonth })
       .then((transactions) => {
 

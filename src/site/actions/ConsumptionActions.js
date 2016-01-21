@@ -39,11 +39,16 @@ export function quickDeleteTransaction(user, uuid) {
 
 }
 
-export function fetchTransactions(user) {
+export function fetchTransactions(user, month) {
   
   return async (dispatch) => {
-    
-    let response = await http.get(`/api/finance/transactions/${user}?repeats=0`);
+
+    let url = `/api/finance/transactions/${user}?repeats=0`;
+    if (month) {
+      url += `&month=${month}`;
+    }
+
+    let response = await http.get(url);
     const action = processResponse(response, FETCH_SUCCESS, FETCH_FAIL);
     
     if (action.type === FETCH_SUCCESS) {
@@ -56,8 +61,8 @@ export function fetchTransactions(user) {
       }
       
       response = await http.get(`/api/finance/month/${user}`);
-      if (response.month) {
-        action.month = response.month;
+      if (response.monthStats) {
+        action.monthStats = response.monthStats;
       }
     
     }

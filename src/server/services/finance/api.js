@@ -41,11 +41,10 @@ export function registerRoutes(app) {
         
         if (params.type === "planned") {
           order = "\"month\" ASC";
-          log.debug("SETTING ORDER", order);
         }
      
       }
- 
+      
       let transactions = await finance.getTransactions(user, params, order);
       transactions = transactions.map(transaction => transaction.json());
       res.json({ status: "ok", transactions });
@@ -184,8 +183,8 @@ export function registerRoutes(app) {
       let user = req.params.user || req.user.uuid;
       const { finance } = app.services;
 
-      const month = await finance.getCurrentMonthStats(user);
-      res.json({ status: "ok", month });
+      const monthStats = await finance.getCurrentMonthStats(user);
+      res.json({ status: "ok", monthStats });
       
     } catch (err) {
       next(err);
