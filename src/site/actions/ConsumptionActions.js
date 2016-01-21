@@ -54,7 +54,8 @@ export function fetchTransactions(user, month) {
     if (action.type === FETCH_SUCCESS) {
       
       action.transactions = response.transactions;  
-      
+      action.month = month;
+
       response = await http.get(`/api/finance/goals/${user}`);
       if (response.goals && response.goals.length > 0) {
         action.goal = response.goals[0];

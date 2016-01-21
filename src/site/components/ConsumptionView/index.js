@@ -39,8 +39,6 @@ class ConsumptionView extends BaseComponent {
 
     const user = this.props.params.user || this.state.auth.user.uuid; 
     console.log("fetching transactions for", user);
-    let { month, monthStats } = this.state;
-    month = month || (monthStats ? monthStats.label : null);
     this.props.fetchTransactions(user, this.state.month);
 
   }

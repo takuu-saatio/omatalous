@@ -15,7 +15,8 @@ export default function (state = {}, action) {
         transactions: action.transactions, 
         isUpdated: true 
       }, action.goal ? { goal: action.goal } : {},
-         action.monthStats ? { monthStats: action.monthStats } : {});
+         action.monthStats ? { monthStats: action.monthStats } : {},
+         action.month ? { month: action.month } : {});
     case actions.SAVE_SUCCESS:
       return { messages: { editStatus: "saved" }, created: action.created };
     case actions.DELETE_SUCCESS:
