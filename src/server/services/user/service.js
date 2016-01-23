@@ -112,6 +112,54 @@ class UserService {
     });
 
   }
+  
+  getAlerts(user, params) {
+
+    return new Promise((resolve, reject) => {
+  
+      const { Alert } = this.app.entities;
+
+      params = Object.assign({ user }, params || {});
+      Alert.selectAll(params)
+      .then((alerts) => resolve(alerts))
+      .catch((err) => reject(err));
+
+    });
+
+  }
+
+  deleteAlert(user, alert) {
+    
+    return new Promise((resolve, reject) => {
+
+      const { Alert } = this.app.entities;
+      
+      Alert.selectOne({ uuid: alert })
+      .then(alert => {
+         
+        if (!alert) {
+          return reject(new NotFound(null, "alert_not_found"));
+        }
+
+        if (user !== "admin" && alert.user !== user) {
+          return reject(new Unauthorized());
+        }
+
+        if (alert.type === "welcome") { 
+          alert.destroy({ force: true })
+          .then(() => resolve()) 
+          .catch(err => reject(err));
+        } else {
+          alert.status = "dismissed";
+          alert.dismissedAt = new Date();
+        }
+
+      }) 
+      .catch(err => reject(err)); 
+
+    });
+
+  }
 
 }
 

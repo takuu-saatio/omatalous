@@ -98,6 +98,15 @@
   margin: auto;
   background-color: #f0f0f0;
 
+  .goalLabel {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  
+  .goalContent {
+  }
+
+
 }
 
 .month {
@@ -292,3 +301,35 @@
   margin: auto;
   text-align: center;
 }
+
+.alerts {
+  
+  width: 90%;
+  max-width: 600px;
+  margin: auto;
+  padding-bottom: 12px;
+
+  .alert {
+    
+    padding: 12px;
+    border: 1px solid #f0f0f0;
+    position: relative;
+
+    .message {
+      width: calc(100% - 24px);
+      text-align: center;
+    }
+  
+    .dismiss {
+      
+      position: absolute;
+      top: calc(50% - 13px);
+      right: 12px;
+      cursor: pointer;
+
+    }
+
+  }
+
+}
+

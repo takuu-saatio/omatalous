@@ -137,11 +137,17 @@ class ConsumptionView extends BaseComponent {
     this.state.edit = false;
     this.fetchData();
   }
+  
+  _dismissAlert(uuid) {
+    const user = this.props.params.user || this.state.auth.user.uuid; 
+    this.props.deleteAlert(user, uuid);
+  }
 
   render() {
      
     console.log("render consumption", this.props, this.state);
-    let { transactions, goal, monthStats, quickTransaction, messages } = this.state;
+    let { transactions, goal, monthStats, 
+      alerts, quickTransaction, messages } = this.state;
     
     if (this.state.edit) {
       let params = Object.assign(this.props.params, {
@@ -246,7 +252,12 @@ class ConsumptionView extends BaseComponent {
       
       goalElem = (
         <div className={s.goal}>
-          {goal.totalSaved}/{goal.amount} €
+          <div className={s.goalLabel}>
+            Säästetty
+          </div>
+          <div className={s.goalContent}>
+            {goal.totalSaved}/{goal.amount} €
+          </div>
         </div>
       );
 
@@ -348,6 +359,25 @@ class ConsumptionView extends BaseComponent {
         </div>
       ); 
     }
+  
+    let alertElems = null;
+    if (alerts) {
+
+      alertElems = alerts.map(alert => {
+        return (
+          <div className={s.alert}>
+            <div className={s.message}>
+              {alert.message}
+            </div>
+            <div onTouchTap={() => this._dismissAlert(alert.uuid)} 
+              className={s.dismiss}>
+              <i className="material-icons">&#xE14C;</i>
+            </div>
+          </div>
+        );
+      });
+    
+    }
 
     return (
       <div>
@@ -394,6 +424,9 @@ class ConsumptionView extends BaseComponent {
           <div>
             {goalElem}
             {currentMonthElem}
+          </div>
+          <div className={s.alerts}>
+            {alertElems}
           </div>
           {topMonthNav}
           <div className={s.transactions}>

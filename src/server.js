@@ -44,7 +44,8 @@ app.schemaLoader = new SchemaLoader(app.sequelize);
 app.entities = {
   User: app.schemaLoader.loadSchema("User"),
   Transaction: app.schemaLoader.loadSchema("Transaction"),
-  Goal: app.schemaLoader.loadSchema("Goal")
+  Goal: app.schemaLoader.loadSchema("Goal"),
+  Alert: app.schemaLoader.loadSchema("Alert")
 };
 
 const passport = require("passport");

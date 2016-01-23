@@ -48,7 +48,7 @@ export function registerRoutes(app) {
     }
   
   });
-
+  
   app.put("/api/users", requireAuth, async (req, res, next) => {
 
     const user = req.body;
@@ -79,6 +79,40 @@ export function registerRoutes(app) {
       
       const userService = app.services.user; 
       await userService.deleteUser(req.params.uuid);
+      res.json({ status: "ok" });
+
+    } catch (err) {
+      next(err);
+    }
+  
+  });
+
+  app.get("/api/users/:uuid/alerts", requireAuth, async (req, res, next) => {
+ 
+    if (!allowedToEdit(req.params.uuid, req)) {
+      return next(new Forbidden());
+    }
+
+    try {
+        
+      const userService = app.services.user;
+      const alerts = await userService.getAlerts(req.params.uuid, req.query)
+      res.json({ status: "ok", alerts: alerts.map(alert => alert.json()) });
+
+    } catch (err) {
+      next(err);
+    }
+  
+  });
+
+  app.delete("/api/users/:uuid/alerts/:alert", requireAuth, async (req, res, next) => {
+
+    try {
+        
+      const userService = app.services.user; 
+      const user = (process.env.ADMIN_USER.indexOf(req.user.email) !== -1) ? 
+        "admin" : req.user.uuid;
+      await userService.deleteAlert(user, req.params.alert);
       res.json({ status: "ok" });
 
     } catch (err) {

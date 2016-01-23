@@ -75,7 +75,7 @@ class AuthService {
 
     return new Promise((resolve, reject) => {
       
-      const { User } = this.app.entities;
+      const { User, Alert } = this.app.entities;
     
       let { 
         method, email, password, firstName, lastName,
@@ -108,13 +108,34 @@ class AuthService {
         
           User.schema.create(user)
           .then((user) => {
+            
             log.debug(`Created new user with ${method} method`, user);
+
+            /*
+            let alert = {
+              user: user.uuid,
+              status: "active",
+              type: "welcome",
+              behavior: "delete_on_dismiss",
+              message: "Tervetuloa"
+            };
+            
+            Alert.schema.create(alert)
+            .then((alert) => {
+              log.debug("Welcome alert created");
+            })
+            .catch((err) => {
+              log.debug("Error creating welcome alert");
+            });
+            */
+
             resolve({ user: Object.assign(user, { isNew: true }) });
+          
           })
           .catch((err) => {
-            reject(new BaseErr(err))
+            reject(new BaseError(err))
           });
-
+        
           return;
           
         }
@@ -147,6 +168,16 @@ class AuthService {
           }
 
           log.debug(`Logged in existing user with ${method} method`, user);
+          
+          /*
+          Alert.selectOne({ user, type: "welcome" })
+          .then(alert => {
+            if (alert) {
+              alert.destroy({ force: true });
+            }
+          });
+          */
+
           resolve({ user });
         
         } catch (err) { 

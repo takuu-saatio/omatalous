@@ -73,23 +73,24 @@ class PlanningView extends BaseComponent {
       );
     
     }
-    
-    const groupedTxs = [];
-    let txGroup = { transactions: [] };
-    transactions.forEach(transaction => {
-      
-      if (transaction.month !== txGroup.month) {
-        groupedTxs.push(Object.assign({}, txGroup));
-        txGroup = { month: transaction.month, transactions: [] };
-      }
-
-      txGroup.transactions.push(transaction);
-
-    });
-
-    groupedTxs.push(txGroup);
+     
     let transactionElems = null;
     if (transactions && transactions.length > 0) {
+      
+      const groupedTxs = [];
+      let txGroup = { transactions: [] };
+      transactions.forEach(transaction => {
+      
+        if (transaction.month !== txGroup.month) {
+          groupedTxs.push(Object.assign({}, txGroup));
+          txGroup = { month: transaction.month, transactions: [] };
+        }
+
+        txGroup.transactions.push(transaction);
+
+      });
+
+      groupedTxs.push(txGroup);
 
       transactionElems = [];
       groupedTxs.forEach((group, i) => {

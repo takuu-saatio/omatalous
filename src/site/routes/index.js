@@ -56,6 +56,7 @@ export function registerRoutes(app) {
     try {
       
       const financeService = app.services.finance;
+      const userService = app.services.user;
 
       const user = req.params.user || req.user.uuid;
       if (user !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
@@ -85,6 +86,9 @@ export function registerRoutes(app) {
 
       let monthStats = await financeService.getCurrentMonthStats(user);
       state.consumption.monthStats = monthStats;
+      
+      let alerts = await userService.getAlerts(user, { status: "active" });
+      state.consumption.alerts = alerts;
 
       req.context.initialState = Object.assign(req.context.initialState, state);
       app.renderPage(req, res);

@@ -9,6 +9,8 @@ export const SAVE_SUCCESS = "SAVE_SUCCESS";
 export const SAVE_FAIL = "SAVE_FAIL";
 export const DELETE_SUCCESS = "DELETE_SUCCESS";
 export const DELETE_FAIL = "DELETE_FAIL";
+export const ALERT_DELETE_SUCCESS = "ALERT_DELETE_SUCCESS";
+export const ALERT_DELETE_FAIL = "ALERT_DELETE_FAIL";
 
 export function quickSaveTransaction(user, quickTransaction) {
   
@@ -65,9 +67,27 @@ export function fetchTransactions(user, month) {
       if (response.monthStats) {
         action.monthStats = response.monthStats;
       }
+      
+      response = await http.get(`/api/users/${user}/alerts?type=active`);
+      if (response.alerts) {
+        action.alerts = response.alerts;
+      }
     
     }
 
+    dispatch(action);
+  
+  };
+
+}
+
+export function deleteAlert(user, uuid) {
+  
+  return async (dispatch) => {
+    
+    let response = await http.delete(`/api/users/${user}/alerts/${uuid}`);
+    const action = processResponse(response, ALERT_DELETE_SUCCESS, 
+                                   ALERT_DELETE_FAIL);
     dispatch(action);
   
   };
