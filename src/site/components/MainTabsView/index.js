@@ -55,10 +55,10 @@ export default class MainTabsView extends BaseComponent {
     console.log("render main tabs", this.state);
     
     let contentElem = null;
-    if (this.state.tab === 0) {
-      contentElem = <ConsumptionContainer params={this.props.params} />;
-    } else {
+    if (this.state.tab === 1) {
       contentElem = <GraphsContainer params={this.props.params} />;
+    } else {
+      contentElem = <ConsumptionContainer params={this.props.params} />;
     }
     
      

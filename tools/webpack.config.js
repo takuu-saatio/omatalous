@@ -12,9 +12,9 @@ import webpack from 'webpack';
 import merge from 'lodash.merge';
 import AssetsPlugin from 'assets-webpack-plugin';
 
-const DEBUG = !process.argv.includes('--release');
+const DEBUG = false; //!process.argv.includes('--release');
 const VERBOSE = process.argv.includes('--verbose');
-const WATCH = global.WATCH === undefined ? false : global.WATCH;
+const WATCH = false; //global.WATCH === undefined ? false : global.WATCH;
 const AUTOPREFIXER_BROWSERS = [
   'Android 2.3',
   'Android >= 4',
@@ -70,7 +70,7 @@ const config = {
         test: /\.jsx?$/,
         include: [
           path.resolve(__dirname, '../node_modules/react-routing/src'),
-          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../src')
         ],
         loader: 'babel-loader',
       }, {
