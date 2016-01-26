@@ -67,7 +67,6 @@ class Content extends Component {
       <div>
         <HeaderContainer />
         {router}
-        <Feedback />
         <Footer />
       </div>
     );

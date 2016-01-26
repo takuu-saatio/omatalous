@@ -30,7 +30,8 @@ class ConsumptionView extends BaseComponent {
         sign: "-",
         type: "single",
         category: "misc"
-      }
+      },
+      quickTxDisabled: true
     });
 
   }
@@ -52,7 +53,7 @@ class ConsumptionView extends BaseComponent {
     }
   }
 
-  _loadNextMonth() {
+  _nextMonth() {
     
     let monthElems = this.state.month.split("-");
     let [ nextYear, nextMonth ] = monthElems;
@@ -64,12 +65,11 @@ class ConsumptionView extends BaseComponent {
       nextMonth = monthPadding + (parseInt(nextMonth) + 1);
     }
 
-    this.state.month = nextYear + "-" + nextMonth;
-    this.fetchData();
+    return nextYear + "-" + nextMonth;
 
   }
   
-  _loadPrevMonth() {
+  _prevMonth() {
     
     let monthElems = this.state.month.split("-");
     let [ prevYear, prevMonth ] = monthElems;
@@ -81,13 +81,36 @@ class ConsumptionView extends BaseComponent {
       prevMonth = monthPadding + (parseInt(prevMonth) - 1);
     }
     
-    this.state.month = prevYear + "-" + prevMonth;
-    this.fetchData();
+    return prevYear + "-" + prevMonth;
+  
+  }
 
+  _loadMonth(month) {
+    this.state.month = month;
+    this.fetchData();
   }
 
   _handleInputChange(event) {
-    
+
+    if (event.target.name === "amount") {
+      
+      if (isNaN(event.target.value)) {
+        this.state.amountError = "Ei ole numero";
+        this.state.quickTxDisabled = true;
+      } else if (parseFloat(event.target.value) <= 0) {
+        this.state.amountError = "Väärä arvo: 0";
+        this.state.quickTxDisabled = true;
+      } else {
+        delete this.state.amountError;
+        this.state.quickTxDisabled = false;
+      }
+      
+      if (!event.target.value || event.target.value === "") {
+        this.state.quickTxDisabled = true;
+      }
+
+    }
+
     let formParams = {};
     formParams[event.target.name] = event.target.value;
     let quickTransaction = Object.assign(this.state.quickTransaction, formParams);
@@ -339,14 +362,16 @@ class ConsumptionView extends BaseComponent {
         <div className={s.topMonthNav}>
           <div>
             <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-              onTouchTap={() => this._loadNextMonth()}
-              label="&lt; MYÖHEMPI" />
+              onTouchTap={() => this._loadMonth(this._nextMonth())}
+              labelStyle={{ padding: "0px" }}
+              label={"< " + this._nextMonth()} />
           </div>
           <div>{this.state.month}</div>
           <div>
             <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-              onTouchTap={() => this._loadPrevMonth()}
-              label="AIKAISEMPI &gt;" />
+              onTouchTap={() => this._loadMonth(this._prevMonth())}
+              labelStyle={{ padding: "0px" }}
+              label={this._prevMonth() + " >"} />
           </div>
         </div>
       );
@@ -354,7 +379,7 @@ class ConsumptionView extends BaseComponent {
       bottomMonthNav = (
         <div className={s.bottomMonthNav}>
           <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-            onTouchTap={() => this._loadPrevMonth()}
+            onTouchTap={() => this._loadMonth(this._prevMonth())}
             label="Selaa historiaa" />
         </div>
       ); 
@@ -379,6 +404,23 @@ class ConsumptionView extends BaseComponent {
     
     }
 
+    let inputErrorElem = null;
+    if (this.state.amountError) {
+      const inputErrorCss = {
+        color: "red",
+        fontSize: "12px",
+        position: "absolute",
+        top: "16px",
+        whiteSpace: "nowrap",
+        backgroundColor: "white",
+        zIndex: "2",
+        lineHeight: "24px"
+      };
+      inputErrorElem = (
+        <div style={inputErrorCss}>{this.state.amountError}</div>
+      );
+    }
+
     return (
       <div>
         {formError}
@@ -391,8 +433,11 @@ class ConsumptionView extends BaseComponent {
               </FlatButton>
             </div> 
             <div className={s.amount}>
+              {inputErrorElem}
               <TextField style={fullWidth} 
                 name="amount" 
+                errorStyle={{ display: "none" }}
+                errorText={this.state.amountError}
                 floatingLabelText="Määrä"
                 floatingLabelStyle={floatLabelCss}
                 value={quickTransaction.amount}
@@ -415,9 +460,11 @@ class ConsumptionView extends BaseComponent {
                 onChange={this._handleInputChange.bind(this)} />
             </div>
             <div className={s.submit}>
-              <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+              <FlatButton disabled={this.state.quickTxDisabled}
+                style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
                 onTouchTap={() => this._saveTransaction()}>
-                <i style={fullWidth} className="material-icons">&#xE163;</i>
+                <i style={{ width: "100%", verticalAlign: "top" }} 
+                  className="material-icons">&#xE163;</i>
               </FlatButton>
             </div>
           </div>

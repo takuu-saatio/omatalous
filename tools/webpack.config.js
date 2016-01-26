@@ -1,7 +1,7 @@
 /**
- * React Starter Kit (http://www.reactstarterkit.com/)
+ * React Starter Kit (https://www.reactstarterkit.com/)
  *
- * Copyright © 2014-2015 Kriasoft, LLC. All rights reserved.
+ * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
@@ -12,9 +12,8 @@ import webpack from 'webpack';
 import merge from 'lodash.merge';
 import AssetsPlugin from 'assets-webpack-plugin';
 
-const DEBUG = false; //!process.argv.includes('--release');
+const DEBUG = !process.argv.includes('--release');
 const VERBOSE = process.argv.includes('--verbose');
-const WATCH = false; //global.WATCH === undefined ? false : global.WATCH;
 const AUTOPREFIXER_BROWSERS = [
   'Android 2.3',
   'Android >= 4',
@@ -32,7 +31,7 @@ const GLOBALS = {
 
 //
 // Common configuration chunk to be used for both
-// client-side (app.js) and server-side (server.js) bundles
+// client-side (client.js) and server-side (server.js) bundles
 // -----------------------------------------------------------------------------
 
 const config = {
@@ -70,7 +69,7 @@ const config = {
         test: /\.jsx?$/,
         include: [
           path.resolve(__dirname, '../node_modules/react-routing/src'),
-          path.resolve(__dirname, '../src')
+          path.resolve(__dirname, '../src'),
         ],
         loader: 'babel-loader',
       }, {
@@ -107,16 +106,11 @@ const config = {
 };
 
 //
-// Configuration for the client-side bundle (app.js)
+// Configuration for the client-side bundle (client.js)
 // -----------------------------------------------------------------------------
 
-const appConfig = merge({}, config, {
-  entry: {
-    app: [
-      ...(WATCH ? ['webpack-hot-middleware/client'] : []),
-      './src/app.js',
-    ],
-  },
+const clientConfig = merge({}, config, {
+  entry: './src/app.js',
   output: {
     path: path.join(__dirname, '../build/public'),
     filename: DEBUG ? '[name].js?[hash]' : '[name].[hash].js',
@@ -129,46 +123,21 @@ const appConfig = merge({}, config, {
     new webpack.DefinePlugin(GLOBALS),
     new AssetsPlugin({
       path: path.join(__dirname, '../build'),
-      filename: 'assets.json',
+      filename: 'assets.js',
+      processOutput: x => `module.exports = ${JSON.stringify(x)};`,
     }),
     ...(!DEBUG ? [
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
         compress: {
+          screw_ie8: true,
           warnings: VERBOSE,
         },
       }),
       new webpack.optimize.AggressiveMergingPlugin(),
     ] : []),
-    ...(WATCH ? [
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin(),
-    ] : []),
   ],
 });
-
-// Enable React Transform in the "watch" mode
-appConfig.module.loaders
-  .filter(x => WATCH && x.loader === 'babel-loader')
-  .forEach(x => x.query = {
-    // Wraps all React components into arbitrary transforms
-    // https://github.com/gaearon/babel-plugin-react-transform
-    plugins: ['react-transform'],
-    extra: {
-      'react-transform': {
-        transforms: [
-          {
-            transform: 'react-transform-hmr',
-            imports: ['react'],
-            locals: ['module'],
-          }, {
-            transform: 'react-transform-catch-errors',
-            imports: ['react', 'redbox-react'],
-          },
-        ],
-      },
-    },
-  });
 
 //
 // Configuration for the server-side bundle (server.js)
@@ -183,7 +152,7 @@ const serverConfig = merge({}, config, {
   },
   target: 'node',
   externals: [
-    /^\.\/assets\.json$/,
+    /^\.\/assets$/,
     function filter(context, request, cb) {
       const isExternal =
         request.match(/^[@a-z][a-z\/\.\-0-9]*$/i) &&
@@ -208,4 +177,4 @@ const serverConfig = merge({}, config, {
   ],
 });
 
-export default [appConfig, serverConfig];
+export default [clientConfig, serverConfig];

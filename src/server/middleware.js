@@ -3,7 +3,7 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/middleware");
 
-import assets from "./assets.json"
+import assets from "./assets"
 import { readLocalizedMessages } from "../core/utils"
 
 import { BaseError } from "../core/errors"
@@ -29,7 +29,7 @@ export function registerMiddleware(app) {
       description: "",
       css: "",
       body: "",
-      entry: assets.app.js 
+      entry: assets.main.js 
     };
     
     const common = {};
