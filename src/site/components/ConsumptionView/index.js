@@ -20,9 +20,30 @@ class ConsumptionView extends BaseComponent {
     super(props);
     console.log("constr consumption", props);
 
-    this.categoryLabels = {
-      "misc": "Sekalaiset",
-      "groceries": "Ruokakauppa"
+    this.expenseCategories = {
+      "living": "Asuminen",
+      "transport": "Liikenne",
+      "credit": "Lainat ja luotot",
+      "children": "Lapset",
+      "shopping": "Ostokset",
+      "communication": "Puhelin ja internet",
+      "restaurant": "Kahvilat & ravintolat",
+      "groceries": "Ruokakauppa",
+      "alcohol": "Alkoholi",
+      "saving": "Säästäminen",
+      "health": "Terveys",
+      "clothing": "Vaatteet",
+      "freetime": "Vapaa-aika",
+      "misc": "Muut"
+    };
+
+    this.incomeCategories = {
+      "benefits": "Etuudet",
+      "salary": "Palkka",
+      "savings": "Säästöt",
+      "credit": "Luotot",
+      "gift": "Lahja",
+      "misc": "Muut"
     };
 
     this.state = Object.assign(props.state, {
@@ -33,6 +54,12 @@ class ConsumptionView extends BaseComponent {
       },
       quickTxDisabled: true
     });
+
+    if (!this.state.month) {
+      const now = new Date();
+      const padding = now.getMonth() < 9 ? "0" : "";
+      this.state.month = now.getFullYear() + "-" + padding + (now.getMonth() + 1);
+    }
 
   }
 
@@ -173,10 +200,16 @@ class ConsumptionView extends BaseComponent {
       alerts, quickTransaction, messages } = this.state;
     
     if (this.state.edit) {
+      
       let params = Object.assign(this.props.params, {
         uuid: this.state.edit 
       });
-      return <EditTransactionContainer close={() => this._closeEditTx()} params={params} />;
+
+      return (
+        <EditTransactionContainer close={() => this._closeEditTx()} 
+          params={params} />
+      );
+
     }
  
     if (!transactions) {
@@ -220,6 +253,10 @@ class ConsumptionView extends BaseComponent {
     if (transactions && transactions.length > 0) {
 
       transactionElems = transactions.map(transaction => {
+
+        const categories = transaction.sign === "+" ?
+          this.incomeCategories : this.expenseCategories;
+
         return (
           <div key={transaction.uuid} className={s.transaction}>
             <div>
@@ -228,7 +265,7 @@ class ConsumptionView extends BaseComponent {
             <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
               {transaction.sign}{transaction.amount}
             </div>
-            <div>{this.categoryLabels[transaction.category]}</div>
+            <div>{categories[transaction.category]}</div>
             <div>{transaction.description}</div>
             <div className={s.txControls}>
               <div className={s.txControlContainer}>
@@ -320,6 +357,9 @@ class ConsumptionView extends BaseComponent {
       currentMonthElem = (
         <div className={s.month}>
           <div className={s.monthLine}></div>
+          <div className={s.monthHeader}>
+            KULUVA KUUKAUSI
+          </div>  
           <div className={s.monthData}>
             <div className={s.section}>
               <div className={s.sectionLabel}>
@@ -359,30 +399,54 @@ class ConsumptionView extends BaseComponent {
     let topMonthNav = null;
     if (this.state.month !== monthStats.label) {
       topMonthNav = (
-        <div className={s.topMonthNav}>
-          <div>
-            <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-              onTouchTap={() => this._loadMonth(this._nextMonth())}
-              labelStyle={{ padding: "0px" }}
-              label={"< " + this._nextMonth()} />
+        <div>
+          <div className={s.monthSummary}>
+            <div className={s.summaryLabel}>HISTORIA</div>
+            <div className={s.summaryData}>
+              <span>{this.state.month}</span>
+            </div>
           </div>
-          <div>{this.state.month}</div>
-          <div>
-            <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-              onTouchTap={() => this._loadMonth(this._prevMonth())}
-              labelStyle={{ padding: "0px" }}
-              label={this._prevMonth() + " >"} />
+          <div className={s.topMonthNav}>
+            <div>
+              <FlatButton style={Object.assign({ lineHeight: "28px" })} 
+                onTouchTap={() => this._loadMonth(this._nextMonth())}
+                labelStyle={{ padding: "0px" }}
+                label={"< " + this._nextMonth()} />
+            </div>
+            <div></div>
+            <div>
+              <FlatButton style={Object.assign({ lineHeight: "28px" })} 
+                onTouchTap={() => this._loadMonth(this._prevMonth())}
+                labelStyle={{ padding: "0px" }}
+                label={this._prevMonth() + " >"} />
+            </div>
           </div>
         </div>
       );
     } else if (transactions && transactions.length > 0) {
+      
+      const total = Math.floor(monthStats.income - monthStats.expenses);
+      const totalCss = total < 0 ?
+        { color: "red" } : { color: "green" };
+
+      topMonthNav = (
+        <div className={s.monthSummary}>
+          <div className={s.summaryLabel}>TAPAHTUMAT</div>
+          <div className={s.summaryData}>
+            <span>Yht. </span>
+            <span style={totalCss}>{total} €</span>
+          </div>
+        </div>
+      );
+
       bottomMonthNav = (
         <div className={s.bottomMonthNav}>
           <FlatButton style={Object.assign({ lineHeight: "28px" })} 
             onTouchTap={() => this._loadMonth(this._prevMonth())}
             label="Selaa historiaa" />
         </div>
-      ); 
+      );
+
     }
   
     let alertElems = null;
@@ -421,6 +485,17 @@ class ConsumptionView extends BaseComponent {
       );
     }
 
+    const categories = quickTransaction.sign === "+" ?
+      this.incomeCategories : this.expenseCategories;
+      
+    const catKeys = Object.keys(categories);
+    let categoryElems = catKeys.map(catKey => {
+      return (
+        <MenuItem key={catKey} value={catKey} 
+          primaryText={categories[catKey]} />
+      );
+    });
+
     return (
       <div>
         {formError}
@@ -448,8 +523,7 @@ class ConsumptionView extends BaseComponent {
                 name="category" 
                 value={quickTransaction.category} 
                 onChange={this._handleDropdownChange.bind(this)}>
-                <MenuItem value="misc" primaryText="Sekalaiset" />
-                <MenuItem value="groceries" primaryText="Ruokakauppa" />
+                {categoryElems}
               </DropDownMenu>
             </div>
             <div className={s.description}>

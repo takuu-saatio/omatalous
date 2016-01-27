@@ -20,6 +20,33 @@ class EditTransactionView extends BaseComponent {
     super(props);
     console.log("constr edit tx", props);
     let state = this.props.state;
+    
+    this.expenseCategories = {
+      "living": "Asuminen",
+      "transport": "Liikenne",
+      "credit": "Lainat ja luotot",
+      "children": "Lapset",
+      "shopping": "Ostokset",
+      "communication": "Puhelin ja internet",
+      "restaurant": "Kahvilat & ravintolat",
+      "groceries": "Ruokakauppa",
+      "alcohol": "Alkoholi",
+      "saving": "Säästäminen",
+      "health": "Terveys",
+      "clothing": "Vaatteet",
+      "freetime": "Vapaa-aika",
+      "misc": "Muut"
+    };
+
+    this.incomeCategories = {
+      "benefits": "Etuudet",
+      "salary": "Palkka",
+      "savings": "Säästöt",
+      "credit": "Luotot",
+      "gift": "Lahja",
+      "misc": "Muut"
+    };
+    
     if (this.props.transaction) {
       state.transaction = this.props.transaction;
     }
@@ -146,20 +173,34 @@ class EditTransactionView extends BaseComponent {
 
     }
  
-    let fullWidth = { width: "100%", minWidth: "initial" };
-     
+    const fullWidth = { width: "100%", minWidth: "initial" };
+    const labelCss = { verticalAlign: "middle" };
     const txBorderCss = {
       transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
     };
     let txSignSymbol = null;
+    let categories = null;
     if (transaction.sign === "-") {
       txBorderCss.borderBottom = "2px solid red";
-      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
+      txSignSymbol = (<i style={labelCss} className="material-icons">&#xE15B;</i>);
+      categories = this.expenseCategories;
     } else {
       txBorderCss.borderBottom = "2px solid green";
-      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
+      txSignSymbol = (<i style={labelCss} className="material-icons">&#xE145;</i>);
+      categories = this.incomeCategories;
     }
-    
+
+    const signDisabled = this.props.signDisabled ?
+      this.props.signDisabled : false;
+
+    const catKeys = Object.keys(categories);
+    let categoryElems = catKeys.map(catKey => {
+      return (
+        <MenuItem key={catKey} value={catKey} 
+          primaryText={categories[catKey]} />
+      );
+    });
+
     return (
       <div>
         {formError}
@@ -167,7 +208,8 @@ class EditTransactionView extends BaseComponent {
           <div className={s.saveTransaction}>
             <div className={s.topGroup}>
               <div className={s.sign}>
-                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+                <FlatButton disabled={signDisabled} 
+                  style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
                   onClick={() => this._toggleTxType()}>
                   {txSignSymbol}
                 </FlatButton>
@@ -184,8 +226,7 @@ class EditTransactionView extends BaseComponent {
                   name="category" 
                   value={this.state.transaction.category} 
                   onChange={this._handleCategoryDropdown.bind(this)}>
-                  <MenuItem value="misc" primaryText="Sekalaiset" />
-                  <MenuItem value="groceries" primaryText="Ruokakauppa" />
+                  {categoryElems}
                 </DropDownMenu>
               </div>
             </div>

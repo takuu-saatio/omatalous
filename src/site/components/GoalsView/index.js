@@ -22,17 +22,20 @@ class GoalsView extends BaseComponent {
     super(props);
     console.log("constr goals", props);
     let state = this.props.state;
+
     if (!state.goal) {
-      state.goal = {
-      };
+      state.goal = {};
+      state.startMonth = this._getStartMonth();
+    } else {
+      state.startMonth = this._getStartMonth(state.goal.start);
     }
-    
+        
     this.state = state;
     
   }
 
   async fetchData(props = this.props) { 
-    
+  
     if (this.state.edit) {
       return;
     }
@@ -68,8 +71,31 @@ class GoalsView extends BaseComponent {
     let goal = Object.assign(this.state.goal, formParams);
     let state = Object.assign(this.state, { goal });
     state.messages = { editStatus: "changed" };
+    
+    if (name === "start") {
+      state.startMonth = this._getStartMonth(value);
+    }
+
     this.setState(state);
 
+  }
+  
+  _getStartMonth(monthVal) {
+
+    let year, month;
+    
+    if (monthVal) {
+      [ year, month ] = monthVal.split("-");
+      year = parseInt(year);
+      month = parseInt(month) - 1;
+    } else {
+      const now = new Date();
+      year = now.getFullYear();
+      month = now.getMonth();
+    }
+
+    return { year, month };
+  
   }
 
   _handleStartDropdown(event, index, value) {
@@ -102,8 +128,8 @@ class GoalsView extends BaseComponent {
     this.props.saveGoal(user, this.state.goal);
   }
 
-  _renderDropdown(value, handler) {
-  
+  _renderDropdown(startMonth, value, handler) {
+     
     const dropdownLabelCss = {
       paddingLeft: "initial",
       paddingRight: "initial"
@@ -119,6 +145,33 @@ class GoalsView extends BaseComponent {
       right: "0px"
     };
 
+    let currentYear = startMonth.year;
+    let currentMonth = startMonth.month;
+
+    const menuItems = [];
+
+    for (let i=0; i<12; i++) {
+      
+      if (currentMonth > 11) {
+        currentYear += 1;
+        currentMonth = 0;
+      }
+      
+      const monthLabels = [
+        "Tammi", "Helmi", "Maalis", "Huhti", "Touko", "Kesä",
+        "Heinä", "Elo", "Syys", "Loka", "Marras", "Joulu"
+      ];
+      const monthPadding = currentMonth < 9 ? "0" : "";
+      const monthVal = currentYear + "-" + monthPadding + (currentMonth + 1);
+      menuItems.push( 
+        <MenuItem key={monthVal} value={monthVal}
+          primaryText={monthLabels[currentMonth] + " " + currentYear} />
+      );
+      
+      currentMonth += 1;
+
+    }
+
     return (
       <DropDownMenu style={Object.assign({ height: "43px" }, { width: "100%" })}
         labelStyle={dropdownLabelCss} 
@@ -126,18 +179,7 @@ class GoalsView extends BaseComponent {
         iconStyle={iconStyleCss}
         value={value}
         onChange={handler.bind(this)}>
-        <MenuItem value="2016-01" primaryText="Tammi 2016" />
-        <MenuItem value="2016-02" primaryText="Helmi 2016" />
-        <MenuItem value="2016-03" primaryText="Maalis 2016" />
-        <MenuItem value="2016-04" primaryText="Huhti 2016" />
-        <MenuItem value="2016-05" primaryText="Touko 2016" />
-        <MenuItem value="2016-06" primaryText="Kesä 2016" />
-        <MenuItem value="2016-07" primaryText="Heinä 2016" />
-        <MenuItem value="2016-08" primaryText="Elo 2016" />
-        <MenuItem value="2016-09" primaryText="Syys 2016" />
-        <MenuItem value="2016-10" primaryText="Loka 2016" />
-        <MenuItem value="2016-11" primaryText="Marras 2016" />
-        <MenuItem value="2016-12" primaryText="Joulu 2016" />
+        {menuItems}
       </DropDownMenu>
     );
 
@@ -160,9 +202,10 @@ class GoalsView extends BaseComponent {
         category: "misc",
         repeats: "M1"
       } : null;
-      
+
       return (
         <EditRepeatingTransactionContainer close={() => this._closeEditTx()}
+          signDisabled={true}
           params={params} transaction={transaction} />
       );
     
@@ -226,7 +269,10 @@ class GoalsView extends BaseComponent {
       });
 
     }
-    
+
+    const goalStartMonth = goal ? goal.start : null;
+    const nowMonth = this._getStartMonth(goalStartMonth); 
+
     return (
       <div>
         {formError}
@@ -264,11 +310,11 @@ class GoalsView extends BaseComponent {
                   onChange={this._handleInputChange.bind(this)} />
               </div>
               <div className={s.goalStart}>
-                {this._renderDropdown(this.state.goal.start, 
+                {this._renderDropdown(nowMonth, this.state.goal.start, 
                                       this._handleStartDropdown)}
               </div>
               <div className={s.goalEnd}>
-                {this._renderDropdown(this.state.goal.end,
+                {this._renderDropdown(this.state.startMonth, this.state.goal.end,
                                       this._handleEndDropdown)}
               </div>
             </div>

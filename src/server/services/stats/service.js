@@ -16,44 +16,142 @@ class StatsService {
     this.app = app;
   }
   
-  getGraphStats(user) {
-  
-    return new Promise((resolve, reject) => {
+  _getCategoryStats(user) {
+    
+    const { Transaction } = this.app.entities;
 
+    return new Promise((resolve, reject) => {
+   
+      Transaction.schema.aggregate(
+        "amount",
+        "SUM",
+        { 
+          where: { 
+            user: user.uuid,
+            $or: [ 
+              { type: "single" },
+              { type: "copy" } 
+            ]
+          },
+          plain: false, 
+          group: [ "category" ], 
+          attributes: [ "category" ] 
+        }
+      )
+      .then((rows) => {
+        
+        log.debug("AGGR RESULT", rows);
+        const categories = {};
+        for (let row of rows) {
+          categories[row.category] = parseInt(row.SUM);
+        }
+
+        resolve(categories);      
+
+      })
+      .catch((err) => {
+        log.debug("AGGR ERR", err);
+        reject(err);
+      });
+       
+    })
+
+  }
+
+  _getTimeStats(user) {
+    
+    const { Transaction } = this.app.entities;
+
+    return new Promise((resolve, reject) => {
+   
+      Transaction.schema.aggregate(
+        "category",
+        "COUNT",
+        { 
+          where: { user: user.uuid },
+          plain: false, 
+          group: [ "category" ], 
+          attributes: [ "category" ] 
+        }
+      )
+      .then((rows) => {
+        
+        log.debug("AGGR RESULT", rows);
+        const categories = {};
+        for (let row of rows) {
+          categories[row.category] = parseInt(row.COUNT);
+        }
+
+        resolve(categories);      
+
+      })
+      .catch((err) => {
+        log.debug("AGGR ERR", err);
+        reject(err);
+      });
+       
+    })
+
+  }
+  
+  getGraphStats(user) {
+    
+    return new Promise((resolve, reject) => {
+      
       const { User, Transaction } = this.app.entities;
 
       User.selectOne({ uuid: user })
-      .then((user) => {
+      .then(async (user) => {
 
         if (!user) {
           return reject(new NotFound(null, "user_not_found"));
         }
         
-        Transaction.schema.aggregate(
-          "category",
-          "COUNT",
-          { plain: false, group: [ "category" ], attributes: [ "category" ] }
-        )
-        .then((rows) => {
-          
-          log.debug("AGGR RESULT", rows);
-          const categories = {};
-          for (let row of rows) {
-            categories[row.category] = parseInt(row.COUNT);
-          }
+        const categories = await this._getCategoryStats(user);
+      
+        const stats = {
+          categories
+        };
+      
+        resolve(stats);
+      
+      });
 
-          const stats = {
-            categories
-          };
+    });
 
-          resolve(stats);      
+  }
+  
+  getRegistrationStats() {
+    
+    return new Promise((resolve, reject) => {
+      
+      const { Event } = this.app.entities;
 
-        })
-        .catch((err) => {
-          log.debug("AGGR ERR", err);
-        });
-         
+      Event.schema.aggregate(
+        "month",
+        "COUNT",
+        {
+          where: { name: "registration" }, 
+          plain: false,
+          group: [ "month" ], 
+          attributes: [ "month" ] 
+        }
+      )
+      .then((rows) => {
+        
+        log.debug("AGGR RESULT", rows);
+        const registrations = {};
+        for (let row of rows) {
+          registrations[row.month] = parseInt(row.COUNT);
+        }
+
+        resolve(registrations);      
+
       })
+      .catch((err) => {
+        log.debug("AGGR ERR", err);
+        reject(err);
+      });
 
     });
 

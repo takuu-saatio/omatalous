@@ -31,5 +31,24 @@ export function registerRoutes(app) {
     }
  
   });
+  
+  app.get("/api/stats/admin", requireAuth,
+    async (req, res, next) => {
+      
+    if (process.env.ADMIN_USER.indexOf(req.user.email) === -1) {
+      return next(new Forbidden());
+    }
+
+    try {
+       
+      const { stats } = app.services;
+      const regStats = await stats.getRegistrationStats();
+      res.json({ status: "ok", registrations: regStats });
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
    
 }

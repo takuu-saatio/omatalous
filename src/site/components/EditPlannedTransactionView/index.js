@@ -30,6 +30,15 @@ class EditPlannedTransactionView extends EditTransactionViewClass {
           <MenuItem value="2016-01" primaryText="Tammi 2016" />
           <MenuItem value="2016-02" primaryText="Helmi 2016" />
           <MenuItem value="2016-03" primaryText="Maalis 2016" />
+          <MenuItem value="2016-04" primaryText="Huhti 2016" />
+          <MenuItem value="2016-05" primaryText="Touko 2016" />
+          <MenuItem value="2016-06" primaryText="Kesä 2016" />
+          <MenuItem value="2016-07" primaryText="Heinä 2016" />
+          <MenuItem value="2016-08" primaryText="Elo 2016" />
+          <MenuItem value="2016-09" primaryText="Syys 2016" />
+          <MenuItem value="2016-10" primaryText="Loka 2016" />
+          <MenuItem value="2016-11" primaryText="Marras 2016" />
+          <MenuItem value="2016-12" primaryText="Joulu 2016" />
         </DropDownMenu>
       </div>
     );

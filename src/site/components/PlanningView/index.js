@@ -18,12 +18,10 @@ class PlanningView extends BaseComponent {
   };
 
   constructor(props) {
-    super(props);
-    this.categoryLabels = {
-      "misc": "Sekalaiset",
-      "groceries": "Ruokakauppa"
-    };
+    
+    super(props); 
     this.state = props.state;
+  
   }
 
   async fetchData(props = this.props) { 
@@ -68,7 +66,8 @@ class PlanningView extends BaseComponent {
       } : null;
       
       return (
-        <EditPlannedTransactionContainer close={() => this._closeEditTx()}
+        <EditPlannedTransactionContainer signDisabled={true}
+          close={() => this._closeEditTx()}
           params={params} transaction={transaction} />
       );
     
@@ -110,13 +109,13 @@ class PlanningView extends BaseComponent {
                 <div className={s.txControlContainer}>
                   <div>
                     <i className="material-icons"
-                      onClick={() => this._editTransaction(transaction.uuid)}>
+                      onTouchTap={() => this._editTransaction(transaction.uuid)}>
                       &#xE150;
                     </i>
                   </div>
                   <div>
                     <i className="material-icons"
-                      onClick={() => this._deleteTransaction(transaction.uuid)}>
+                      onTouchTap={() => this._deleteTransaction(transaction.uuid)}>
                       &#xE14A;
                     </i>
                   </div>

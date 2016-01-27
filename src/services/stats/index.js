@@ -12,6 +12,10 @@ export class LocalStatsServiceInterface extends ServiceInterface {
     return await this.service.getGraphStats(user);
   }
   
+  async getRegistrationStats() {
+    return await this.service.getRegistrationStats();
+  }
+
 }
 
 export class HttpStatsServiceInterface extends ServiceInterface {

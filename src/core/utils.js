@@ -67,4 +67,3 @@ export function getCurrentMonth() {
   return currentMonth;
 
 }
-

@@ -16,6 +16,7 @@ import runServer from './runServer';
 import webpackConfig from './webpack.config';
 import clean from './clean';
 import copy from './copy';
+import bundle from './bundle';
 
 /**
  * Launches a development web server with "live reload" functionality -
@@ -23,6 +24,7 @@ import copy from './copy';
  */
 async function start() {
   await run(clean);
+  await run(bundle);
   await run(copy.bind(undefined, { watch: true }));
   await new Promise(resolve => {
     // Patch the client-side bundle configurations

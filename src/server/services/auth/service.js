@@ -5,13 +5,14 @@ const log = log4js.getLogger("server/services/auth/service");
 
 import bcrypt from "bcrypt-nodejs";
 import generatePassword from "password-generator";
-import uuid from "node-uuid"
+import uuid from "node-uuid";
+import { getCurrentMonth } from "../../../core/utils";
 import { 
   BaseError,
   NotFound, 
   Unauthorized,
   UnprocessableEntity
-} from "../../../core/errors"
+} from "../../../core/errors";
 
 class AuthService {
   
@@ -75,7 +76,7 @@ class AuthService {
 
     return new Promise((resolve, reject) => {
       
-      const { User, Alert } = this.app.entities;
+      const { User, Alert, Event } = this.app.entities;
     
       let { 
         method, email, password, firstName, lastName,
@@ -128,6 +129,25 @@ class AuthService {
               log.debug("Error creating welcome alert");
             });
             */
+
+            const now = new Date();
+            const currentDay = now.getDate() < 10 ? 
+              `0${now.getDate()}` : `${now.getDate()}`;
+
+            const event = {
+              user: user.uuid,
+              name: "registration",
+              month: getCurrentMonth(),
+              day: currentDay
+            };
+            
+            Event.schema.create(event)
+            .then((event) => {
+              log.debug("Reg event created");
+            })
+            .catch((err) => {
+              log.debug("Error creating reg event");
+            });
 
             resolve({ user: Object.assign(user, { isNew: true }) });
           
