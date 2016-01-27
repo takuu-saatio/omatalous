@@ -20,6 +20,33 @@ class PlanningView extends BaseComponent {
   constructor(props) {
     
     super(props); 
+    
+    this.expenseCategories = {
+      "living": "Asuminen",
+      "transport": "Liikenne",
+      "credit": "Lainat ja luotot",
+      "children": "Lapset",
+      "shopping": "Ostokset",
+      "communication": "Puhelin ja internet",
+      "restaurant": "Kahvilat & ravintolat",
+      "groceries": "Ruokakauppa",
+      "alcohol": "Alkoholi",
+      "saving": "Säästäminen",
+      "health": "Terveys",
+      "clothing": "Vaatteet",
+      "freetime": "Vapaa-aika",
+      "misc": "Muut"
+    };
+
+    this.incomeCategories = {
+      "benefits": "Etuudet",
+      "salary": "Palkka",
+      "savings": "Säästöt",
+      "credit": "Luotot",
+      "gift": "Lahja",
+      "misc": "Muut"
+    };
+
     this.state = props.state;
   
   }
@@ -95,6 +122,10 @@ class PlanningView extends BaseComponent {
       groupedTxs.forEach((group, i) => {
         
         const groupTransactionElems = group.transactions.map(transaction => {
+          
+          const categories = transaction.sign === "+" ?
+            this.incomeCategories : this.expenseCategories;
+            
           return (
             <div key={transaction.uuid} className={s.transaction}>
               <div>
@@ -103,7 +134,7 @@ class PlanningView extends BaseComponent {
               <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
                 {transaction.sign}{transaction.amount}
               </div>
-              <div>{this.categoryLabels[transaction.category]}</div>
+              <div>{categories[transaction.category]}</div>
               <div>{transaction.description}</div>
               <div className={s.txControls}>
                 <div className={s.txControlContainer}>
