@@ -29,7 +29,11 @@ class GoalsView extends BaseComponent {
     } else {
       state.startMonth = this._getStartMonth(state.goal.start);
     }
-        
+    
+    if (!state.categories) {    
+      state.categories = {};
+    }
+
     this.state = state;
     
   }
@@ -52,14 +56,25 @@ class GoalsView extends BaseComponent {
     super.updateState(state);
   }
 
-  _handleInputChange(event) {
+  _handleCatChange(event) {
+    this._handleFormChange("categories", event.target.name, event.target.value);
+  }
+
+  _handleGoalChange(event) {
+    this._handleFormChange("goal", event.target.name, event.target.value);
+  }
+
+  _handleFormChange(target, name, value) {
     
     let formParams = {};
-    formParams[event.target.name] = event.target.value;
-    let goal = Object.assign(this.state.goal, formParams);
-    let state = Object.assign(this.state, { goal });
-    state.messages = { editStatus: "changed" };
-    this.setState(state);
+    formParams[name] = value;
+    let object = Object.assign(this.state[target], formParams);
+    this.state[target] = object;
+    if (!this.state.messages) {
+      this.state.messages = {};
+    }
+    this.state.messages[target] = { editStatus: "changed" };
+    this.setState(this.state);
 
   }
   
@@ -69,14 +84,17 @@ class GoalsView extends BaseComponent {
     let formParams = {};
     formParams[name] = value;
     let goal = Object.assign(this.state.goal, formParams);
-    let state = Object.assign(this.state, { goal });
-    state.messages = { editStatus: "changed" };
+    this.state["goal"] = goal;
+    if (!this.state.messages) {
+      this.state.messages = {};
+    }
+    this.state.messages["goal"] = { editStatus: "changed" };
     
     if (name === "start") {
-      state.startMonth = this._getStartMonth(value);
+      this.state.startMonth = this._getStartMonth(value);
     }
 
-    this.setState(state);
+    this.setState(this.state);
 
   }
   
@@ -126,6 +144,11 @@ class GoalsView extends BaseComponent {
   _saveGoal() {
     const user = this.props.params.user || this.state.auth.user.uuid; 
     this.props.saveGoal(user, this.state.goal);
+  }
+  
+  _saveCategories() {
+    const user = this.props.params.user || this.state.auth.user.uuid; 
+    this.props.saveCategories(user, this.state.categories);
   }
 
   _renderDropdown(startMonth, value, handler) {
@@ -218,24 +241,34 @@ class GoalsView extends BaseComponent {
       );
     }
     
-    let editStatus = null;
-    if (messages && messages.editStatus) {
+    let editStatuses = null;
+    if (messages) {
       
-      let statusColor = {};
-      switch (messages.editStatus) {
-        case "changed":
-          statusColor = { color: "blue" };
-          break;
-        case "saved":
-          statusColor = { color: "green" };
-          break;
-        default:
-          statusColor = {};
-      }
+      editStatuses = {};  
+    
+      const messageKeys = Object.keys(messages);
+      messageKeys.forEach(messageKey => {
+        
+        const editStatus = messages[messageKey].editStatus;
+        let statusColor = {};
+        switch (editStatus) {
+          case "changed":
+            statusColor = { color: "blue" };
+            break;
+          case "saved":
+            statusColor = { color: "green" };
+            break;
+          default:
+            statusColor = {};
+        }
 
-      editStatus = (
-        <span style={statusColor}>{messages.editStatus}</span>
-      );
+        const statusElem = (
+          <span style={statusColor}>{editStatus}</span>
+        );
+
+        editStatuses[messageKey] = statusElem;
+
+      });
 
     }
  
@@ -300,6 +333,41 @@ class GoalsView extends BaseComponent {
             </div>
           </div>
           <div className={s.goals}>
+            <div className={s.goalLabel}>Omat kategoriat</div>
+            <div className={s.goal}>
+              <div className={s.goalAmount}>
+                <TextField style={fullWidth} 
+                  name="own1"
+                  floatingLabelText="Oma 1"
+                  value={this.state.categories.own1}
+                  onChange={this._handleCatChange.bind(this)} />
+              </div>
+              <div className={s.goalAmount}>
+                <TextField style={fullWidth} 
+                  name="own2"
+                  floatingLabelText="Oma 2"
+                  value={this.state.categories.own2}
+                  onChange={this._handleCatChange.bind(this)} />
+              </div>
+              <div className={s.goalAmount}>
+                <TextField style={fullWidth} 
+                  name="own3"
+                  floatingLabelText="Oma 3"
+                  value={this.state.categories.own3}
+                  onChange={this._handleCatChange.bind(this)} />
+              </div>
+            </div>
+            <div className={s.goalsSubmit}>
+              <div className={s.editStatus}>
+                {editStatuses ? editStatuses["categories"] : null}
+              </div>
+              <div className={s.saveButton}> 
+                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+                  onTouchTap={() => this._saveCategories()} label="TALLENNA"/>
+              </div>
+            </div>
+          </div>
+          <div className={s.goals}>
             <div className={s.goalLabel}>Säästötavoite</div>
             <div className={s.goal}>
               <div className={s.goalAmount}>
@@ -307,7 +375,7 @@ class GoalsView extends BaseComponent {
                   name="amount"
                   floatingLabelText="Summa"
                   value={this.state.goal.amount}
-                  onChange={this._handleInputChange.bind(this)} />
+                  onChange={this._handleGoalChange.bind(this)} />
               </div>
               <div className={s.goalStart}>
                 {this._renderDropdown(nowMonth, this.state.goal.start, 
@@ -320,7 +388,7 @@ class GoalsView extends BaseComponent {
             </div>
             <div className={s.goalsSubmit}>
               <div className={s.editStatus}>
-                {editStatus}
+                {editStatuses ? editStatuses["goal"] : null}
               </div>
               <div className={s.saveButton}> 
                 <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 

@@ -57,7 +57,8 @@ app.entities = {
   Transaction: app.schemaLoader.loadSchema("Transaction"),
   Goal: app.schemaLoader.loadSchema("Goal"),
   Alert: app.schemaLoader.loadSchema("Alert"),
-  Event: app.schemaLoader.loadSchema("Event")
+  Event: app.schemaLoader.loadSchema("Event"),
+  Category: app.schemaLoader.loadSchema("Category")
 };
 
 const passport = require("passport");

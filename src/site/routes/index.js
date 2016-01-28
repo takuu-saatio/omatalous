@@ -112,9 +112,11 @@ export function registerRoutes(app) {
       
       const params = { repeats: { $ne: null } };
       let transactions = await financeService.getTransactions(user, params);
+      let categories = await financeService.getCategories(user);
       const state = Object.assign({ 
         goals: { 
           transactions,
+          categories,
           iso: true 
         }
       }, req.context.common);

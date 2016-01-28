@@ -191,5 +191,60 @@ export function registerRoutes(app) {
     }
  
   });
+  
+  app.get("/api/finance/categories/:user?", requireAuth, 
+          async (req, res, next) => {
+    
+    if (!allowedAccess(req.params.user, req)) {
+      return next(new Forbidden());
+    }
+
+    try {
+      
+      let user = req.params.user || req.user.uuid;
+      const { finance } = app.services;
+      let categories = await finance.getCategories(user);
+      res.json({ status: "ok", categories });
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
+
+  app.post("/api/finance/categories/:user?", requireAuth, 
+          async (req, res, next) => {
+    
+    if (!allowedAccess(req.params.user, req)) {
+      return next(new Forbidden());
+    }
+
+    try {
+      
+      let user = req.params.user || req.user.uuid;
+      const { finance } = app.services;
+      log.debug("TODO: save cats", req.body);
+
+      let { Category } = app.entities;
+      await Category.selectAll({ user })
+      .then(categories => {
+        
+        for (let category of categories) {
+          category.label = req.body[category.name];
+          category.save();
+        }
+      
+        res.json({ status: "ok" });
+      
+      })
+      .catch(err => next(err));
+
+      //const result = await finance.saveGoal(user, req.body);
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
 
 } 

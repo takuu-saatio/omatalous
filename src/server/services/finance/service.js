@@ -372,6 +372,29 @@ class FinanceService {
     });
 
   }
+  
+  getCategories(user) {
+  
+    return new Promise((resolve, reject) => {
+
+      const { Category } = this.app.entities;
+      
+      Category.selectAll({ user })
+      .then(categories => {
+
+        const catMap = {};
+        for (let category of categories) {
+          catMap[category.name] = category.label;
+        }
+
+        resolve(catMap)
+      
+      })
+      .catch(err => reject(err));
+
+    });
+
+  }
 
 }
 

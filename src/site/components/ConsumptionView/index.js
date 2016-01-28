@@ -263,7 +263,7 @@ class ConsumptionView extends BaseComponent {
               {transaction.createdAt}
             </div>
             <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
-              {transaction.amount}
+              {transaction.sign}{transaction.amount}
             </div>
             <div>{categories[transaction.category]}</div>
             <div>{transaction.description}</div>

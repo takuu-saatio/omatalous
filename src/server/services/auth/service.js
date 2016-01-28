@@ -76,7 +76,7 @@ class AuthService {
 
     return new Promise((resolve, reject) => {
       
-      const { User, Alert, Event } = this.app.entities;
+      const { User, Alert, Event, Category } = this.app.entities;
     
       let { 
         method, email, password, firstName, lastName,
@@ -148,6 +148,10 @@ class AuthService {
             .catch((err) => {
               log.debug("Error creating reg event");
             });
+
+            Category.schema.create({ user: user.uuid, name: "own1", label: "Oma 1" });
+            Category.schema.create({ user: user.uuid, name: "own2", label: "Oma 2" });
+            Category.schema.create({ user: user.uuid, name: "own3", label: "Oma 3" });
 
             resolve({ user: Object.assign(user, { isNew: true }) });
           
