@@ -16,6 +16,8 @@ export function registerMiddleware(app) {
         
     if (req.path.substring(0, 2) === "/_") {
       return next();
+    } else if (req.path.substring(0, 8) === "/main.js") {
+      return next();
     } else if (req.path.substring(0, 4) === "/api") {
       return next();
     }

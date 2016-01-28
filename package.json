@@ -25,6 +25,7 @@
     "locale": "0.0.20",
     "log4js": "^0.6.29",
     "material-ui": "^0.14.0",
+    "node-fetch": "^1.3.3",
     "node-uuid": "^1.4.7",
     "normalize.css": "3.0.3",
     "passport": "^0.3.2",
@@ -106,8 +107,8 @@
   },
   "scripts": {
     "lint": "eslint src tools && jscs src tools",
-    "csslint": "csscomb src/components --lint --verbose",
-    "csscomb": "csscomb src/components --verbose",
+    "csslint": "csscomb src/site/components --lint --verbose",
+    "csscomb": "csscomb src/site/components --verbose",
     "test": "eslint src && jest",
     "clean": "babel-node tools/run clean",
     "copy": "babel-node tools/run copy",

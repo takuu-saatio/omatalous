@@ -5,4 +5,4 @@ then
   git pull
   npm install
 fi
-npm start --release
+npm start -- --release

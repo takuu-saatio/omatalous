@@ -1,3 +1,12 @@
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+
 import "babel-core/polyfill";
 import log4js from "log4js";
 const log = log4js.getLogger("server");
@@ -24,9 +33,11 @@ import { LocalFinanceServiceInterface } from "./services/finance";
 import { LocalStatsServiceInterface } from "./services/stats";
 import { HttpCommonServiceInterface } from "./services/common";
 
-const app = global.app = express();
+const app = global.server = express();
+
+import assets from './assets';
+//import { port } from './config';
 const port = process.env.PORT || 5000;
-app.set("port", port);
 
 const dbUser = process.env.DB_USER || "omatalous";
 const dbPassword = process.env.DB_PASSWORD || "omatalous";
@@ -52,6 +63,9 @@ app.entities = {
 const passport = require("passport");
 app.passport = passport;
 
+//
+// Register Node.js middleware
+// -----------------------------------------------------------------------------
 app.use(cookieParser());
 app.use(bodyParser());
 app.use(expressSession({ secret: "keyboard cat" }));
@@ -62,6 +76,15 @@ app.use(express.static(path.join(__dirname, "public")));
 
 registerMiddleware(app);
 registerSiteRoutes(app);
+
+//
+// Register server-side rendering middleware
+// -----------------------------------------------------------------------------
+/*
+app.get('*', async (req, res, next) => {
+  app.renderPage(req, res, next);
+});
+*/
 
 app.services = {
   auth: new LocalAuthServiceInterface(app, { 
@@ -110,6 +133,10 @@ app.renderPage = async (req, res, next) => {
 
 }
 
+//
+// Launch the server
+// -----------------------------------------------------------------------------
 app.listen(port, () => {
-  console.log(`The app is running at http://localhost:${port}/`);
+  /* eslint-disable no-console */
+  console.log(`The server is running at http://local.omatalous.fi:${port}/`);
 });

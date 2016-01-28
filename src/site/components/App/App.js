@@ -1,20 +1,27 @@
-"use strict";
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 
-import React, { Component, PropTypes } from "react";
+import React, { Component, PropTypes } from 'react';
 import { Router, Route } from "react-router";
 import { syncReduxAndRouter } from "redux-simple-router";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
-import emptyFunction from "fbjs/lib/emptyFunction";
-import s from "./App.scss";
-import Header from "../Header";
-import Feedback from "../Feedback";
-import Footer from "../Footer";
+import emptyFunction from 'fbjs/lib/emptyFunction';
+import s from './App.scss';
+import Header from '../Header';
+import Feedback from '../Feedback';
+import Footer from '../Footer';
 
 import { render } from "react-dom"
 import { Provider } from "react-redux"
 import configureStore from "../../configureStore"
-import container from "../../container";
+import container from "../../container"
 import Location from "../../../core/Location";
 import { canUseDOM } from "fbjs/lib/ExecutionEnvironment";
 
@@ -86,7 +93,7 @@ class App extends Component {
       syncReduxAndRouter(Location, this.store);
     }
   }
-  
+
   static propTypes = {
     context: PropTypes.shape({
       insertCss: PropTypes.func,
@@ -117,19 +124,14 @@ class App extends Component {
 
   componentWillMount() {
     this.removeCss = this.props.context.insertCss(s);
-    console.log("App will mount");
   }
 
   componentWillUnmount() {
     this.removeCss();
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log("App will receive props");
-  }
-
   render() {
-    
+
     const state = this.store.getState();
     console.log("render state", state); 
     return !this.props.error ? ( 
@@ -141,6 +143,17 @@ class App extends Component {
         </Provider> 
       </div>
     ) : this.props.children;
+
+    /*
+    return !this.props.error ? (
+      <div>
+        <Header />
+        {this.props.children}
+        <Feedback />
+        <Footer />
+      </div>
+      ) : this.props.children;
+      */
   }
 
 }

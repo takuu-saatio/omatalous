@@ -12,7 +12,7 @@ import webpack from 'webpack';
 import merge from 'lodash.merge';
 import AssetsPlugin from 'assets-webpack-plugin';
 
-const DEBUG = false; //!process.argv.includes('--release');
+const DEBUG = !process.argv.includes('--release');
 const VERBOSE = process.argv.includes('--verbose');
 const AUTOPREFIXER_BROWSERS = [
   'Android 2.3',
@@ -110,7 +110,7 @@ const config = {
 // -----------------------------------------------------------------------------
 
 const clientConfig = merge({}, config, {
-  entry: './src/app.js',
+  entry: './src/client.js',
   output: {
     path: path.join(__dirname, '../build/public'),
     filename: DEBUG ? '[name].js?[hash]' : '[name].[hash].js',

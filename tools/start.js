@@ -23,42 +23,52 @@ import bundle from './bundle';
  * synchronizing URLs, interactions and code changes across multiple devices.
  */
 async function start() {
+  
   await run(clean);
-  await run(bundle);
+  if (!webpackConfig[0].debug) {
+    await run(bundle);
+  }
+  
   await run(copy.bind(undefined, { watch: true }));
+  
   await new Promise(resolve => {
+    
     // Patch the client-side bundle configurations
     // to enable Hot Module Replacement (HMR) and React Transform
-    webpackConfig.filter(x => x.target !== 'node').forEach(config => {
-      if (Array.isArray(config.entry)) {
-        config.entry.unshift('webpack-hot-middleware/client');
-      } else {
-        config.entry = ['webpack-hot-middleware/client', config.entry];
-      }
-      config.plugins.push(new webpack.HotModuleReplacementPlugin());
-      config.plugins.push(new webpack.NoErrorsPlugin());
-      config.module.loaders
-        .filter(x => x.loader === 'babel-loader')
-        .forEach(x => x.query = {
-          // Wraps all React components into arbitrary transforms
-          // https://github.com/gaearon/babel-plugin-react-transform
-          plugins: ['react-transform'],
-          extra: {
-            'react-transform': {
-              transforms: [
-                {
-                  transform: 'react-transform-hmr',
-                  imports: ['react'],
-                  locals: ['module'],
-                }, {
-                  transform: 'react-transform-catch-errors',
-                  imports: ['react', 'redbox-react'],
-                },
-              ],
+    if (webpackConfig[0].debug) {
+
+      webpackConfig.filter(x => x.target !== 'node').forEach(config => {
+        if (Array.isArray(config.entry)) {
+          config.entry.unshift('webpack-hot-middleware/client');
+        } else {
+          config.entry = ['webpack-hot-middleware/client', config.entry];
+        }
+        config.plugins.push(new webpack.HotModuleReplacementPlugin());
+        config.plugins.push(new webpack.NoErrorsPlugin());
+        config.module.loaders
+          .filter(x => x.loader === 'babel-loader')
+          .forEach(x => x.query = {
+            // Wraps all React components into arbitrary transforms
+            // https://github.com/gaearon/babel-plugin-react-transform
+            plugins: ['react-transform'],
+            extra: {
+              'react-transform': {
+                transforms: [
+                  {
+                    transform: 'react-transform-hmr',
+                    imports: ['react'],
+                    locals: ['module'],
+                  }, {
+                    transform: 'react-transform-catch-errors',
+                    imports: ['react', 'redbox-react'],
+                  },
+                ],
+              },
             },
-          },
-        });
-    });
+          });
+      });
+    
+    }
 
     const bundler = webpack(webpackConfig);
     const wpMiddleware = webpackMiddleware(bundler, {
@@ -70,6 +80,7 @@ async function start() {
       // For other settings see
       // https://webpack.github.io/docs/webpack-dev-middleware
     });
+
     const hotMiddlewares = bundler.compilers
       .filter(compiler => compiler.options.target !== 'node')
       .map(compiler => webpackHotMiddleware(compiler));
@@ -77,10 +88,15 @@ async function start() {
     let handleServerBundleComplete = () => {
       runServer((err, host) => {
         if (!err) {
+
+          if (!webpackConfig[0].debug) {
+            return;
+          }
+
           const bs = Browsersync.create();
           bs.init({
             proxy: {
-              target: host,
+              target: "local.omatalous.fi:5000",
               middleware: [wpMiddleware, ...hotMiddlewares],
             },
             // no need to watch '*.js' here, webpack will take care of it for us,
@@ -93,7 +109,9 @@ async function start() {
     };
 
     bundler.plugin('done', () => handleServerBundleComplete());
+  
   });
+
 }
 
 export default start;

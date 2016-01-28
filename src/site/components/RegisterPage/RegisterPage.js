@@ -1,10 +1,17 @@
-"use strict";
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 
-import React, { Component, PropTypes } from "react";
-import s from "./RegisterPage.scss";
-import withStyles from "../../decorators/withStyles";
+import React, { Component, PropTypes } from 'react';
+import s from './RegisterPage.scss';
+import withStyles from '../../decorators/withStyles';
 
-const title = "New User Registration";
+const title = 'New User Registration';
 
 @withStyles(s)
 class RegisterPage extends Component {
@@ -23,8 +30,6 @@ class RegisterPage extends Component {
         <div className={s.container}>
           <h1>{title}</h1>
           <p>...</p>
-          <p>value</p>
-          <button>Test</button>
         </div>
       </div>
     );

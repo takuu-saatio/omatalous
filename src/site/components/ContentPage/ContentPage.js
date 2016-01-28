@@ -1,48 +1,36 @@
-import React, { Component, PropTypes } from "react";
-import s from "./ContentPage.scss";
-import withStyles from "../../decorators/withStyles";
-import BaseComponent from "../BaseComponent";
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 
-import http from "../../tools/http-client";
+import React, { Component, PropTypes } from 'react';
+import s from './ContentPage.scss';
+import withStyles from '../../decorators/withStyles';
 
 @withStyles(s)
-class ContentPage extends BaseComponent {
-  
+class ContentPage extends Component {
+
+  static propTypes = {
+    path: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    title: PropTypes.string,
+  };
+
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = props.state;
-  }
-
-  async fetchData(props = this.props) { 
-    console.log("fetching data", props.path);
-    const response = await http.get("/api/content" + props.path);
-    if (!response.error) {
-      this.setState(response.content);
-    }
-
-  }
-
-  _setTitle(meta) {
-    if (meta && meta.title) {
-      this.context.onSetTitle(meta.title);
-    }
-  }
-
   render() {
-    
-    this._setTitle(this.state.meta);
-    
+    this.context.onSetTitle(this.props.title);
     return (
-      <div>
-        <div className={s.root}>
-          <div className={s.container}>
-            <div dangerouslySetInnerHTML={{ __html: this.state.content || "" }} />
-          </div>
-          <button onClick={this.fetchData.bind(this)}>fetch</button>
+      <div className={s.root}>
+        <div className={s.container}>
+          {this.props.path === '/' ? null : <h1>{this.props.title}</h1>}
+          <div dangerouslySetInnerHTML={{ __html: this.props.content || '' }} />
         </div>
       </div>
     );
