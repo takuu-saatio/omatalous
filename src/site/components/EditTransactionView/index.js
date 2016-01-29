@@ -193,6 +193,14 @@ class EditTransactionView extends BaseComponent {
     const signDisabled = this.props.signDisabled ?
       this.props.signDisabled : false;
 
+    if (this.props.categories) {
+      this.props.categories.forEach(category => {
+        if (category.type === (transaction.sign === "+" ? "income" : "expense")) {
+          categories[category.name] = category.label;
+        }
+      });
+    }
+
     const catKeys = Object.keys(categories);
     let categoryElems = catKeys.map(catKey => {
       return (
@@ -210,7 +218,7 @@ class EditTransactionView extends BaseComponent {
               <div className={s.sign}>
                 <FlatButton disabled={signDisabled} 
                   style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                  onClick={() => this._toggleTxType()}>
+                  onClick={() => this._toggleTxSign()}>
                   {txSignSymbol}
                 </FlatButton>
               </div> 

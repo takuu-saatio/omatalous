@@ -40,21 +40,18 @@ export class LocalFinanceServiceInterface extends ServiceInterface {
     return await this.service.getCurrentMonthStats(user);
   }
   
-  async getCategories(user) {
-    return await this.service.getCategories(user);
-  }
-
-  async getBudget() {
-  }
-
-  async saveBudget() {
+  async getCategories(user, params) {
+    return await this.service.getCategories(user, params);
   }
   
-  async getSaveGoal() {
+  async saveCategory(user, category) {
+    return await this.service.saveCategory(user, category);
+  }
+   
+  async deleteCategory(user, uuid) {
+    return await this.service.deleteCategory(user, uuid);
   }
 
-  async saveSaveGoal() {
-  }
 
 }
 

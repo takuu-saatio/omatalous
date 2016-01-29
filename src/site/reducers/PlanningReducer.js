@@ -11,7 +11,11 @@ export default function (state = {}, action) {
   
   switch (action.type) {
     case planningActions.PLANNED_TXS_FETCH_SUCCESS:
-      return { transactions: action.transactions, isUpdated: true };
+      return { 
+        transactions: action.transactions, 
+        categories: action.categories,
+        isUpdated: true 
+      };
     case txActions.DELETE_SUCCESS:
       return { status: "deleted" };
     case planningActions.PLANNED_TXS_FETCH_FAIL:

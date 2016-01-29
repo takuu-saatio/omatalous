@@ -12,7 +12,8 @@ class Category extends BaseEntity {
     this.fields = Object.assign(this.fields, {
       user: { type: Sequelize.STRING },
       name: { type: Sequelize.STRING },
-      label: { type: Sequelize.STRING }
+      label: { type: Sequelize.STRING },
+      type: { type: Sequelize.STRING }
     });
 
     this.hiddenFields = this.hiddenFields.concat([]);

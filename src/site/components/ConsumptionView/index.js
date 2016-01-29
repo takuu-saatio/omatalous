@@ -207,7 +207,7 @@ class ConsumptionView extends BaseComponent {
 
       return (
         <EditTransactionContainer close={() => this._closeEditTx()} 
-          params={params} />
+          categories={this.state.categories} params={params} />
       );
 
     }
@@ -485,9 +485,25 @@ class ConsumptionView extends BaseComponent {
       );
     }
 
-    const categories = quickTransaction.sign === "+" ?
-      this.incomeCategories : this.expenseCategories;
-      
+    const ownCategories = this.state.categories;
+    let categories = null;
+    let categoryType = null;
+    if(quickTransaction.sign === "+") {
+      categories = this.incomeCategories;
+      categoryType = "income";
+    } else {
+      categories = this.expenseCategories;
+      categoryType = "expense";
+    }
+
+    if (ownCategories) {
+      ownCategories.forEach(category => {
+        if (category.type === categoryType) {
+          categories[category.name] = category.label;
+        }
+      });
+    }
+
     const catKeys = Object.keys(categories);
     let categoryElems = catKeys.map(catKey => {
       return (

@@ -13,6 +13,8 @@ export const GOAL_DELETE_SUCCESS = "GOAL_DELETE_SUCCESS";
 export const GOAL_DELETE_FAIL = "GOAL_DELETE_FAIL";
 export const CAT_SAVE_SUCCESS = "CAT_SAVE_SUCCESS";
 export const CAT_SAVE_FAIL = "CAT_SAVE_FAIL";
+export const CAT_DELETE_SUCCESS = "CAT_DELETE_SUCCESS";
+export const CAT_DELETE_FAIL = "CAT_DELETE_FAIL";
 
 export function fetchGoal(user) {
   
@@ -121,12 +123,31 @@ export function fetchTransactions(user) {
 
 }
 
-export function saveCategories(user, categories) {
+export function saveCategory(user, category) {
   
   return async (dispatch) => {
     
-    let response = await http.post(`/api/finance/categories/${user}`, categories);
+    let response = await http.post(`/api/finance/categories/${user}`, category);
     const action = processResponse(response, CAT_SAVE_SUCCESS, CAT_SAVE_FAIL);
+    if (action.type === CAT_SAVE_SUCCESS) {
+      action.created = response.created;
+      if (response.category) {
+        action.category = response.category;
+      }
+    }
+    dispatch(action);
+  
+  };
+
+}
+
+
+export function deleteCategory(user, uuid) {
+  
+  return async (dispatch) => {
+    
+    let response = await http.delete(`/api/finance/categories/${user}/${uuid}`);
+    const action = processResponse(response, CAT_DELETE_SUCCESS, CAT_DELETE_FAIL); 
     dispatch(action);
   
   };

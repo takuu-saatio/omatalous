@@ -67,12 +67,15 @@ export function registerRoutes(app) {
       const params = { repeats: { $eq: null }, month: currentMonth };
       let transactions = await financeService.getTransactions(user, params);
       transactions = transactions.map(transaction => transaction.json());
+      let categories = await financeService.getCategories(user);
+      categories = categories.map(category => category.json());
       const state = Object.assign({ 
         mainTabs: {
           tab: 0,
         },
         consumption: { 
           transactions,
+          categories,
           month: currentMonth, 
           iso: true 
         }
@@ -112,7 +115,10 @@ export function registerRoutes(app) {
       
       const params = { repeats: { $ne: null } };
       let transactions = await financeService.getTransactions(user, params);
+      transactions = transactions.map(transaction => transaction.json());
       let categories = await financeService.getCategories(user);
+      categories = categories.map(category => category.json());
+      
       const state = Object.assign({ 
         goals: { 
           transactions,
@@ -150,9 +156,13 @@ export function registerRoutes(app) {
       const params = { type: "planned" };
       const order = "\"month\" ASC";
       let transactions = await financeService.getTransactions(user, params, order);
+      transactions = transactions.map(transaction => transaction.json());
+      let categories = await financeService.getCategories(user);
+      categories = categories.map(category => category.json());
       const state = Object.assign({ 
         planning: {
           transactions,
+          categories,
           iso: true 
         }
       }, req.context.common);

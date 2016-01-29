@@ -31,8 +31,11 @@ class GoalsView extends BaseComponent {
     }
     
     if (!state.categories) {    
-      state.categories = {};
+      state.categories = [];
     }
+
+    state.expenseCategory = { type: "expense" };
+    state.incomeCategory = { type: "income" };
 
     this.state = state;
     
@@ -53,11 +56,26 @@ class GoalsView extends BaseComponent {
   }
   
   updateState(state) {
+
+    if (state.categoryCreated === true) {
+      this.state.categories.push(state.category);
+      if (state.category.type === "expense") {
+        state.expenseCategory = { type: "expense" };
+      } else {
+        state.incomeCategory = { type: "income" };
+      }
+    }
+
     super.updateState(state);
+
   }
 
-  _handleCatChange(event) {
-    this._handleFormChange("categories", event.target.name, event.target.value);
+  _handleExpenseCatChange(event) {
+    this._handleFormChange("expenseCategory", event.target.name, event.target.value);
+  }
+
+  _handleIncomeCatChange(event) {
+    this._handleFormChange("incomeCategory", event.target.name, event.target.value);
   }
 
   _handleGoalChange(event) {
@@ -146,9 +164,16 @@ class GoalsView extends BaseComponent {
     this.props.saveGoal(user, this.state.goal);
   }
   
-  _saveCategories() {
+  _saveCategory(category) {
     const user = this.props.params.user || this.state.auth.user.uuid; 
-    this.props.saveCategories(user, this.state.categories);
+    this.props.saveCategory(user, category);
+  }
+  
+  _deleteCategory(uuid) {
+    if (window.confirm("Oletko varma, että haluat poistaa kategorian? Jos poistat kategorian, kaikki sillä merkityt tapahtumasi siirtyvät kategoriaan \"Muut\".")) {
+      const user = this.props.params.user || this.state.auth.user.uuid; 
+      this.props.deleteCategory(user, uuid);
+    }
   }
 
   _renderDropdown(startMonth, value, handler) {
@@ -211,7 +236,7 @@ class GoalsView extends BaseComponent {
   render() {
      
     console.log("render goals", this.props, this.state);
-    let { transactions, goal, messages, edit } = this.state;
+    let { transactions, categories, goal, messages, edit } = this.state;
     
     if (edit) {
        
@@ -302,6 +327,30 @@ class GoalsView extends BaseComponent {
       });
 
     }
+    
+    let incomeCatElems = [];
+    let expenseCatElems = [];
+    if (categories) {
+      categories.forEach(category => {
+
+        const catElem = (
+          <div className={s.transaction} style={cursorCss} key={category.uuid}>
+            <div className={s.txTitle}>
+              {category.label}&nbsp;
+            </div>
+            <div onClick={() => this._deleteCategory(category.uuid)} 
+              className={s.txDelete}>X</div>
+          </div>
+        );
+
+        if (category.type === "income") {
+          incomeCatElems.push(catElem);
+        } else {
+          expenseCatElems.push(catElem);
+        }
+
+      });
+    }
 
     const goalStartMonth = goal ? goal.start : null;
     const nowMonth = this._getStartMonth(goalStartMonth); 
@@ -331,40 +380,37 @@ class GoalsView extends BaseComponent {
               </div>
               <div></div>
             </div>
-          </div>
-          <div className={s.goals}>
-            <div className={s.goalLabel}>Omat kategoriat</div>
-            <div className={s.goal}>
-              <div className={s.goalAmount}>
-                <TextField style={fullWidth} 
-                  name="own1"
-                  floatingLabelText="Oma 1"
-                  value={this.state.categories.own1}
-                  onChange={this._handleCatChange.bind(this)} />
+            <div>
+              <div className={s.transactionsLabel}>Omat kategoriat</div>
+              <div className={s.transactions}>
+                <div className={s.catTypeLabel}>Tulot</div>
+                {incomeCatElems}
+                <div className={s.newCategory}>
+                  <TextField 
+                    name="label"
+                    floatingLabelText="Uusi kategoria"
+                    value={this.state.incomeCategory.label}
+                    onChange={this._handleIncomeCatChange.bind(this)} />
+                  <FlatButton style={{ lineHeight: "28px" }} 
+                    onTouchTap={() => this._saveCategory(this.state.incomeCategory)} 
+                    label="LISÄÄ" />
+                </div>
               </div>
-              <div className={s.goalAmount}>
-                <TextField style={fullWidth} 
-                  name="own2"
-                  floatingLabelText="Oma 2"
-                  value={this.state.categories.own2}
-                  onChange={this._handleCatChange.bind(this)} />
+              <div className={s.transactions}>
+                <div className={s.catTypeLabel}>Menot</div>
+                {expenseCatElems}
+                <div className={s.newCategory}>
+                  <TextField 
+                    name="label"
+                    floatingLabelText="Uusi kategoria"
+                    value={this.state.expenseCategory.label}
+                    onChange={this._handleExpenseCatChange.bind(this)} />
+                  <FlatButton style={{ lineHeight: "28px" }} 
+                    onTouchTap={() => this._saveCategory(this.state.expenseCategory)} 
+                    label="LISÄÄ" />
+                </div>
               </div>
-              <div className={s.goalAmount}>
-                <TextField style={fullWidth} 
-                  name="own3"
-                  floatingLabelText="Oma 3"
-                  value={this.state.categories.own3}
-                  onChange={this._handleCatChange.bind(this)} />
-              </div>
-            </div>
-            <div className={s.goalsSubmit}>
-              <div className={s.editStatus}>
-                {editStatuses ? editStatuses["categories"] : null}
-              </div>
-              <div className={s.saveButton}> 
-                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                  onTouchTap={() => this._saveCategories()} label="TALLENNA"/>
-              </div>
+              <div></div>
             </div>
           </div>
           <div className={s.goals}>

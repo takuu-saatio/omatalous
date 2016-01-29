@@ -95,6 +95,7 @@ class PlanningView extends BaseComponent {
       return (
         <EditPlannedTransactionContainer signDisabled={true}
           close={() => this._closeEditTx()}
+          categories={this.state.categories}
           params={params} transaction={transaction} />
       );
     

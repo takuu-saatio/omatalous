@@ -17,6 +17,7 @@ export default function (state = {}, action) {
       }, action.goal ? { goal: action.goal } : {},
          action.monthStats ? { monthStats: action.monthStats } : {},
          action.month ? { month: action.month } : {},
+         action.categories ? { categories: action.categories } : {},
          action.alerts ? { alerts: action.alerts } : {});
     case actions.SAVE_SUCCESS:
       return { messages: { editStatus: "saved" }, created: action.created };

@@ -203,7 +203,10 @@ export function registerRoutes(app) {
       
       let user = req.params.user || req.user.uuid;
       const { finance } = app.services;
-      let categories = await finance.getCategories(user);
+      const params = req.query && req.query.all ?
+        { $or: [ { user: { $eq: null } }, { user } ] } : null;
+      let categories = await finance.getCategories(user, params);
+      categories = categories.map(category => category.json());
       res.json({ status: "ok", categories });
       
     } catch (err) {
@@ -221,25 +224,27 @@ export function registerRoutes(app) {
 
     try {
       
+      const { finance } = app.services;      
+      let user = req.params.user || req.user.uuid; 
+      const result = await finance.saveCategory(user, req.body);
+      res.json(Object.assign({ status: "ok" }, result));
+      
+    } catch (err) {
+      next(err);
+    }
+ 
+  });
+  
+  app.delete("/api/finance/categories/:user/:uuid", requireAuth, 
+          async (req, res, next) => {
+    
+    try {
+      
       let user = req.params.user || req.user.uuid;
+      user = req.user.email === process.env.ADMIN_USER ? "admin" : user;
       const { finance } = app.services;
-      log.debug("TODO: save cats", req.body);
-
-      let { Category } = app.entities;
-      await Category.selectAll({ user })
-      .then(categories => {
-        
-        for (let category of categories) {
-          category.label = req.body[category.name];
-          category.save();
-        }
-      
-        res.json({ status: "ok" });
-      
-      })
-      .catch(err => next(err));
-
-      //const result = await finance.saveGoal(user, req.body);
+      const result = await finance.deleteCategory(user, req.params.uuid);
+      res.json({ status: "ok" });
       
     } catch (err) {
       next(err);

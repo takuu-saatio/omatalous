@@ -72,6 +72,11 @@ export function fetchTransactions(user, month) {
       if (response.alerts) {
         action.alerts = response.alerts;
       }
+      
+      response = await http.get(`/api/finance/categories/${user}`);
+      if (response.categories) {
+        action.categories = response.categories;
+      }
     
     }
 

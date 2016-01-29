@@ -34,10 +34,14 @@ export default function (state = {}, action) {
         messages: { 
           categories: { editStatus: "saved" } 
         }, 
+        categoryCreated: action.created, 
+        category: action.category, 
         isUpdated: true 
       };
     case goalsActions.TXS_FETCH_FAIL:
       return { error: action.error, isUpdated: true };
+    case goalsActions.CAT_DELETE_SUCCESS:
+      return { categoryDeleted: true };
     case txActions.DELETE_SUCCESS:
       return { status: "deleted" };
     case goalsActions.GOAL_SAVE_FAIL:

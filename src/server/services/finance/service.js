@@ -3,6 +3,7 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/services/finance/service");
 
+import slug from "slug";
 import { getCurrentMonth } from "../../../core/utils";
 import * as utils from "../../../core/utils";
 
@@ -261,6 +262,14 @@ class FinanceService {
         Goal.selectOne({ uuid: goal.uuid })
         .then(existingGoal => {
           
+          if (!goal) {
+            return reject(new NotFound(null, "goal_not_found"));
+          }
+
+          if (user !== "admin" && goal.user !== user) {
+            return reject(new Unauthorized());
+          }
+
           delete goal.id;
           delete goal.uuid;
           delete goal.user;
@@ -373,24 +382,106 @@ class FinanceService {
 
   }
   
-  getCategories(user) {
+  getCategories(user, params) {
   
     return new Promise((resolve, reject) => {
 
       const { Category } = this.app.entities;
       
-      Category.selectAll({ user })
-      .then(categories => {
-
-        const catMap = {};
-        for (let category of categories) {
-          catMap[category.name] = category.label;
-        }
-
-        resolve(catMap)
-      
+      Category.selectAll(params || { user })
+      .then(categories => {        
+        resolve(categories);
       })
       .catch(err => reject(err));
+
+    });
+
+  }
+  
+  saveCategory(user, category) {
+  
+    return new Promise((resolve, reject) => {
+
+      const { Category } = this.app.entities;
+      
+      if (category.uuid) {
+        
+        Category.selectOne({ uuid: category.uuid })
+        .then(existingCategory => {
+
+          if (!existingCategory) {
+            return reject(new NotFound(null, "cat_not_found"));
+          }
+
+          if (user !== "admin" && existingCategory.user !== user) {
+            return reject(new Unauthorized());
+          }
+
+          delete category.id;
+          delete category.uuid;
+          delete category.user;
+          Object.assign(existingCategory, category);
+          
+          existingCategory.save()
+          .then(() => resolve({ created: false })) 
+          .catch(err => reject(err));
+
+        }) 
+        .catch(err => reject(err));
+        
+      } else {
+
+        category.user = user;
+        if (!category.name) {
+          category.name = slug(category.label); 
+        }
+
+        Category.schema.create(category)
+        .then(category => resolve({
+          created: true,
+          category
+        }))
+        .catch(err => reject(err));
+      
+      }
+
+    });
+
+  }
+
+  deleteCategory(user, uuid) {
+    
+    return new Promise((resolve, reject) => {
+
+      const { Category, Transaction } = this.app.entities;
+      
+      Category.selectOne({ uuid: uuid })
+      .then(category => {
+         
+        if (!category) {
+          return reject(new NotFound(null, "cat_not_found"));
+        }
+
+        if (user !== "admin" && category.user !== user) {
+          return reject(new Unauthorized());
+        }
+
+        Transaction.schema.update({
+          category: "misc"
+        },{
+          where: { 
+            user: category.user,
+            category: category.name
+          },
+          fields: ["category"]
+        });
+
+        category.destroy({ force: true })
+        .then(() => resolve()) 
+        .catch(err => reject(err));
+
+      }) 
+      .catch(err => reject(err)); 
 
     });
 

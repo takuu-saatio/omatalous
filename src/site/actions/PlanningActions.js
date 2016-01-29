@@ -19,7 +19,14 @@ export function fetchPlannedTransactions(user) {
       PLANNED_TXS_FETCH_SUCCESS, PLANNED_TXS_FETCH_FAIL);
     
     if (action.type === PLANNED_TXS_FETCH_SUCCESS) {
+      
       action.transactions = response.transactions; 
+      
+      response = await http.get(`/api/finance/categories/${user}`);
+      if (response.categories) {
+        action.categories = response.categories;
+      }
+    
     }
 
     dispatch(action);

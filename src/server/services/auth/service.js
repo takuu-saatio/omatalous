@@ -149,9 +149,9 @@ class AuthService {
               log.debug("Error creating reg event");
             });
 
-            Category.schema.create({ user: user.uuid, name: "own1", label: "Oma 1" });
-            Category.schema.create({ user: user.uuid, name: "own2", label: "Oma 2" });
-            Category.schema.create({ user: user.uuid, name: "own3", label: "Oma 3" });
+            //Category.schema.create({ user: user.uuid, name: "own1", label: "Oma 1" });
+            //Category.schema.create({ user: user.uuid, name: "own2", label: "Oma 2" });
+            //Category.schema.create({ user: user.uuid, name: "own3", label: "Oma 3" });
 
             resolve({ user: Object.assign(user, { isNew: true }) });
           
