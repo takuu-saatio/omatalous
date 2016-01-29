@@ -57,11 +57,11 @@
     .goalAmount {
       padding-left: 8px;
       padding-right: 4px;
-      flex: 1 1 0;
+      flex: 1 1;
     }
   
     .goalStart {
-      flex: 2 1 0;
+      flex: 2 1;
       display: flex;
       padding-left: 4px;
       padding-right: 4px;
@@ -70,7 +70,7 @@
     }
 
     .goalEnd {
-      flex: 2 1 0; 
+      flex: 2 1; 
       display: flex;
       align-items: flex-end;
       padding-bottom: 8px;
@@ -86,11 +86,11 @@
     padding: 8px;
 
     .editStatus {
-      flex: 1 1 0;
+      flex: 1 1;
     }
     
     .saveButton {
-      flex: 1 1 0;
+      flex: 1 1;
     } 
 
   }

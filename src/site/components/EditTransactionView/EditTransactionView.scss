@@ -28,7 +28,7 @@
   
   .sign {
     
-    flex: 1 1 0;
+    flex: 1 1;
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
@@ -44,7 +44,7 @@
   }
 
   .amount {
-    flex: 1 1 0;
+    flex: 1 1;
     padding-left: 6px;
   }
   
@@ -54,7 +54,7 @@
   }
 
   .category {
-    flex: 4 1 0;
+    flex: 4 1;
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
@@ -64,7 +64,7 @@
     
     position: relative;
     display: flex;
-    flex: 1 1 0;
+    flex: 1 1;
     align-items: flex-end;
     padding-bottom: 8px;
     
@@ -80,7 +80,7 @@
     
     position: relative;
     display: flex;
-    flex: 1 1 0;
+    flex: 1 1;
     align-items: flex-end;
     padding-bottom: 8px;
     

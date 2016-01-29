@@ -24,7 +24,7 @@
 
   .sign {
     
-    flex: 1 1 0;
+    flex: 1 1;
     padding-left: 2%;
     display: flex;
     align-items: flex-end;
@@ -41,14 +41,14 @@
   }
 
   .amount {
-    flex: 1 1 0;
+    flex: 1 1;
     padding-left: 6px;
     position: relative;
   }
   
   .description {
     
-    flex: 2 1 0;
+    flex: 2 1;
     @media (max-width: 660px) {
       display: none;
     }
@@ -56,19 +56,19 @@
   }
 
   .category {
-    flex: 2 1 0;
+    flex: 2 1;
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
     @media (max-width: 660px) {
-      flex: 4 1 0;
+      flex: 4 1;
     }
   }
 
   .submit {
     position: relative;
     display: flex;
-    flex: 1 1 0;
+    flex: 1 1;
     align-items: flex-end;
     padding-bottom: 8px;
     padding-right: 2%;
@@ -156,21 +156,21 @@
     }
 
     > div:nth-child(1) {
-      flex: 1 1 0;
+      flex: 1 1;
     }
     
     > div:nth-child(2) {
       border-left: 1px solid #e0e0e0;
       border-right: 1px solid #e0e0e0;
-      flex: 1 1 0;
+      flex: 1 1;
     }
     
     > div:nth-child(3) {
-      flex: 1 1 0;
+      flex: 1 1;
     }
     
     > div:nth-child(4) {
-      flex: 2 1 0;
+      flex: 2 1;
     }
 
   }
@@ -178,6 +178,7 @@
 }
 
 .noTransactions {
+  margin-top: 16px;
   text-align: center;
 }
 
@@ -204,16 +205,16 @@
       }
 
       > div:nth-child(1) {
-        flex: 1 1 0;
+        flex: 1 1;
         padding-left: 3%;
       }       
       
       > div:nth-child(2) {
-        flex: 1 1 0;
+        flex: 1 1;
       }       
       
       > div:nth-child(3) {
-        flex: 2 1 0;
+        flex: 2 1;
         text-overflow: ellipsis;
         overflow-x: hidden;
         white-space: nowrap;
@@ -221,7 +222,7 @@
       
       > div:nth-child(4) {
         
-        flex: 2 1 0;
+        flex: 2 1;
         text-overflow: ellipsis;
         overflow-x: hidden;
         white-space: nowrap;
@@ -281,7 +282,7 @@
   display: flex;
 
   > div {
-    flex: 1 1 0; 
+    flex: 1 1; 
   }
 
   > div:nth-child(1) {
@@ -311,12 +312,12 @@
   display: flex;
 
   .summaryLabel {
-    flex: 1 1 0;
+    flex: 1 1;
     text-align: left;  
   }
   
   .summaryData {
-    flex: 1 1 0;
+    flex: 1 1;
     text-align: right;
   }
 
