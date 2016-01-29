@@ -314,7 +314,9 @@ class GoalsView extends BaseComponent {
               {transaction.amount} €
             </div>
             <div onClick={() => this._deleteTransaction(transaction.uuid)} 
-              className={s.txDelete}>X</div>
+              className={s.txDelete}>
+              <i className="material-icons">&#xE14C;</i> 
+            </div>
           </div>
         );
         
@@ -339,7 +341,9 @@ class GoalsView extends BaseComponent {
               {category.label}&nbsp;
             </div>
             <div onClick={() => this._deleteCategory(category.uuid)} 
-              className={s.txDelete}>X</div>
+              className={s.txDelete}>
+              <i className="material-icons">&#xE14C;</i>
+            </div>
           </div>
         );
 
@@ -354,6 +358,14 @@ class GoalsView extends BaseComponent {
 
     const goalStartMonth = goal ? goal.start : null;
     const nowMonth = this._getStartMonth(goalStartMonth); 
+    
+    const catInputCss = {
+      width: "140px"
+    };
+    const catSubmitCss = {
+      minWidth: "initial",
+      marginLeft: "6px"
+    };
 
     return (
       <div>
@@ -386,28 +398,30 @@ class GoalsView extends BaseComponent {
                 <div className={s.catTypeLabel}>Tulot</div>
                 {incomeCatElems}
                 <div className={s.newCategory}>
-                  <TextField 
+                  <TextField style={catInputCss}
                     name="label"
                     floatingLabelText="Uusi kategoria"
                     value={this.state.incomeCategory.label}
                     onChange={this._handleIncomeCatChange.bind(this)} />
-                  <FlatButton style={{ lineHeight: "28px" }} 
-                    onTouchTap={() => this._saveCategory(this.state.incomeCategory)} 
-                    label="LISÄÄ" />
+                  <FlatButton style={catSubmitCss} 
+                    onTouchTap={() => this._saveCategory(this.state.incomeCategory)}>
+                    <i className="material-icons">&#xE148;</i>
+                  </FlatButton>
                 </div>
               </div>
               <div className={s.transactions}>
                 <div className={s.catTypeLabel}>Menot</div>
                 {expenseCatElems}
                 <div className={s.newCategory}>
-                  <TextField 
+                  <TextField style={catInputCss}
                     name="label"
                     floatingLabelText="Uusi kategoria"
                     value={this.state.expenseCategory.label}
                     onChange={this._handleExpenseCatChange.bind(this)} />
-                  <FlatButton style={{ lineHeight: "28px" }} 
-                    onTouchTap={() => this._saveCategory(this.state.expenseCategory)} 
-                    label="LISÄÄ" />
+                  <FlatButton style={catSubmitCss} 
+                    onTouchTap={() => this._saveCategory(this.state.expenseCategory)}>
+                    <i className="material-icons">&#xE148;</i>
+                  </FlatButton>
                 </div>
               </div>
               <div></div>
