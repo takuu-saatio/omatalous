@@ -46,7 +46,10 @@ class Html extends Component {
     
     const { userAgent } = this.props;  
     console.log("HTML USER AGENT", userAgent);
-    if (userAgent.indexOf("Safari") !== -1 && userAgent.indexOf("Chrome") === -1) {
+    const doPolyfill = 
+      (userAgent.indexOf("Safari") !== -1 && userAgent.indexOf("Chrome") === -1) ||
+       userAgent.indexOf("Windows NT") !== -1;
+    if (doPolyfill) {
       intlPolyfill = (
         <script src="/polyfill.js"></script>
       );
