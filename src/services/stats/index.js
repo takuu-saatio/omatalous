@@ -8,8 +8,8 @@ export class LocalStatsServiceInterface extends ServiceInterface {
     super(app, "stats", Object.assign(options, { provideService: true }));
   }
 
-  async getGraphStats(user) {
-    return await this.service.getGraphStats(user);
+  async getGraphStats(user, params) {
+    return await this.service.getGraphStats(user, params);
   }
   
   async getRegistrationStats() {

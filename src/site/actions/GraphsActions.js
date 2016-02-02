@@ -6,11 +6,11 @@ import { processResponse } from "./utils";
 export const STATS_FETCH_SUCCESS = "STATS_FETCH_SUCCESS";
 export const STATS_FETCH_FAIL = "STATS_FETCH_FAIL";
 
-export function fetchGraphStats(user) {
+export function fetchGraphStats(user, params) {
   
   return async (dispatch) => {
     
-    let response = await http.get(`/api/stats/graphs/${user}`);
+    let response = await http.get(`/api/stats/graphs/${user}`, params);
     const action = processResponse(response, STATS_FETCH_SUCCESS, STATS_FETCH_FAIL);
     
     if (action.type === STATS_FETCH_SUCCESS) {

@@ -13,10 +13,11 @@ class HttpClient {
     
   }
 
-  get(path) {
+  get(path, params) {
     
     return new Promise((resolve, reject) => {
       request.get(path)
+      .query(params || {})
       .accept("application/json")
       .end((err, res) => {
         this._resolveResponse(resolve, err, res);

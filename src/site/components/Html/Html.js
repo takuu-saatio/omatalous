@@ -63,6 +63,7 @@ class Html extends Component {
         <title>{this.props.title}</title>
         <meta name="description" content={this.props.description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="/c3.min.css" rel="stylesheet" type="text/css" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
         <link href="/fonts.css" rel="stylesheet" type="text/css" />
         <style id="css" dangerouslySetInnerHTML={{ __html: this.props.css }} />

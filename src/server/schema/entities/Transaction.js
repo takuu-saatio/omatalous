@@ -18,6 +18,7 @@ class Transaction extends BaseEntity {
       description: { type: Sequelize.STRING },
       category: { type: Sequelize.STRING },
       repeats: { type: Sequelize.STRING },
+      repeatValue: { type: Sequelize.INTEGER },
       month: { type: Sequelize.STRING }
 
     });

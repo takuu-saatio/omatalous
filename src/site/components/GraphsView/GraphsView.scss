@@ -18,5 +18,55 @@
   .graphContainer {
     margin: auto;
   }
+  
+  .chartSettings { 
+    
+    display: flex;
+    
+    .signSelector {
+      flex: 1 1 auto;
+      display: inline-block;
+      width: 100px;
+    }
+  
+    .range {
+      
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+ 
+      .monthSelector {
+        
+        flex: 1 1 auto;
+        text-align: right;
+        
+        .selectorLabel {
+          font-size: 12px;
+          padding-right: 10px;
+        }
+         
+        .monthInc {
+          display: inline-block;
+          cursor: pointer;
+        }
+        .monthDec {
+          display: inline-block;
+          cursor: pointer;
+        }
+        
+        .monthLabel {
+          display: inline-block;
+        }
+        
+        i {
+          vertical-align: middle;
+          margin-bottom: 3px;          
+        }
+
+      }
+ 
+    }
+ 
+  }
 
 }

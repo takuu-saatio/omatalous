@@ -18,19 +18,39 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
   _handleRepeatDropdown(event, index, value) {
     this._handleFormChange("repeats", value);
   }
+  
+  _handleRepeatValDropdown(event, index, value) {
+    this._handleFormChange("repeatValue", value);
+  }
 
   renderChildren() {
     let fullWidth = { width: "100%", minWidth: "initial" };
     return (
       <div> 
-        <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-          name="repeat" 
-          value={this.state.transaction.repeats} 
-          onChange={this._handleRepeatDropdown.bind(this)}>
-          <MenuItem value="D" primaryText="Päivittäin" />
-          <MenuItem value="W1" primaryText="Viikottain" />
-          <MenuItem value="M1" primaryText="Kuukausittain" />
-        </DropDownMenu>
+        <div>
+          <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+            name="repeats" 
+            value={this.state.transaction.repeats} 
+            onChange={this._handleRepeatDropdown.bind(this)}>
+            <MenuItem value="D" primaryText="Päivittäin" />
+            <MenuItem value="W" primaryText="Viikottain" />
+            <MenuItem value="M" primaryText="Kuukausittain" />
+          </DropDownMenu>
+        </div>
+        <div>
+          <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+            name="repeatValue" 
+            value={this.state.transaction.repeatValue} 
+            onChange={this._handleRepeatValDropdown.bind(this)}>
+            <MenuItem value={1} primaryText="Maanantai" />
+            <MenuItem value={2} primaryText="Tiistai" />
+            <MenuItem value={3} primaryText="Keskiviikko" />
+            <MenuItem value={4} primaryText="Torstai" />
+            <MenuItem value={5} primaryText="Perjantai" />
+            <MenuItem value={6} primaryText="Lauantai" />
+            <MenuItem value={0} primaryText="Sunnuntai" />
+          </DropDownMenu>
+        </div>
       </div>
     );
 

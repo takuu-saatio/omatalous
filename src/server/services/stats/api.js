@@ -23,7 +23,7 @@ export function registerRoutes(app) {
        
       let user = req.params.user || req.user.uuid;
       const { stats } = app.services;
-      const graphStats = await stats.getGraphStats(user);
+      const graphStats = await stats.getGraphStats(user, req.query);
       res.json({ status: "ok", stats: graphStats });
       
     } catch (err) {

@@ -357,7 +357,7 @@ class GoalsView extends BaseComponent {
     }
 
     const goalStartMonth = goal ? goal.start : null;
-    const nowMonth = this._getStartMonth(goalStartMonth); 
+    const nowMonth = this._getStartMonth(null); 
     
     const catInputCss = {
       width: "140px"
@@ -438,12 +438,16 @@ class GoalsView extends BaseComponent {
                   onChange={this._handleGoalChange.bind(this)} />
               </div>
               <div className={s.goalStart}>
+                <div className={s.dropdownLabel}>Aloitus-kk</div>
                 {this._renderDropdown(nowMonth, this.state.goal.start, 
                                       this._handleStartDropdown)}
               </div>
               <div className={s.goalEnd}>
-                {this._renderDropdown(this.state.startMonth, this.state.goal.end,
-                                      this._handleEndDropdown)}
+                <div className={s.dropdownLabel}>Lopetus-kk</div>
+                <div>
+                  {this._renderDropdown(this.state.startMonth, this.state.goal.end,
+                                        this._handleEndDropdown)}
+                </div>                      
               </div>
             </div>
             <div className={s.goalsSubmit}>

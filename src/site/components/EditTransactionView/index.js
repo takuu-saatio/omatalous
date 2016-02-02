@@ -57,8 +57,7 @@ class EditTransactionView extends BaseComponent {
 
   async fetchData(props = this.props) { 
     
-    const { transaction } = this.state;
-    if (transaction) {
+    if (!props.params || !props.params.uuid) {
       return;
     }
         
