@@ -23,10 +23,20 @@ export default function (state = {}, action) {
       return state;
     case goalsActions.GOAL_SAVE_SUCCESS:
       return { 
+        goal: action.goal,
         messages: { 
           goal: { editStatus: "saved" } 
         }, 
         created: action.created, 
+        isUpdated: true 
+      };
+    case goalsActions.GOAL_DELETE_SUCCESS:
+      return {
+        goal: {}, 
+        messages: { 
+          goal: { editStatus: "deleted" } 
+        },
+        deleted: true, 
         isUpdated: true 
       };
     case goalsActions.CAT_SAVE_SUCCESS:
@@ -48,6 +58,12 @@ export default function (state = {}, action) {
       state.error = action.error;
       state.messages = { 
         goal: { editStatus: "save_failed" }
+      };
+      return state;
+    case goalsActions.GOAL_DELETE_FAIL:
+      state.error = action.error;
+      state.messages = { 
+        goal: { editStatus: "delete_failed" }
       };
       return state;
     case goalsActions.CAT_SAVE_FAIL:

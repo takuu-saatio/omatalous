@@ -258,43 +258,7 @@ class StatsService {
     });
 
   }
-
-  _getTimeStats(user) {
-    
-    const { Transaction } = this.app.entities;
-
-    return new Promise((resolve, reject) => {
-   
-      Transaction.schema.aggregate(
-        "category",
-        "COUNT",
-        { 
-          where: { user: user.uuid },
-          plain: false, 
-          group: [ "category" ], 
-          attributes: [ "category" ] 
-        }
-      )
-      .then((rows) => {
-        
-        log.debug("AGGR RESULT", rows);
-        const categories = {};
-        for (let row of rows) {
-          categories[row.category] = parseInt(row.COUNT);
-        }
-
-        resolve(categories);      
-
-      })
-      .catch((err) => {
-        log.debug("AGGR ERR", err);
-        reject(err);
-      });
-       
-    })
-
-  }
-  
+ 
   getGraphStats(user, params) {
     
     return new Promise((resolve, reject) => {

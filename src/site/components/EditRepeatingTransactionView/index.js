@@ -24,10 +24,50 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
   }
 
   renderChildren() {
+    
     let fullWidth = { width: "100%", minWidth: "initial" };
+
+    const { transaction } = this.state;
+
+    let valueElem = null;
+    if (transaction.repeats === "M") {
+      
+      const menuItems = [];
+      for (let i = 1; i <= 31; i++) {
+        menuItems.push(
+          <MenuItem value={i} primaryText={`${i}. päivä`} />
+        );
+      }
+
+      valueElem = (
+        <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+          name="repeatValue" 
+          value={this.state.transaction.repeatValue} 
+          onChange={this._handleRepeatValDropdown.bind(this)}>
+          {menuItems}
+        </DropDownMenu>
+      );
+
+    } else if (transaction.repeats === "W") {
+      valueElem = (
+        <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+          name="repeatValue" 
+          value={this.state.transaction.repeatValue} 
+          onChange={this._handleRepeatValDropdown.bind(this)}>
+          <MenuItem value={1} primaryText="Maanantai" />
+          <MenuItem value={2} primaryText="Tiistai" />
+          <MenuItem value={3} primaryText="Keskiviikko" />
+          <MenuItem value={4} primaryText="Torstai" />
+          <MenuItem value={5} primaryText="Perjantai" />
+          <MenuItem value={6} primaryText="Lauantai" />
+          <MenuItem value={0} primaryText="Sunnuntai" />
+        </DropDownMenu>
+      );
+    }
+
     return (
-      <div> 
-        <div>
+      <div className={s.repetitionSettings}> 
+        <div className={s.repetitionType}>
           <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
             name="repeats" 
             value={this.state.transaction.repeats} 
@@ -37,19 +77,8 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
             <MenuItem value="M" primaryText="Kuukausittain" />
           </DropDownMenu>
         </div>
-        <div>
-          <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-            name="repeatValue" 
-            value={this.state.transaction.repeatValue} 
-            onChange={this._handleRepeatValDropdown.bind(this)}>
-            <MenuItem value={1} primaryText="Maanantai" />
-            <MenuItem value={2} primaryText="Tiistai" />
-            <MenuItem value={3} primaryText="Keskiviikko" />
-            <MenuItem value={4} primaryText="Torstai" />
-            <MenuItem value={5} primaryText="Perjantai" />
-            <MenuItem value={6} primaryText="Lauantai" />
-            <MenuItem value={0} primaryText="Sunnuntai" />
-          </DropDownMenu>
+        <div className={s.repetitionValue}>
+          {valueElem}
         </div>
       </div>
     );

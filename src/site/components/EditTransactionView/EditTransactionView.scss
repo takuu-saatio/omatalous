@@ -92,5 +92,19 @@
       }
     }
   }
+  
+  .repetitionSettings {
+    
+    display: flex;
+
+    .repetitionType {
+      flex: 1 1;
+    }
+
+    .repetitionValue {
+      flex: 1 1; 
+    }
+
+  }
 
 }

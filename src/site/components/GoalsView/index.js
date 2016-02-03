@@ -164,6 +164,11 @@ class GoalsView extends BaseComponent {
     this.props.saveGoal(user, this.state.goal);
   }
   
+  _deleteGoal() {
+    const user = this.props.params.user || this.state.auth.user.uuid; 
+    this.props.deleteGoal(user, this.state.goal.uuid);
+  }
+  
   _saveCategory(category) {
     const user = this.props.params.user || this.state.auth.user.uuid; 
     this.props.saveCategory(user, category);
@@ -248,12 +253,14 @@ class GoalsView extends BaseComponent {
         sign: edit,
         type: "repeating",
         category: "misc",
-        repeats: "M1"
+        repeats: "M",
+        repeatValue: 1
       } : null;
 
       return (
         <EditRepeatingTransactionContainer close={() => this._closeEditTx()}
           signDisabled={true}
+          categories={this.state.categories}
           params={params} transaction={transaction} />
       );
     
@@ -355,6 +362,14 @@ class GoalsView extends BaseComponent {
 
       });
     }
+  
+    let goalDeleteButton = null;
+    if (this.state.goal.uuid) {
+      goalDeleteButton = (
+        <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+          onTouchTap={() => this._deleteGoal()} label="POISTA"/>
+      );
+    }
 
     const goalStartMonth = goal ? goal.start : null;
     const nowMonth = this._getStartMonth(null); 
@@ -453,6 +468,9 @@ class GoalsView extends BaseComponent {
             <div className={s.goalsSubmit}>
               <div className={s.editStatus}>
                 {editStatuses ? editStatuses["goal"] : null}
+              </div>
+              <div className={s.deleteButton}> 
+                {goalDeleteButton}
               </div>
               <div className={s.saveButton}> 
                 <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 

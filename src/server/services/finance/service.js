@@ -326,6 +326,34 @@ class FinanceService {
 
   }
 
+  _calcWeeklyRepeatingSum(weekDay, amount) {
+     
+    const now = new Date(); 
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    let sum = 0;
+    const daysInMonth = lastDay.getDate();
+    const dayDiff = weekDay - firstDay.getDay();
+    const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
+    const dayOccurences = Math.floor((daysInMonth - dayOffset) / 7);
+    let currentDay = dayOffset + 1;
+    while (currentDay <= daysInMonth) { 
+      sum += amount;
+      currentDay += 7;
+    }
+
+    return sum;
+  
+  }
+
+  _calcDailyRepeatingSum(amount) {
+    
+    const now = new Date(); 
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return amount * lastDay.getDate();
+  
+  }
+
   getCurrentMonthStats(user) {
     
     return new Promise(async (resolve, reject) => {
@@ -344,27 +372,41 @@ class FinanceService {
         let rawExpenses = 0;
 
         for(let transaction of transactions) {
+          
+          const { type, sign, amount, repeats, repeatValue } = transaction;
 
-          if (transaction.sign === "+") {
+          if (sign === "+") {
             
-            if (transaction.repeats) {
-              fixedIncome += transaction.amount;
-            } else {
-              if (transaction.type !== "copy") {
-                income += transaction.amount;
+            if (repeats) {
+              let repeatingAmount = amount;
+              if (repeats === "W") {
+                repeatingAmount = this._calcWeeklyRepeatingSum(repeatValue, amount);
+              } else if (repeats === "D") {
+                repeatingAmount = this._calcDailyRepeatingSum(amount);
               }
-              rawIncome += transaction.amount;
+              fixedIncome += repeatingAmount;
+            } else {
+              if (type !== "copy") {
+                income += amount;
+              }
+              rawIncome += amount;
             }
 
           } else {
             
-            if (transaction.repeats) {
-              fixedExpenses += transaction.amount;
-            } else {
-              if (transaction.type != "copy") {
-                expenses += transaction.amount;
+            if (repeats) {
+              let repeatingAmount = amount;
+              if (repeats === "W") {
+                repeatingAmount = this._calcWeeklyRepeatingSum(repeatValue, amount);
+              } else if (repeats === "D") {
+                repeatingAmount = this._calcDailyRepeatingSum(amount);
               }
-              rawExpenses += transaction.amount;
+              fixedExpenses += repeatingAmount;
+            } else {
+              if (type != "copy") {
+                expenses += amount;
+              }
+              rawExpenses += amount;
             }
           }
 
