@@ -195,7 +195,7 @@ class StatsService {
           if (dailySum !== 0) {
             balance += dailySum;
             repeatingVals.push({
-              x: new Date(now.getFullYear(), now.getMonth(), day + 1),
+              x: new Date(now.getFullYear(), now.getMonth(), day),
               y: balance
             });
           }
