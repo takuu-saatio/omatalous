@@ -35,7 +35,7 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
       const menuItems = [];
       for (let i = 1; i <= 31; i++) {
         menuItems.push(
-          <MenuItem value={i} primaryText={`${i}. päivä`} />
+          <MenuItem key={`day-${i}`} value={i} primaryText={`${i}. päivä`} />
         );
       }
 
