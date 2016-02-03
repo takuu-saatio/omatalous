@@ -5,9 +5,10 @@ const log = log4js.getLogger("server/service/stats/api");
 
 import { requireAuth } from "../../apiFilters";
 import { BaseError } from "../../../core/errors";
+import { isAdmin } from "../../../core/utils";
 
 function allowedAccess(uuid, req) {
-  return uuid === req.user.uuid || req.user.email === process.env.ADMIN_USER;
+  return uuid === req.user.uuid || isAdmin(req.user.email);
 }
 
 export function registerRoutes(app) {
@@ -35,7 +36,7 @@ export function registerRoutes(app) {
   app.get("/api/stats/admin", requireAuth,
     async (req, res, next) => {
       
-    if (process.env.ADMIN_USER.indexOf(req.user.email) === -1) {
+    if (isAdmin(req.user.email)) {
       return next(new Forbidden());
     }
 

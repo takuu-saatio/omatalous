@@ -67,3 +67,8 @@ export function getCurrentMonth() {
   return currentMonth;
 
 }
+
+export function isAdmin(email) {
+  return process.env.ADMIN_USER.indexOf(email) !== -1;
+}
+

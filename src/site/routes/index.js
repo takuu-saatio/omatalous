@@ -3,7 +3,7 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/routes");
 
-import { getCurrentMonth, readContent } from "../../core/utils";
+import { getCurrentMonth, readContent, isAdmin } from "../../core/utils";
 import { requireAuth } from "../../server/siteFilters";
 import { Unauthorized } from "../../core/errors";
 
@@ -32,7 +32,7 @@ export function registerRoutes(app) {
       const userService = app.services.user;
 
       const uuid = req.params.uuid || req.user.uuid;
-      if (uuid !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
+      if (uuid !== req.user.uuid && !isAdmin(req.user.email)) {
         return res.redirect("/denied");
       }
 
@@ -59,7 +59,7 @@ export function registerRoutes(app) {
       const userService = app.services.user;
 
       const user = req.params.user || req.user.uuid;
-      if (user !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
+      if (user !== req.user.uuid && !isAdmin(req.user.email)) {
         return res.redirect("/denied");
       }
       
@@ -109,7 +109,7 @@ export function registerRoutes(app) {
       const financeService = app.services.finance;
 
       const user = req.params.user || req.user.uuid;
-      if (user !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
+      if (user !== req.user.uuid && !isAdmin(req.user.email)) {
         return res.redirect("/denied");
       }
       
@@ -149,7 +149,7 @@ export function registerRoutes(app) {
       const financeService = app.services.finance;
 
       const user = req.params.user || req.user.uuid;
-      if (user !== req.user.uuid && req.user.email !== process.env.ADMIN_USER) {
+      if (user !== req.user.uuid && !isAdmin(req.user.email)) {
         return res.redirect("/denied");
       }
       
@@ -183,7 +183,7 @@ export function registerRoutes(app) {
       const userService = app.services.user;
 
       const uuid = req.params.uuid || req.user.uuid;
-      if (req.user.email !== process.env.ADMIN_USER) {
+      if (!isAdmin(req.user.email)) {
         return res.redirect("/denied");
       }
 

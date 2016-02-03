@@ -5,9 +5,10 @@ const log = log4js.getLogger("server/service/user/api");
 
 import { requireAuth, requireOwnership } from "../../apiFilters";
 import { NotFound, Forbidden, BaseError } from "../../../core/errors";
+import { isAdmin } from "../../../core/utils";
 
 function allowedToEdit(uuid, req) {
-  return uuid === req.user.uuid || req.user.email === process.env.ADMIN_USER;
+  return uuid === req.user.uuid || isAdmin(req.user.email);
 }
 
 export function registerRoutes(app) {
@@ -110,8 +111,7 @@ export function registerRoutes(app) {
     try {
         
       const userService = app.services.user; 
-      const user = (process.env.ADMIN_USER.indexOf(req.user.email) !== -1) ? 
-        "admin" : req.user.uuid;
+      const user = isAdmin(req.user.email) ? "admin" : req.user.uuid;
       await userService.deleteAlert(user, req.params.alert);
       res.json({ status: "ok" });
 

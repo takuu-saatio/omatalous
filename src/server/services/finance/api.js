@@ -5,9 +5,10 @@ const log = log4js.getLogger("server/service/finance/api");
 
 import { requireAuth } from "../../apiFilters";
 import { BaseError, Forbidden } from "../../../core/errors";
+import { isAdmin } from "../../../core/utils";
 
 function allowedAccess(uuid, req) {
-  return uuid === req.user.uuid || req.user.email === process.env.ADMIN_USER;
+  return uuid === req.user.uuid || isAdmin(req.user.email);
 }
 
 export function registerRoutes(app) {
@@ -65,7 +66,7 @@ export function registerRoutes(app) {
     try {
       
       let user = req.params.user || req.user.uuid;
-      user = req.user.email === process.env.ADMIN_USER ? "admin" : user;
+      user = isAdmin(req.user.email) ? "admin" : user;
       const { finance } = app.services;
       const transaction = await finance.getTransaction(user, req.params.uuid);
       res.json({ status: "ok", transaction: transaction.json() });
@@ -102,7 +103,7 @@ export function registerRoutes(app) {
     try {
       
       let user = req.params.user || req.user.uuid;
-      user = req.user.email === process.env.ADMIN_USER ? "admin" : user;
+      user = isAdmin(req.user.email) ? "admin" : user;
       const { finance } = app.services;
       const result = await finance.deleteTransaction(user, req.params.uuid);
       res.json({ status: "ok" });
@@ -160,7 +161,7 @@ export function registerRoutes(app) {
     try {
       
       let user = req.params.user || req.user.uuid;
-      user = req.user.email === process.env.ADMIN_USER ? "admin" : user;
+      user = isAdmin(req.user.email) ? "admin" : user;
       const { finance } = app.services;
       const result = await finance.deleteGoal(user, req.params.uuid);
       res.json({ status: "ok" });
@@ -241,7 +242,7 @@ export function registerRoutes(app) {
     try {
       
       let user = req.params.user || req.user.uuid;
-      user = req.user.email === process.env.ADMIN_USER ? "admin" : user;
+      user = isAdmin(req.user.email) ? "admin" : user;
       const { finance } = app.services;
       const result = await finance.deleteCategory(user, req.params.uuid);
       res.json({ status: "ok" });
