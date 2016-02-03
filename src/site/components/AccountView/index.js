@@ -61,7 +61,7 @@ class AccountView extends BaseComponent {
   
   _handleInputChange(event) {
     
-    let state = this._handleFormChange(event.input.name, event.input.value);
+    let state = this._handleFormChange(event.target.name, event.target.value);
     
     if (event.target.name === "password") {
       state = { account: Object.assign(account, { password: account.password }) };

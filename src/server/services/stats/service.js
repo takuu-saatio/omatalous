@@ -197,6 +197,27 @@ class StatsService {
     });
 
   }
+  
+  _getProgressStats(user, params) {
+      
+    return new Promise(async (resolve, reject) => {
+
+      const { Event, Transaction } = this.app.entities;
+      
+      const event = await Event.selectOne({ 
+        user: user.uuid, 
+        name: "registration" 
+      });
+      const startMonth = event.month;
+      const currentMonth = getCurrentMonth();
+
+      console.log("BEGIN CREATING PROGRES STATS", startMonth, currentMonth);
+
+      resolve({});
+
+    });
+
+  }
 
   _getTimeStats(user) {
     
@@ -261,6 +282,8 @@ class StatsService {
             stats.categories = await this._getCategoryStats(user, params);
           } else if (graph === "forecast") {
             stats.forecast = await this._getForecastStats(user, params);
+          } else if (graph === "progress") {
+            stats.progress = await this._getProgressStats(user, params);
           }
         }
       
