@@ -3,7 +3,7 @@
 import log4js from "log4js";
 const log = log4js.getLogger("server/services/stats/service");
 
-import { getCurrentMonth } from "../../../core/utils";
+import { getCurrentMonth, getMonthLabel } from "../../../core/utils";
 
 import { 
   BaseError,
@@ -99,21 +99,42 @@ class StatsService {
           { type: "copy" } 
         ];
          
+        const now = new Date();
+        
         const actual = await Transaction.selectAll(where, order)
-        const actualVals = [];
-        let balance = 0;
+        const actualValsMap = {};
+        
         for (let tx of actual) {
           const amount = tx.sign === "+" ? tx.amount : -tx.amount;
-          balance += amount;
-          actualVals.push({ x: tx.createdAt, y: balance });
+          const day = tx.createdAt.getDate();
+          if (!actualValsMap[day]) {
+            actualValsMap[day] = [];
+          }
+          actualValsMap[day].push(amount);
         }
-        
+
+        const actualVals = [];
+        let balance = 0;
+        for (let day of Object.keys(actualValsMap)) {
+           
+          let dailySum = 0;
+          for (let val of actualValsMap[day]) {
+            dailySum += val;
+          }
+
+          balance += dailySum;
+          actualVals.push({
+            x: new Date(now.getFullYear(), now.getMonth(), parseInt(day)),
+            y: balance
+          });
+
+        }
+
         delete where.month;
         delete where.$or;
         where.type = "repeating";
          
         const repeating = await Transaction.selectAll(where)
-        const now = new Date();
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
         const repeatingMap = {
@@ -208,12 +229,31 @@ class StatsService {
         user: user.uuid, 
         name: "registration" 
       });
-      const startMonth = event.month;
-      const currentMonth = getCurrentMonth();
+      
+      let [ currentYear, currentMonth ] = event.month.split("-").map(val => parseInt(val));
+      let [ lastYear, lastMonth ] = getCurrentMonth().split("-").map(val => parseInt(val));
 
-      console.log("BEGIN CREATING PROGRES STATS", startMonth, currentMonth);
+      console.log("BEGIN CREATING PROGRES STATS", currentYear, currentMonth, lastYear, lastMonth);
+      const progress = {};
+      while (currentYear <= lastYear && currentMonth <= lastMonth) {
+        console.log(getMonthLabel, currentYear, currentMonth);
+        const month = getMonthLabel(currentYear, currentMonth);
+        console.log(month);
+        const income = 
+          await this._getCategoryStats(user, { start: month, end: month, sign: "+" }); 
+        const expenses = 
+          await this._getCategoryStats(user, { start: month, end: month, sign: "-" }); 
+        progress[month] = { income, expenses };
+        console.log("goyt cats");
+        currentMonth += 1;
+        if (currentMonth > 12) {
+          currentYear += 1;
+          currentMonth = 1;
+        }
 
-      resolve({});
+      }
+
+      resolve(progress);
 
     });
 

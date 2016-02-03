@@ -68,6 +68,15 @@ export function getCurrentMonth() {
 
 }
 
+export function getMonthLabel(year, month) {
+  
+  const padding = month < 10 ? "0" : "";
+  const label = year + "-" + padding + month;
+
+  return label;
+
+}
+
 export function isAdmin(email) {
   return process.env.ADMIN_USER.indexOf(email) !== -1;
 }

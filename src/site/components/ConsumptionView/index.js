@@ -7,6 +7,7 @@ import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
 import { EditTransactionContainer } from "../../containers";
+import { staticCategories } from "../../constants";
 
 @withStyles(s)
 class ConsumptionView extends BaseComponent {
@@ -19,32 +20,6 @@ class ConsumptionView extends BaseComponent {
     
     super(props);
     console.log("constr consumption", props);
-
-    this.expenseCategories = {
-      "living": "Asuminen",
-      "transport": "Liikenne",
-      "credit": "Lainat ja luotot",
-      "children": "Lapset",
-      "shopping": "Ostokset",
-      "communication": "Puhelin ja internet",
-      "restaurant": "Kahvilat & ravintolat",
-      "groceries": "Ruokakauppa",
-      "alcohol": "Alkoholi",
-      "saving": "Säästäminen",
-      "health": "Terveys",
-      "clothing": "Vaatteet",
-      "freetime": "Vapaa-aika",
-      "misc": "Muut"
-    };
-
-    this.incomeCategories = {
-      "benefits": "Etuudet",
-      "salary": "Palkka",
-      "savings": "Säästöt",
-      "credit": "Luotot",
-      "gift": "Lahja",
-      "misc": "Muut"
-    };
 
     this.state = Object.assign(props.state, {
       quickTransaction: {
@@ -255,7 +230,7 @@ class ConsumptionView extends BaseComponent {
       transactionElems = transactions.map(transaction => {
 
         const categories = transaction.sign === "+" ?
-          this.incomeCategories : this.expenseCategories;
+          staticCategories.income : staticCategories.expenses;
 
         return (
           <div key={transaction.uuid} className={s.transaction}>
@@ -489,10 +464,10 @@ class ConsumptionView extends BaseComponent {
     let categories = null;
     let categoryType = null;
     if(quickTransaction.sign === "+") {
-      categories = this.incomeCategories;
+      categories = staticCategories.income;
       categoryType = "income";
     } else {
-      categories = this.expenseCategories;
+      categories = staticCategories.expenses;
       categoryType = "expense";
     }
 

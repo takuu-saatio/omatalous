@@ -7,12 +7,7 @@ import SelectField from "material-ui/lib/select-field";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
-
-import {
-  PieChart,
-  LineChart,
-  AreaChart
-} from "react-d3";
+import { staticCategories } from "../../constants";
 
 
 @withStyles(s)
@@ -24,14 +19,9 @@ class GraphsView extends BaseComponent {
 
   constructor(props) {
     super(props);
-    this.categoryLabels = {
-      "shopping": "Ostokset",
-      "misc": "Muut",
-      "groceries": "Ruokakauppa"
-    };
     const state = props.state;
     state.catParams = {
-      graphs: "categories,forecast",
+      graphs: "categories,forecast,progress",
       sign: "-",
       start: "2016-02",
       end: "2016-02"
@@ -135,8 +125,11 @@ class GraphsView extends BaseComponent {
       if (stats.categories) {
         
         const catKeys = Object.keys(stats.categories);
-        const chartColumns = catKeys.map(catKey => [this.categoryLabels[catKey], 
-          stats.categories[catKey]]);
+        const chartColumns = catKeys.map(catKey => {
+          const catLabels = this.state.catParams.sign === "+" ?
+            staticCategories.income : staticCategories.expenses;
+          return [catLabels[catKey], stats.categories[catKey]]
+        });
         
         const chartData = {
           bindto: "#catChart",
@@ -282,28 +275,99 @@ class GraphsView extends BaseComponent {
 
       }
 
-      if (true) {
+      if (stats.progress) {
+
+        const months = Object.keys(stats.progress);
+        const valsByCat = {};
         
-        var progressData = {
+        months.forEach(month => {
+          
+          const cats = stats.progress[month];
+          const income = Object.keys(cats.income);
+          income.forEach(cat => {
+            if (!valsByCat[`inc_${cat}`]) {
+              valsByCat[`inc_${cat}`] = [ `inc_${cat}` ];
+            }
+          });
+
+          const expenses = Object.keys(cats.expenses);
+          expenses.forEach(cat => {
+            if (!valsByCat[`exp_${cat}`]) {
+              valsByCat[`exp_${cat}`] = [ `exp_${cat}` ];
+            }
+          });
+
+        });
+        
+        const savingsColumn = [ "Säästö" ];
+
+        months.forEach(month => {
+          
+          const cats = stats.progress[month];
+          
+          const catKeys = Object.keys(valsByCat);
+          catKeys.forEach(catKey => {
+            valsByCat[catKey].push(null);
+          });
+          
+          const income = Object.keys(cats.income);
+          let totalIncome = 0;
+          income.forEach(cat => {
+            const vals = valsByCat[`inc_${cat}`];
+            vals[vals.length - 1] = cats.income[cat];
+            totalIncome += cats.income[cat];
+          });
+
+          const expenses = Object.keys(cats.expenses);
+          let totalExpenses = 0;
+          expenses.forEach(cat => {
+            const vals = valsByCat[`exp_${cat}`];
+            vals[vals.length - 1] = cats.expenses[cat];
+            totalExpenses += cats.expenses[cat];
+          });
+
+          savingsColumn.push(totalIncome - totalExpenses);
+
+        });
+        
+        
+        const progressColumns = [];
+        Object.keys(valsByCat).forEach(cat => {
+          
+          const vals = valsByCat[cat];
+          if (vals[0].substring(0, 4) === "inc_") {
+            vals[0] = "+ " + staticCategories.income[vals[0].substring(4)];
+          } else {
+            vals[0] = "- " + staticCategories.expenses[vals[0].substring(4)];
+          }
+
+          progressColumns.push(vals);
+       
+        });
+
+        savingsColumn[savingsColumn.length - 1] = null; 
+        progressColumns.push(savingsColumn);
+
+        const progressGroups = [[],[]];
+        progressColumns.forEach(column => {
+          if (column[0].substring(0, 1) === "+") {
+            progressGroups[0].push(column[0]);
+          } else {
+            progressGroups[1].push(column[0]);
+          }
+        });
+        
+        console.log("PROG CHART DATA", progressColumns, progressGroups);
+
+        const progressData = {
           bindto: "#progressChart",
           data: {
-            columns: [
-              ['data1_1', 30, 200, 200, 400, 150, 250],
-              ['data1_2', 130, 100, 100, 200, 150, 50],
-              ['data1_3', 230, 200, 200, 300, 250, 250],
-              ['data2_1', 60, 120, 130, 380, 140, 258],
-              ['data2_2', 180, 90, 90, 210, 160, 40],
-              ['data2_3', 250, 230, 190, 280, 230, 210],
-              ['saving', 60, -62, 46, 56, 42 ]
-            ],
+            columns: progressColumns,
             type: "bar",
             types: {
-              "saving": "line" 
+              "Säästö": "line" 
             },
-            groups: [
-              ["data1_1", "data1_2", "data1_3"],
-              ["data2_1", "data2_2", "data2_3"]
-            ]
+            groups: progressGroups
           },
           grid: {
             y: {

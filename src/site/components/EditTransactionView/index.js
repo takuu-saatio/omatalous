@@ -8,6 +8,7 @@ import FlatButton from "material-ui/lib/flat-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
+import { staticCategories } from "../../constants";
 
 class EditTransactionView extends BaseComponent {
   
@@ -20,33 +21,7 @@ class EditTransactionView extends BaseComponent {
     super(props);
     console.log("constr edit tx", props);
     let state = this.props.state;
-    
-    this.expenseCategories = {
-      "living": "Asuminen",
-      "transport": "Liikenne",
-      "credit": "Lainat ja luotot",
-      "children": "Lapset",
-      "shopping": "Ostokset",
-      "communication": "Puhelin ja internet",
-      "restaurant": "Kahvilat & ravintolat",
-      "groceries": "Ruokakauppa",
-      "alcohol": "Alkoholi",
-      "saving": "Säästäminen",
-      "health": "Terveys",
-      "clothing": "Vaatteet",
-      "freetime": "Vapaa-aika",
-      "misc": "Muut"
-    };
-
-    this.incomeCategories = {
-      "benefits": "Etuudet",
-      "salary": "Palkka",
-      "savings": "Säästöt",
-      "credit": "Luotot",
-      "gift": "Lahja",
-      "misc": "Muut"
-    };
-    
+     
     if (this.props.transaction) {
       state.transaction = this.props.transaction;
     }
@@ -182,11 +157,11 @@ class EditTransactionView extends BaseComponent {
     if (transaction.sign === "-") {
       txBorderCss.borderBottom = "2px solid red";
       txSignSymbol = (<i style={labelCss} className="material-icons">&#xE15B;</i>);
-      categories = this.expenseCategories;
+      categories = staticCategories.expenses;
     } else {
       txBorderCss.borderBottom = "2px solid green";
       txSignSymbol = (<i style={labelCss} className="material-icons">&#xE145;</i>);
-      categories = this.incomeCategories;
+      categories = staticCategories.income;
     }
 
     const signDisabled = this.props.signDisabled ?
