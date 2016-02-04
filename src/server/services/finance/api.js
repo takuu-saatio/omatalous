@@ -89,6 +89,9 @@ export function registerRoutes(app) {
       let user = req.params.user || req.user.uuid;
       const { finance } = app.services;
       const result = await finance.saveTransaction(user, req.body);
+      if (result.transaction) {
+        result.transaction = result.transaction.json();
+      }
       res.json(Object.assign({ status: "ok" }, result));
       
     } catch (err) {

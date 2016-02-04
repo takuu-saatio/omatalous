@@ -32,6 +32,11 @@ export function fetchGoal(user) {
       if (response.categories) {
         action.categories = response.categories;
       }
+      
+      response = await http.get(`/api/finance/month/${user}`);
+      if (response.monthStats) {
+        action.monthStats = response.monthStats;
+      }
 
     }
     

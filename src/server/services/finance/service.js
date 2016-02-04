@@ -14,7 +14,7 @@ import {
   UnprocessableEntity
 } from "../../../core/errors"
 
-const DAY_NAMES = [ "Ma", "Ti", "Ke", "To", "Pe", "La", "Su" ];
+const DAY_NAMES = [ "Su", "Ma", "Ti", "Ke", "To", "Pe", "La" ];
 
 class FinanceService {
   
@@ -359,66 +359,63 @@ class FinanceService {
     return new Promise(async (resolve, reject) => {
 
       const { Transaction } = this.app.entities;
-      const currentMonth = getCurrentMonth();
 
-      Transaction.selectAll({ user, month: currentMonth })
-      .then((transactions) => {
+      try {
+        
+        const currentMonth = getCurrentMonth();
+        
+        const repeatingTxs = await Transaction.selectAll({ 
+          user,
+          type: "repeating"
+        });
+        
+        const actualTxs = await Transaction.selectAll({  
+          user,
+          month: currentMonth,
+          $or: [
+            { type: "single" },
+            { type: "copy" }
+          ]
+        });
 
-        let fixedIncome = 0;
-        let fixedExpenses = 0;
-        let income = 0;
-        let expenses = 0;
-        let rawIncome = 0;
-        let rawExpenses = 0;
+        const fixed = { "+": 0, "-": 0 };
+        const actual = { "+": 0, "-": 0 };
+        const raw = { "+": 0, "-": 0 };
 
-        for(let transaction of transactions) {
+        for(let tx of repeatingTxs) {
           
-          const { type, sign, amount, repeats, repeatValue } = transaction;
-
-          if (sign === "+") {
-            
-            if (repeats) {
-              let repeatingAmount = amount;
-              if (repeats === "W") {
-                repeatingAmount = this._calcWeeklyRepeatingSum(repeatValue, amount);
-              } else if (repeats === "D") {
-                repeatingAmount = this._calcDailyRepeatingSum(amount);
-              }
-              fixedIncome += repeatingAmount;
-            } else {
-              if (type !== "copy") {
-                income += amount;
-              }
-              rawIncome += amount;
-            }
-
-          } else {
-            
-            if (repeats) {
-              let repeatingAmount = amount;
-              if (repeats === "W") {
-                repeatingAmount = this._calcWeeklyRepeatingSum(repeatValue, amount);
-              } else if (repeats === "D") {
-                repeatingAmount = this._calcDailyRepeatingSum(amount);
-              }
-              fixedExpenses += repeatingAmount;
-            } else {
-              if (type != "copy") {
-                expenses += amount;
-              }
-              rawExpenses += amount;
-            }
+          let amount = tx.amount;
+          if (tx.repeats === "W") {
+            amount = this._calcWeeklyRepeatingSum(tx.repeatValue, tx.amount);
+          } else if (tx.repeats === "D") {
+            amount = this._calcDailyRepeatingSum(tx.amount);
           }
+          
+          fixed[tx.sign] += amount;
 
         }
 
+        for(let tx of actualTxs) {
+          if (tx.type !== "copy") {
+            actual[tx.sign] += tx.amount;
+          }
+          raw[tx.sign] += tx.amount;
+        }
+        
         resolve({ 
           label: currentMonth,
-          fixedIncome, fixedExpenses, income, expenses, rawIncome, rawExpenses 
+          fixedIncome: fixed["+"],
+          fixedExpenses: fixed["-"], 
+          income: actual["+"], 
+          expenses: actual["-"], 
+          rawIncome: raw["+"], 
+          rawExpenses: raw["-"] 
         });
 
-      })
-      .catch(err => reject(err));
+      } catch (err) {
+        log.debug("MONTH STATS ERR!!!", err);
+        reject(err);
+      }
 
     });
 

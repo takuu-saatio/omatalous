@@ -7,7 +7,7 @@ import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
 import { EditPlannedTransactionContainer } from "../../containers";
-
+import { staticCategories } from "../../constants";
 import http from "../../tools/http-client";
 
 @withStyles(s)
@@ -20,33 +20,6 @@ class PlanningView extends BaseComponent {
   constructor(props) {
     
     super(props); 
-    
-    this.expenseCategories = {
-      "living": "Asuminen",
-      "transport": "Liikenne",
-      "credit": "Lainat ja luotot",
-      "children": "Lapset",
-      "shopping": "Ostokset",
-      "communication": "Puhelin ja internet",
-      "restaurant": "Kahvilat & ravintolat",
-      "groceries": "Ruokakauppa",
-      "alcohol": "Alkoholi",
-      "saving": "Säästäminen",
-      "health": "Terveys",
-      "clothing": "Vaatteet",
-      "freetime": "Vapaa-aika",
-      "misc": "Muut"
-    };
-
-    this.incomeCategories = {
-      "benefits": "Etuudet",
-      "salary": "Palkka",
-      "savings": "Säästöt",
-      "credit": "Luotot",
-      "gift": "Lahja",
-      "misc": "Muut"
-    };
-
     this.state = props.state;
   
   }
@@ -64,6 +37,21 @@ class PlanningView extends BaseComponent {
   _editTransaction(uuid) {
     this.state.edit = uuid;
     this.setState(this.state);
+  }
+  
+  _deleteTransaction(uuid) { 
+    const user = this.props.params.user || this.state.auth.user.uuid; 
+    this.props.deleteTransaction(user, uuid);
+  }
+  
+  _copyTransaction(transaction) { 
+    const user = this.props.params.user || this.state.auth.user.uuid;
+    const copy = Object.assign({}, transaction);
+    delete copy.uuid;
+    delete copy.month;
+    copy.type = "single"; 
+    this.props.saveTransaction(user, copy);
+    this.props.deleteTransaction(user, transaction.uuid);
   }
 
   _closeEditTx() {
@@ -88,8 +76,7 @@ class PlanningView extends BaseComponent {
       let transaction = (edit === "+" || edit === "-") ? {
         sign: edit,
         type: "planned",
-        category: "misc",
-        repeats: "M1"
+        category: "misc"
       } : null;
       
       return (
@@ -125,7 +112,7 @@ class PlanningView extends BaseComponent {
         const groupTransactionElems = group.transactions.map(transaction => {
           
           const categories = transaction.sign === "+" ?
-            this.incomeCategories : this.expenseCategories;
+            staticCategories.income : staticCategories.expenses;
             
           return (
             <div key={transaction.uuid} className={s.transaction}>
@@ -139,6 +126,12 @@ class PlanningView extends BaseComponent {
               <div>{transaction.description}</div>
               <div className={s.txControls}>
                 <div className={s.txControlContainer}>
+                  <div>
+                    <i className="material-icons"
+                      onTouchTap={() => this._copyTransaction(transaction)}>
+                      &#xE8A1;
+                    </i>
+                  </div>
                   <div>
                     <i className="material-icons"
                       onTouchTap={() => this._editTransaction(transaction.uuid)}>

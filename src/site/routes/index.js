@@ -133,6 +133,9 @@ export function registerRoutes(app) {
         state.goals.goal = goals[0];
       }
        
+      let monthStats = await financeService.getCurrentMonthStats(user);
+      state.goals.monthStats = monthStats;
+      
       req.context.initialState = Object.assign(req.context.initialState, state);
       app.renderPage(req, res);
 

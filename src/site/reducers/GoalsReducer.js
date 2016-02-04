@@ -20,16 +20,18 @@ export default function (state = {}, action) {
       if (action.categories) {
         state.categories = action.categories;
       }
+      if (action.monthStats) {
+        state.monthStats = action.monthStats;
+      }
       return state;
     case goalsActions.GOAL_SAVE_SUCCESS:
-      return { 
-        goal: action.goal,
+      return Object.assign({ 
         messages: { 
           goal: { editStatus: "saved" } 
         }, 
         created: action.created, 
         isUpdated: true 
-      };
+      }, action.goal ? { goal: action.goal } : {});
     case goalsActions.GOAL_DELETE_SUCCESS:
       return {
         goal: {}, 

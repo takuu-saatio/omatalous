@@ -241,7 +241,10 @@ class GoalsView extends BaseComponent {
   render() {
      
     console.log("render goals", this.props, this.state);
-    let { transactions, categories, goal, messages, edit } = this.state;
+    let { 
+      transactions, categories, goal, 
+      monthStats, messages, edit 
+    } = this.state;
     
     if (edit) {
        
@@ -373,7 +376,26 @@ class GoalsView extends BaseComponent {
 
     const goalStartMonth = goal ? goal.start : null;
     const nowMonth = this._getStartMonth(null); 
-    
+    const saveGoalDisabled = !(goal.amount && goal.start && goal.end);
+     
+    let incomeSummary = null;
+    let expensesSummary = null;
+    if (monthStats) {
+      
+      incomeSummary = (
+        <div className={s.fixedSummary}>
+          Tässä kuussa yht. {monthStats.fixedIncome} €
+        </div>
+      );
+
+      expensesSummary = (
+        <div className={s.fixedSummary}>
+          Tässä kuussa yht. {monthStats.fixedExpenses} €
+        </div>
+      );
+
+    }
+
     const catInputCss = {
       width: "140px"
     };
@@ -395,7 +417,7 @@ class GoalsView extends BaseComponent {
                   + UUSI
                 </div>
               </div>
-              <div></div>
+              <div>{incomeSummary}</div>
             </div>
             <div>
               <div className={s.transactionsLabel}>Toistuvat menot</div>
@@ -405,7 +427,7 @@ class GoalsView extends BaseComponent {
                   + UUSI
                 </div>
               </div>
-              <div></div>
+              <div>{expensesSummary}</div>
             </div>
             <div>
               <div className={s.transactionsLabel}>Omat kategoriat</div>
@@ -473,7 +495,8 @@ class GoalsView extends BaseComponent {
                 {goalDeleteButton}
               </div>
               <div className={s.saveButton}> 
-                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+                <FlatButton disabled={saveGoalDisabled}
+                  style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
                   onTouchTap={() => this._saveGoal()} label="TALLENNA"/>
               </div>
             </div>

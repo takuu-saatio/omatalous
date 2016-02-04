@@ -96,10 +96,15 @@ class ConsumptionView extends BaseComponent {
 
     if (event.target.name === "amount") {
       
-      if (isNaN(event.target.value)) {
+      let amount = event.target.value;
+      if (amount) {
+        amount = amount.replace(/,/g, ".");
+      }
+
+      if (isNaN(amount)) {
         this.state.amountError = "Ei ole numero";
         this.state.quickTxDisabled = true;
-      } else if (parseFloat(event.target.value) <= 0) {
+      } else if (parseFloat(amount) <= 0) {
         this.state.amountError = "Väärä arvo: 0";
         this.state.quickTxDisabled = true;
       } else {
@@ -107,7 +112,7 @@ class ConsumptionView extends BaseComponent {
         this.state.quickTxDisabled = false;
       }
       
-      if (!event.target.value || event.target.value === "") {
+      if (!amount || amount === "") {
         this.state.quickTxDisabled = true;
       }
 
@@ -134,9 +139,15 @@ class ConsumptionView extends BaseComponent {
   }
   
   _saveTransaction() {
+    
     const user = this.props.params.user || this.state.auth.user.uuid; 
-    const transaction = Object.assign({}, this.state.quickTransaction);
+    const transaction = Object.assign({}, this.state.quickTransaction); 
+    if (transaction.amount) {
+      transaction.amount = transaction.amount.replace(/,/g, ".");
+    }
+
     this.props.quickSaveTransaction(user, transaction);
+  
   } 
 
   _deleteTransaction(uuid) {
@@ -398,7 +409,7 @@ class ConsumptionView extends BaseComponent {
           </div>
         </div>
       );
-    } else if (transactions && transactions.length > 0) {
+    } else {
       
       const total = Math.floor(monthStats.income - monthStats.expenses);
       const totalCss = total < 0 ?
