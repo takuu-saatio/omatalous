@@ -401,7 +401,7 @@ class FinanceService {
           }
           raw[tx.sign] += tx.amount;
         }
-        
+
         resolve({ 
           label: currentMonth,
           fixedIncome: fixed["+"],

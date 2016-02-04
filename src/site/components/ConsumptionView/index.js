@@ -27,7 +27,8 @@ class ConsumptionView extends BaseComponent {
         type: "single",
         category: "misc"
       },
-      quickTxDisabled: true
+      quickTxDisabled: true,
+      spendablePeriod: "month"
     });
 
     if (!this.state.month) {
@@ -177,6 +178,22 @@ class ConsumptionView extends BaseComponent {
   _dismissAlert(uuid) {
     const user = this.props.params.user || this.state.auth.user.uuid; 
     this.props.deleteAlert(user, uuid);
+  }
+
+  _setSpendablePeriod(period) {
+    this.setState(Object.assign(this.state, {
+      spendablePeriod: period
+    }));
+  }
+  
+  _getPeriodCss(period) {
+    
+    if (this.state.spendablePeriod === period) {
+      return { backgroundColor: "#f0f0f0" };
+    }
+    
+    return {};
+
   }
 
   render() {
@@ -339,7 +356,22 @@ class ConsumptionView extends BaseComponent {
         //spendable = Math.round((spendable - savingGoal) * 100) / 100;
         spendable = Math.floor(spendable - savingGoal);
       }
+
+      const now = new Date();
+      const lastDay = 
+        new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       
+      if (this.state.spendablePeriod === "week") {
+        //let remainingDays = now.getDay() > 0 ? 8 - now.getDay() : 1;
+        //const overflow = (now.getDate() + remainingDays) - lastDay;
+        //remainingDays = remainingDays - overflow + 1;
+        const remainingWeeks = (lastDay - now.getDate()) / 7;
+        spendable = Math.floor((available - savingGoal) / remainingWeeks);
+      } else if (this.state.spendablePeriod === "day") {
+        const remainingDays = (lastDay - now.getDate()) + 1;
+        spendable = Math.floor((available - savingGoal) / remainingDays);
+      }
+
       currentMonthElem = (
         <div className={s.month}>
           <div className={s.monthLine}></div>
@@ -361,6 +393,23 @@ class ConsumptionView extends BaseComponent {
               </div>
               <div className={s.sectionValue}>
                 {spendable} €
+              </div>
+              <div className={s.periodSwitch}>
+                <div style={this._getPeriodCss("month")}
+                  className={s.periodSwitchCell}
+                  onTouchTap={() => this._setSpendablePeriod("month")}>
+                  KK
+                </div>
+                <div style={this._getPeriodCss("week")}
+                  className={s.periodSwitchCell}
+                  onTouchTap={() => this._setSpendablePeriod("week")}>
+                  VK
+                </div>
+                <div style={this._getPeriodCss("day")}
+                  className={s.periodSwitchCell}
+                  onTouchTap={() => this._setSpendablePeriod("day")}>
+                  PV
+                </div>
               </div>
             </div>
             <div className={s.section}>
