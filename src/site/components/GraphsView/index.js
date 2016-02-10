@@ -116,6 +116,8 @@ class GraphsView extends BaseComponent {
     
     const graphSize = window.innerWidth >= 420 ? 420 : 300; 
     
+    const weekDays = [ "Su", "Ma", "Ti", "Ke", "To", "Pe", "La" ];
+    
     let categoriesElem = null;
     let forecastElem = null;
     let progressElem = null;
@@ -204,12 +206,18 @@ class GraphsView extends BaseComponent {
         const now = new Date();
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        
+
+        const meta = {
+          "Toistuvat": [],
+          "Toteutuneet": []
+        };
+
         const x1 = [ "x1", firstDay ];
         const data1 = [ "Toistuvat", 0 ];
         stats.forecast.repeating.forEach(val => {
           x1.push(new Date(val.x));
           data1.push(val.y);
+          meta["Toistuvat"].push(val.txs);
         });
         
         x1.push(lastDay);
@@ -220,6 +228,7 @@ class GraphsView extends BaseComponent {
         stats.forecast.actual.forEach(val => {
           x2.push(new Date(val.x));
           data2.push(val.y);
+          meta["Toteutuneet"].push(val.txs);
         });
  
         const chartData = {
@@ -249,12 +258,99 @@ class GraphsView extends BaseComponent {
             }
           },
           tooltip: {
+            grouped: false,
+            contents: (d, defaultTitleFormat, defaultValueFormat, color) => {
+
+              const month = d[0].x.getMonth() + 1;
+              const day = d[0].x.getDate();
+              let dateTitle = weekDays[d[0].x.getDay()] + " " + 
+                (day < 10 ? "0" + day : day) + "." +
+                (month < 10 ? "0" + month : month);
+              let htmlContent = "";
+              d.forEach(point => {
+                
+                if (point.index === 0) {
+                  htmlContent += "<div>Alku</div>";
+                  return;
+                }
+                
+                htmlContent += `<div>`;
+
+                htmlContent += `<div style="display: inline-block;">`;
+                meta[point.id][point.index - 1].forEach(tx => {
+                  const catLabels = tx.sign === "+" ?
+                    staticCategories.income : staticCategories.expenses;
+                  const text = tx.description || catLabels[tx.category];
+                  htmlContent += `
+                    <div style="
+                      border-top: 1px solid #a0a0a0;
+                      padding-top: 2px;
+                      padding-bottom: 2px;
+                      ">
+                      <span style="
+                        margin-left: 4px;
+                        margin-right: 6px;">
+                        ${text}
+                      </span>
+                    </div>`;
+                });
+                htmlContent += "</div>";
+                
+                htmlContent += `<div style="display: inline-block;">`;
+                meta[point.id][point.index - 1].forEach(tx => {
+                  const color = tx.sign === "+" ? "green" : "red";
+                  htmlContent += `
+                  <div style="
+                    border-top: 1px solid #a0a0a0;
+                    padding-top: 2px;
+                    padding-bottom: 2px;
+                    text-align: right;
+                    position: relative;">
+                      <span style="
+                        margin-left: 6px;
+                        margin-right: 4px;
+                        color: ${color}
+                        ">
+                        ${tx.sign}${tx.amount}€
+                      </span>
+                      <div style="
+                        border-left: 1px dotted #a0a0a0;
+                        width: 2px;
+                        height: calc(100% - 2px); 
+                        top: 1px; 
+                        position: absolute;">
+                      </div>
+                    </div>`;
+                });
+                htmlContent += "</div>";
+                
+                htmlContent += "</div>";
+
+              });
+
+              return `
+                <div style="
+                  font-size: 14px;
+                  background-color: white;
+                  opacity: 0.9;
+                  border: 1px solid #a0a0a0;">
+                  <div style="
+                    background-color: #c0c0c0;
+                    color: white;
+                    font-weight: bold;
+                    padding-left: 4px;">
+                    ${dateTitle}
+                  </div>
+                  ${htmlContent}
+                </div>`;
+            } 
+            /*
             format: {
               title: function (d) { return d.getDate() + "." + d.getMonth(); },
               value: function (value, ratio, id) {
                   return value + "€";
               }
-            }  
+              }*/  
           }
         }
 

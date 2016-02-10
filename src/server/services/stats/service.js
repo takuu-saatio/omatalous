@@ -105,12 +105,11 @@ class StatsService {
         const actualValsMap = {};
         
         for (let tx of actual) {
-          const amount = tx.sign === "+" ? tx.amount : -tx.amount;
           const day = tx.createdAt.getDate();
           if (!actualValsMap[day]) {
             actualValsMap[day] = [];
           }
-          actualValsMap[day].push(amount);
+          actualValsMap[day].push(tx);
         }
 
         const actualVals = [];
@@ -118,12 +117,21 @@ class StatsService {
         for (let day of Object.keys(actualValsMap)) {
            
           let dailySum = 0;
-          for (let val of actualValsMap[day]) {
-            dailySum += val;
+          for (let tx of actualValsMap[day]) {
+            const amount = tx.sign === "+" ? tx.amount : -tx.amount;
+            dailySum += amount;
           }
-
+          
           balance += dailySum;
           actualVals.push({
+            txs: actualValsMap[day].map(tx => { 
+              return {
+                category: tx.category,
+                description: tx.description, 
+                amount: tx.amount,
+                sign: tx.sign
+              };
+            }),
             x: new Date(now.getFullYear(), now.getMonth(), parseInt(day)),
             y: balance
           });
@@ -146,37 +154,31 @@ class StatsService {
         }
         
         const repeatingValsMap = {};
-        let dailySum = 0;
         for (let day = 1; day <= lastDay.getDate(); day++) {
           repeatingValsMap[day] = [];
           if (repeatingMap.D.length > 0) {
-            dailySum = 0; 
             for (let tx of repeatingMap.D) {
-              const amount = tx.sign === "+" ? tx.amount : -tx.amount;
-              dailySum += amount;
+              repeatingValsMap[day].push(tx);
             }
-            repeatingValsMap[day].push(dailySum);
           }
         }
  
         if (repeatingMap.M.length > 0) {
           for (let tx of repeatingMap.M) {
-            const amount = tx.sign === "+" ? tx.amount : -tx.amount;
-            repeatingValsMap[tx.repeatValue].push(amount);
+            repeatingValsMap[tx.repeatValue].push(tx);
           }
         }
 
         if (repeatingMap.W.length > 0) {
           for (let tx of repeatingMap.W) {
             
-            const amount = tx.sign === "+" ? tx.amount : -tx.amount;
             const daysInMonth = lastDay.getDate();
             const dayDiff = tx.repeatValue - firstDay.getDay();
             const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
             const dayOccurences = Math.floor((daysInMonth - dayOffset) / 7);
             let currentDay = dayOffset + 1;
             while (currentDay <= daysInMonth) { 
-              repeatingValsMap[currentDay].push(amount);
+              repeatingValsMap[currentDay].push(tx);
               currentDay += 7;
             }
 
@@ -188,13 +190,22 @@ class StatsService {
         for (let day = 1; day <= lastDay.getDate(); day++) {
 
           let dailySum = 0;
-          for (let val of repeatingValsMap[day]) { 
-            dailySum += val;
+          for (let tx of repeatingValsMap[day]) { 
+            const amount = tx.sign === "+" ? tx.amount : -tx.amount;
+            dailySum += amount;
           }
           
           if (dailySum !== 0) {
             balance += dailySum;
-            repeatingVals.push({
+            repeatingVals.push({  
+              txs: repeatingValsMap[day].map(tx => { 
+                return {
+                  category: tx.category,
+                  description: tx.description, 
+                  amount: tx.amount,
+                  sign: tx.sign
+                };
+              }),
               x: new Date(now.getFullYear(), now.getMonth(), day),
               y: balance
             });
@@ -238,7 +249,6 @@ class StatsService {
       while (currentYear <= lastYear && currentMonth <= lastMonth) {
         console.log(getMonthLabel, currentYear, currentMonth);
         const month = getMonthLabel(currentYear, currentMonth);
-        console.log(month);
         const income = 
           await this._getCategoryStats(user, { start: month, end: month, sign: "+" }); 
         const expenses = 
