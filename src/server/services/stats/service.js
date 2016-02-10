@@ -311,35 +311,77 @@ class StatsService {
   
   getRegistrationStats() {
     
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       
-      const { Event } = this.app.entities;
+      const { Event, User } = this.app.entities;
+      
+      try {
 
-      Event.schema.aggregate(
-        "month",
-        "COUNT",
-        {
-          where: { name: "registration" }, 
-          plain: false,
-          group: [ "month" ], 
-          attributes: [ "month" ] 
+        const byMonth = await Event.schema.aggregate(
+          "month",
+          "COUNT",
+          {
+            where: { name: "registration" }, 
+            plain: false,
+            group: [ "month" ], 
+            attributes: [ "month" ] 
+          }
+        );
+          
+        const months = {};
+        for (let row of byMonth) {
+          months[row.month] = parseInt(row.COUNT);
         }
-      )
-      .then((rows) => {
+
+        const total = await User.schema.count(
+          {
+            where: {}
+          }
+        );
+
+        const byGender = await User.schema.aggregate(
+          "gender",
+          "COUNT",
+          {
+            where: {},
+            plain: false,
+            group: [ "gender" ], 
+            attributes: [ "gender" ] 
+          }
+        );
         
-        log.debug("AGGR RESULT", rows);
-        const registrations = {};
-        for (let row of rows) {
-          registrations[row.month] = parseInt(row.COUNT);
+        const genders = {};
+        for (let row of byGender) {
+          genders[row.gender] = parseInt(row.COUNT);
+        }
+        
+        const byAge = await User.schema.aggregate(
+          "age",
+          "COUNT",
+          {
+            where: {},
+            plain: false,
+            group: [ "age" ], 
+            attributes: [ "age" ] 
+          }
+        );
+        
+        const ages = {};
+        for (let row of byAge) {
+          ages[row.age] = parseInt(row.COUNT);
         }
 
-        resolve(registrations);      
+        resolve({
+          total,
+          months,
+          genders,
+          ages
+        });
 
-      })
-      .catch((err) => {
-        log.debug("AGGR ERR", err);
+      } catch (err) {
+        log.debug("REG STATS ERR", err);
         reject(err);
-      });
+      }
 
     });
 

@@ -92,6 +92,8 @@ class EditTransactionView extends BaseComponent {
         this.state.saveDisabled = true;
       }
 
+    } else {
+      this.state.saveDisabled = false;
     }
 
     this._handleFormChange(event.target.name, event.target.value); 

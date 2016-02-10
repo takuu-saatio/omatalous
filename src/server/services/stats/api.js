@@ -4,7 +4,7 @@ import log4js from "log4js";
 const log = log4js.getLogger("server/service/stats/api");
 
 import { requireAuth } from "../../apiFilters";
-import { BaseError } from "../../../core/errors";
+import { BaseError, Forbidden } from "../../../core/errors";
 import { isAdmin } from "../../../core/utils";
 
 function allowedAccess(uuid, req) {
@@ -35,11 +35,11 @@ export function registerRoutes(app) {
   
   app.get("/api/stats/admin", requireAuth,
     async (req, res, next) => {
-      
-    if (isAdmin(req.user.email)) {
+    
+    if (!isAdmin(req.user.email)) {
       return next(new Forbidden());
     }
-
+    
     try {
        
       const { stats } = app.services;

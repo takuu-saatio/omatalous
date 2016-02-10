@@ -223,14 +223,11 @@ class AccountView extends BaseComponent {
                 </DropDownMenu>
               </div>
               <div className={s.profileCell}>
-                <div className={s.dropdownLabel}>Ikä</div>
-                <DropDownMenu style={Object.assign({ width: "100%", height: "43px" })}
-                  name="age"
-                  value={account.age} 
-                  onChange={this._handleAgeDropdown.bind(this)}>
-                  <MenuItem value="1" primaryText="alle 21" />
-                  <MenuItem value="2" primaryText= "21 tai vanhempi" />
-                </DropDownMenu>
+                <TextField style={fullWidth} 
+                  name="age" 
+                  floatingLabelText="Syntymävuosi"
+                  value={account.age}
+                  onChange={this._handleInputChange.bind(this)} />
               </div>
             </div>
             <div className={s.saveProfile}>
