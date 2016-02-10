@@ -74,7 +74,7 @@ class EditTransactionView extends BaseComponent {
 
       let amount = event.target.value;
       if (amount) {
-        amount = amount.replace(/,/g, ".");
+        amount = (""+amount).replace(/,/g, ".");
       }
 
       if (isNaN(amount)) {
@@ -118,7 +118,7 @@ class EditTransactionView extends BaseComponent {
     const user = this.props.params.user || this.state.auth.user.uuid; 
     const transaction = Object.assign({}, this.state.transaction); 
     if (transaction.amount) {
-      transaction.amount = transaction.amount.replace(/,/g, ".");
+      transaction.amount = (""+transaction.amount).replace(/,/g, ".");
     }
 
     console.log("saving tx for user", user);
