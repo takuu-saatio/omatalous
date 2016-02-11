@@ -164,7 +164,12 @@ class ConsumptionView extends BaseComponent {
     this.state.quickTransaction.sign = sign;
     this.setState(this.state);
   }
-
+  
+  _toggleFutureTransactions() {
+    this.state.futureTransactionsOpen = !this.state.futureTransactionsOpen;
+    this.setState(this.state);
+  }
+  
   _editTransaction(uuid) {
     this.state.edit = uuid;
     this.setState(this.state);
@@ -193,6 +198,69 @@ class ConsumptionView extends BaseComponent {
     }
     
     return {};
+
+  }
+
+  _renderTransactionElems(transactions) {
+      
+      return transactions.map((transaction, index) => {
+
+        const categories = transaction.sign === "+" ?
+          staticCategories.income : staticCategories.expenses;
+        
+        return (
+          <div key={transaction.uuid} className={s.transaction}>
+            <div>
+              {transaction.createdAt}
+            </div>
+            <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
+              {transaction.sign}{transaction.amount}
+            </div>
+            <div>{categories[transaction.category]}</div>
+            <div>{transaction.description}</div>
+            <div className={s.txControls}>
+              <div className={s.txControlContainer}>
+                <div>
+                  <i className="material-icons"
+                    onClick={() => this._editTransaction(transaction.uuid)}>
+                    &#xE150;
+                  </i>
+                </div>
+                <div>
+                  <i className="material-icons"
+                    onClick={() => this._deleteTransaction(transaction.uuid)}>
+                    &#xE14A;
+                  </i>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+    });
+
+  }
+  
+  _renderFutureTransactionElems(transactions) {
+      
+      return transactions.map((transaction, index) => {
+
+        const categories = transaction.sign === "+" ?
+          staticCategories.income : staticCategories.expenses;
+        
+        return (
+          <div key={transaction.uuid + "-" + index} className={s.futureTransaction}>
+            <div className={s.futureTxDate}>
+              {transaction.dateLabel}
+            </div>
+            <div className={s.futureTxAmount}
+              style={{ color: transaction.sign === "+" ? "green" : "red" }}>
+              {transaction.sign}{transaction.amount}
+            </div>
+            <div className={s.futureTxCategory}>{categories[transaction.category]}</div>
+            <div className={s.futureTxDescription}>{transaction.description}</div>
+          </div>
+        );
+    });
 
   }
 
@@ -254,42 +322,9 @@ class ConsumptionView extends BaseComponent {
 
     let transactionElems = null; 
     if (transactions && transactions.length > 0) {
-
-      transactionElems = transactions.map(transaction => {
-
-        const categories = transaction.sign === "+" ?
-          staticCategories.income : staticCategories.expenses;
-
-        return (
-          <div key={transaction.uuid} className={s.transaction}>
-            <div>
-              {transaction.createdAt}
-            </div>
-            <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
-              {transaction.sign}{transaction.amount}
-            </div>
-            <div>{categories[transaction.category]}</div>
-            <div>{transaction.description}</div>
-            <div className={s.txControls}>
-              <div className={s.txControlContainer}>
-                <div>
-                  <i className="material-icons"
-                    onClick={() => this._editTransaction(transaction.uuid)}>
-                    &#xE150;
-                  </i>
-                </div>
-                <div>
-                  <i className="material-icons"
-                    onClick={() => this._deleteTransaction(transaction.uuid)}>
-                    &#xE14A;
-                  </i>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      });
-
+      
+      transactionElems = this._renderTransactionElems(transactions);
+    
     } else {
       transactionElems = (
         <div className={s.noTransactions}>
@@ -371,12 +406,19 @@ class ConsumptionView extends BaseComponent {
         const remainingDays = (lastDay - now.getDate()) + 1;
         spendable = Math.floor((available - savingGoal) / remainingDays);
       }
-
+      
+      const expandIcon = this.state.futureTransactionsOpen ?
+        <span>&#xE5CE;</span> : <span>&#xE5CF;</span>;
+      
       currentMonthElem = (
         <div className={s.month}>
           <div className={s.monthLine}></div>
           <div className={s.monthHeader}>
-            KULUVA KUUKAUSI
+            <span>KULUVA KUUKAUSI</span>
+            <i className="material-icons"
+              onTouchTap={() => this._toggleFutureTransactions()}>
+              {expandIcon}
+            </i>
           </div>  
           <div className={s.monthData}>
             <div className={s.section}>
@@ -546,6 +588,25 @@ class ConsumptionView extends BaseComponent {
           primaryText={categories[catKey]} />
       );
     });
+    
+    const futureTransactions = monthStats ? monthStats.futureTransactions : [];
+    const futureTransactionElems = this._renderFutureTransactionElems(futureTransactions);
+    
+    const listHeight = this.state.futureTransactionsOpen ?
+      23 + (futureTransactions.length * 26) : 0;
+
+    const futureTransactionsList = (
+      <div style={{ height: listHeight+"px" }} className={s.futureTransactions}>
+        <div>
+          <div style={{ textAlign: "center" }}>TULEVAT TAPAHTUMAT</div>
+          <div>
+          </div>
+        </div> 
+        <div className={s.futureTransactionsList}>
+          {futureTransactionElems}
+        </div>
+      </div>
+    );
 
     return (
       <div>
@@ -600,6 +661,7 @@ class ConsumptionView extends BaseComponent {
           <div className={s.alerts}>
             {alertElems}
           </div>
+          {futureTransactionsList}
           {topMonthNav}
           <div className={s.transactions}>
             <div className={s.transactionsList}>

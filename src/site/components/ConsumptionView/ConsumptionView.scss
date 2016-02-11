@@ -111,6 +111,7 @@
   margin-bottom: 22px;
   
   .monthHeader {
+    
     width: 90%;
     max-width: 600px;
     border-top: 1px solid #e0e0e0;
@@ -118,6 +119,15 @@
     border-right: 1px solid #e0e0e0;
     margin: auto;
     text-align: center;
+    position: relative;
+    
+    > i {
+      position: absolute;
+      top: 0px;
+      right: 4px;
+      cursor: pointer;
+    }    
+
   }
 
   .monthLine {
@@ -189,6 +199,62 @@
         flex: 1 1;
         cursor: pointer;
       }
+    }
+
+  }
+
+}
+
+.futureTransactions {
+  
+  width: 100%;
+  max-width: 660px;
+  margin: auto;  
+  padding-top: 24px;
+  overflow: hidden;
+  transition: height 500ms ease-out;
+  
+  .futureTransactionsList {
+    
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+
+    .futureTransaction {
+      
+      display: flex;
+      padding-left: 6px;
+      padding-bottom: 2px;
+      padding-top: 2px;
+       
+      .futureTxDate {
+        padding-left: 3%;
+        flex: 1 1;
+      }    
+      
+      .futureTxAmount {
+        flex: 1 1;
+      }    
+      
+      .futureTxCategory {
+        flex: 2 1;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+      }       
+      
+      .futureTxDescription {
+        
+        flex: 2 1;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+        @media (max-width: 660px) {
+          display: none;
+        }
+
+      }
+
     }
 
   }
@@ -323,7 +389,7 @@
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 20px;
+  margin-top: 6px;
   margin-bottom: 6px;
 
   border-bottom: 1px solid #e0e0e0;

@@ -69,10 +69,18 @@ class EditTransactionView extends BaseComponent {
   }
 
   _handleInputChange(event) {
+    this._handleFormChange(event.target.name, event.target.value); 
+  }
+  
+  _handleCategoryDropdown(event, index, value) {
+    this._handleFormChange("category", value);
+  }
 
-    if (event.target.name === "amount") {
+  _handleFormChange(name, value) {
+    
+    if (name === "amount") {
 
-      let amount = event.target.value;
+      let amount = value;
       if (amount) {
         amount = (""+amount).replace(/,/g, ".");
       }
@@ -96,15 +104,6 @@ class EditTransactionView extends BaseComponent {
       this.state.saveDisabled = false;
     }
 
-    this._handleFormChange(event.target.name, event.target.value); 
-  
-  }
-  
-  _handleCategoryDropdown(event, index, value) {
-    this._handleFormChange("category", value);
-  }
-
-  _handleFormChange(name, value) {
     let formParams = {};
     formParams[name] = value;
     let transaction = Object.assign(this.state.transaction, formParams);

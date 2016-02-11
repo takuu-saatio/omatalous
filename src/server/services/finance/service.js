@@ -335,7 +335,6 @@ class FinanceService {
     const daysInMonth = lastDay.getDate();
     const dayDiff = weekDay - firstDay.getDay();
     const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
-    const dayOccurences = Math.floor((daysInMonth - dayOffset) / 7);
     let currentDay = dayOffset + 1;
     while (currentDay <= daysInMonth) { 
       sum += amount;
@@ -353,6 +352,57 @@ class FinanceService {
     return amount * lastDay.getDate();
   
   }
+
+  _getFutureTransactions(transactions) {
+    
+    const now = new Date(); 
+    const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    const txMap = {};
+    for (let day = tomorrow.getDate(); day <= lastDay.getDate(); day++) {
+      txMap[day] = [];
+    }
+ 
+    for (let tx of transactions) {
+        
+      if (tx.repeats === "M") {
+
+        if (tx.repeatValue >= tomorrow.getDate()) {
+          let txJson = Object.assign({}, tx.json());
+          const monthDate = new Date(now.getFullYear(), now.getMonth(), tx.repeatValue);
+          txJson.dateLabel = DAY_NAMES[monthDate.getDay()]+" "+monthDate.getDate();
+          txMap[tx.repeatValue].push(txJson);
+        }
+
+      } else if (tx.repeats === "W") {
+
+        const daysInMonth = lastDay.getDate();
+        const dayDiff = tx.repeatValue - tomorrow.getDay();
+        const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
+        let currentDay = dayOffset + tomorrow.getDate();
+        while (currentDay <= daysInMonth) { 
+          let txJson = Object.assign({}, tx.json());
+          txJson.dateLabel = DAY_NAMES[tx.repeatValue]+" "+currentDay;
+          txMap[currentDay].push(txJson);
+          currentDay += 7;
+        }
+        
+      } else if (tx.repeats === "D") {
+      }
+      
+    }
+
+    let futureTransactions = [];
+    for (let day = lastDay.getDate(); day >= tomorrow.getDate(); day--) {
+      if (txMap[day].length > 0) {
+        futureTransactions = futureTransactions.concat(txMap[day]);
+      }
+    }
+
+    return futureTransactions;
+
+  } 
 
   getCurrentMonthStats(user) {
     
@@ -381,7 +431,7 @@ class FinanceService {
         const fixed = { "+": 0, "-": 0 };
         const actual = { "+": 0, "-": 0 };
         const raw = { "+": 0, "-": 0 };
-
+        
         for(let tx of repeatingTxs) {
           
           let amount = tx.amount;
@@ -392,7 +442,7 @@ class FinanceService {
           }
           
           fixed[tx.sign] += amount;
-
+          
         }
 
         for(let tx of actualTxs) {
@@ -409,7 +459,8 @@ class FinanceService {
           income: actual["+"], 
           expenses: actual["-"], 
           rawIncome: raw["+"], 
-          rawExpenses: raw["-"] 
+          rawExpenses: raw["-"],
+          futureTransactions: this._getFutureTransactions(repeatingTxs)
         });
 
       } catch (err) {
