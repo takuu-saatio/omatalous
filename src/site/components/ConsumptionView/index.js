@@ -203,13 +203,18 @@ class ConsumptionView extends BaseComponent {
 
   _renderTransactionElems(transactions) {
       
-      return transactions.map((transaction, index) => {
+      return transactions.map(transaction => {
 
         const categories = transaction.sign === "+" ?
           staticCategories.income : staticCategories.expenses;
         
+        const highlightCss = {};
+        if (transaction.type === "copy") {
+          highlightCss.backgroundColor = "#f0f0f0";
+        }
+
         return (
-          <div key={transaction.uuid} className={s.transaction}>
+          <div key={transaction.uuid} style={highlightCss} className={s.transaction}>
             <div>
               {transaction.createdAt}
             </div>
@@ -348,13 +353,14 @@ class ConsumptionView extends BaseComponent {
     let goalElem = null;
     if (goal) {
       
+      const totalSaved = Math.floor(goal.totalSaved);
       goalElem = (
         <div className={s.goal}>
           <div className={s.goalLabel}>
             Säästetty
           </div>
           <div className={s.goalContent}>
-            {goal.totalSaved}/{goal.amount} €
+            {totalSaved}/{goal.amount} €
           </div>
         </div>
       );

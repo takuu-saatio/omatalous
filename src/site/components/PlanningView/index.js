@@ -51,7 +51,6 @@ class PlanningView extends BaseComponent {
     delete copy.month;
     delete copy.createdAt;
     copy.type = "single";
-    console.log("copy tx", copy); 
     this.props.saveTransaction(user, copy);
     this.props.deleteTransaction(user, transaction.uuid);
   }

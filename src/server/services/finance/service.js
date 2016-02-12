@@ -191,7 +191,7 @@ class FinanceService {
               let nonRepeatingTotal = 0;
               let nonRepeatingCurrentMonthTotal = 0;
               
-              nonRepeating.forEach(transaction => {  
+              for (let transaction of nonRepeating) {  
                 if (transaction.month !== currentMonth) {
                   nonRepeatingTotal += transaction.sign === "+" ? 
                     transaction.amount : -transaction.amount;
@@ -199,7 +199,7 @@ class FinanceService {
                   nonRepeatingCurrentMonthTotal += transaction.sign === "+" ?
                     transaction.amount : -transaction.amount;
                 }
-              });
+              }
               
               params = {
                 user: user,
@@ -208,10 +208,10 @@ class FinanceService {
 
               const repeating = await Transaction.selectAll(params);
               let repeatingTotal = 0;
-              repeating.forEach(transaction => { 
+              for (let transaction of repeating) { 
                 repeatingTotal += transaction.sign === "+" ?
                   transaction.amount : -transaction.amount;
-              });
+              }
 
               const startMonth = goal.start > currentMonth ? goal.start : currentMonth;
               const startYYYY = parseInt(startMonth.substring(0, 4));

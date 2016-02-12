@@ -110,6 +110,9 @@ class GoalsView extends BaseComponent {
     
     if (name === "start") {
       this.state.startMonth = this._getStartMonth(value);
+      if (this.state.goal.start > this.state.goal.end) {
+        delete this.state.goal.end;
+      }
     }
 
     this.setState(this.state);
@@ -123,11 +126,11 @@ class GoalsView extends BaseComponent {
     if (monthVal) {
       [ year, month ] = monthVal.split("-");
       year = parseInt(year);
-      month = parseInt(month) - 1;
+      month = parseInt(month);
     } else {
       const now = new Date();
       year = now.getFullYear();
-      month = now.getMonth();
+      month = (now.getMonth() + 1);
     }
 
     return { year, month };
@@ -181,7 +184,7 @@ class GoalsView extends BaseComponent {
     }
   }
 
-  _renderDropdown(startMonth, value, handler) {
+  _renderDropdown(startMonth, value, minTotal, handler) {
      
     const dropdownLabelCss = {
       paddingLeft: "initial",
@@ -198,33 +201,41 @@ class GoalsView extends BaseComponent {
       right: "0px"
     };
 
+    const monthLabels = [
+      "Tammi", "Helmi", "Maalis", "Huhti", "Touko", "Kesä",
+      "Heinä", "Elo", "Syys", "Loka", "Marras", "Joulu"
+    ];
+
+    const now = new Date(); 
+    
     let currentYear = startMonth.year;
     let currentMonth = startMonth.month;
+    let totalMonths = ((now.getMonth() + 1) - startMonth.month) + 6;
+    totalMonths += (now.getFullYear() - startMonth.year) * 12;
+    if (totalMonths < minTotal) {
+      totalMonths = minTotal;
+    }
 
     const menuItems = [];
-
-    for (let i=0; i<12; i++) {
+     
+    for (let i = 0; i < totalMonths; i++) {
       
-      if (currentMonth > 11) {
+      if (currentMonth > 12) {
         currentYear += 1;
-        currentMonth = 0;
+        currentMonth = 1;
       }
       
-      const monthLabels = [
-        "Tammi", "Helmi", "Maalis", "Huhti", "Touko", "Kesä",
-        "Heinä", "Elo", "Syys", "Loka", "Marras", "Joulu"
-      ];
-      const monthPadding = currentMonth < 9 ? "0" : "";
-      const monthVal = currentYear + "-" + monthPadding + (currentMonth + 1);
+      const monthPadding = currentMonth < 10 ? "0" : "";
+      const monthVal = currentYear + "-" + monthPadding + currentMonth;
       menuItems.push( 
         <MenuItem key={monthVal} value={monthVal}
-          primaryText={monthLabels[currentMonth] + " " + currentYear} />
+          primaryText={monthLabels[currentMonth - 1] + " " + currentYear} />
       );
       
       currentMonth += 1;
 
     }
-
+    
     return (
       <DropDownMenu style={Object.assign({ height: "43px" }, { width: "100%" })}
         labelStyle={dropdownLabelCss} 
@@ -376,6 +387,16 @@ class GoalsView extends BaseComponent {
 
     const goalStartMonth = goal ? goal.start : null;
     const nowMonth = this._getStartMonth(null); 
+    const firstMonth = {
+      year: 2016,
+      month: 1
+    };
+
+    let endFirstMonth = this.state.startMonth;
+    if (endFirstMonth.year <= nowMonth.year && endFirstMonth.month < nowMonth.month) {
+      endFirstMonth = nowMonth;
+    }
+
     const saveGoalDisabled = !(goal.amount && goal.start && goal.end);
      
     let incomeSummary = null;
@@ -476,13 +497,13 @@ class GoalsView extends BaseComponent {
               </div>
               <div className={s.goalStart}>
                 <div className={s.dropdownLabel}>Aloitus-kk</div>
-                {this._renderDropdown(nowMonth, this.state.goal.start, 
+                {this._renderDropdown(firstMonth, this.state.goal.start, 0, 
                                       this._handleStartDropdown)}
               </div>
               <div className={s.goalEnd}>
                 <div className={s.dropdownLabel}>Lopetus-kk</div>
                 <div>
-                  {this._renderDropdown(this.state.startMonth, this.state.goal.end,
+                  {this._renderDropdown(endFirstMonth, this.state.goal.end, 12,
                                         this._handleEndDropdown)}
                 </div>                      
               </div>
