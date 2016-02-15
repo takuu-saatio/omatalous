@@ -18,8 +18,9 @@ class ContentPage extends BaseComponent {
   }
 
   async fetchData(props = this.props) { 
-    console.log("fetching data", props.path);
-    const response = await http.get("/api/content" + props.path);
+    const path = props.path || this.state.routing.path;
+    console.log("fetch content from path", path);
+    const response = await http.get("/api/content" + path);
     if (!response.error) {
       this.setState(response.content);
     }
@@ -34,6 +35,7 @@ class ContentPage extends BaseComponent {
 
   render() {
     
+    console.log("render content", this.state, this.props); 
     this._setTitle(this.state.meta);
     
     return (

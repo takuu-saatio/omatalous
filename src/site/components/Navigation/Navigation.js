@@ -45,6 +45,10 @@ class Navigation extends Component {
         width: "initial",
         height: "initial"
       };
+      const tooltipStyles = {
+        marginTop: "-15px",
+        marginLeft: "-6px"
+      };
  
       if (auth.user.email === "vhalme@gmail.com") {
         adminElem = (
@@ -53,6 +57,7 @@ class Navigation extends Component {
               iconClassName="material-icons"
               tooltip="Hallinta"
               iconStyle={iconItemStyle}
+              tooltipStyles={tooltipStyles}
               style={iconStyle}>
               &#xE8D3;
             </IconButton>
@@ -71,13 +76,14 @@ class Navigation extends Component {
           </a>
         </div>
       );
-      
+       
       consumptionElem = (
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
           <IconButton onClick={() => Location.go("/consumption")}
             iconClassName="material-icons"
             tooltip="Kulutus"
             iconStyle={iconItemStyle}
+            tooltipStyles={tooltipStyles}
             style={iconStyle}>
             &#xE870;
           </IconButton>
@@ -90,6 +96,7 @@ class Navigation extends Component {
             iconClassName="material-icons"
             tooltip="Tavoitteet"
             iconStyle={iconItemStyle}
+            tooltipStyles={tooltipStyles}
             style={iconStyle}>
             &#xE850;
           </IconButton>
@@ -102,6 +109,7 @@ class Navigation extends Component {
             iconClassName="material-icons"
             tooltip="Suunnittelu"
             iconStyle={iconItemStyle}
+            tooltipStyles={tooltipStyles}
             style={iconStyle}>
             &#xE878;
           </IconButton>
