@@ -44,9 +44,9 @@ export default class MainTabsView extends BaseComponent {
 
   _tabLabelCss(index) {
     if (this.state.tab === index) {
-      return { color: "black" };
+      return { color: "black", backgroundColor: "white" };
     } else {
-      return { color: "rgba(0, 0, 0, 0.6)" };
+      return { color: "black", backgroundColor: "#f0f0f0" };
     }
   }
 
@@ -61,10 +61,16 @@ export default class MainTabsView extends BaseComponent {
       contentElem = <ConsumptionContainer params={this.props.params} />;
     }
     
-     
+    const inkBarStyle = {
+      backgroundColor: "#00bcd4",
+      marginTop: "initial",
+      bottom: "48px",
+      height: "4px"
+    };
+ 
     return (
       <div>
-        <Tabs inkBarStyle={{ backgroundColor: "#a0a0a0" }} 
+        <Tabs inkBarStyle={inkBarStyle} 
           tabItemContainerStyle={{ backgroundColor: "#f0f0f0" }}
           onChange={this._setTab}
           value={this.state.tab}>

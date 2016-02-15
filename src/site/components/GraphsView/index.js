@@ -245,16 +245,20 @@ class GraphsView extends BaseComponent {
                 data2
             ],
             types: {
-              "Toistuvat": "area-spline",
+              "Toistuvat": "spline",
               "Toteutuneet": "spline"
             }
           },
           axis: {
             x: {
+              label: "päivä",
               type: "timeseries",
               tick: {
                 format: "%d"
               }
+            },
+            y: {
+              label: "euroa kertynyt"
             }
           },
           tooltip: {
@@ -274,9 +278,9 @@ class GraphsView extends BaseComponent {
                   return;
                 }
                 
-                htmlContent += `<div>`;
+                htmlContent += `<div style="display: flex;">`;
 
-                htmlContent += `<div style="display: inline-block;">`;
+                htmlContent += `<div style="flex: 1 1 auto;">`;
                 meta[point.id][point.index - 1].forEach(tx => {
                   const catLabels = tx.sign === "+" ?
                     staticCategories.income : staticCategories.expenses;
@@ -296,7 +300,7 @@ class GraphsView extends BaseComponent {
                 });
                 htmlContent += "</div>";
                 
-                htmlContent += `<div style="display: inline-block;">`;
+                htmlContent += `<div style="flex: 1 1 auto;">`;
                 meta[point.id][point.index - 1].forEach(tx => {
                   const color = tx.sign === "+" ? "green" : "red";
                   htmlContent += `
@@ -305,11 +309,12 @@ class GraphsView extends BaseComponent {
                     padding-top: 2px;
                     padding-bottom: 2px;
                     text-align: right;
+                    display: block;
                     position: relative;">
                       <span style="
+                        color: ${color};
                         margin-left: 6px;
                         margin-right: 4px;
-                        color: ${color}
                         ">
                         ${tx.sign}${tx.amount}€
                       </span>
@@ -463,30 +468,97 @@ class GraphsView extends BaseComponent {
             types: {
               "Säästö": "line" 
             },
-            groups: progressGroups
+            groups: progressGroups,
+            order: "asc"
           },
           grid: {
             y: {
               lines: [{value:0}]
             }
+          },
+          axis: {
+            x: {
+              label: "Kuukausi"
+            },
+            y: {
+              label: "Tulot / menot €"
+            }
+          },
+          legend: {
+            show: false
           }
         };
         
+        const legendTitleCss = {
+          textAlign: "center",
+          font: "14px sans-serif"   
+        };
+ 
         progressElem = (   
           <div className={s.graph}>
             <div className={s.graphLabel}>
               Kehitys
             </div>
             <div className={s.graphContainer} style={{ width: `${graphSize}px` }}>
-              <div id="progressChart"></div>
+              <div id="progressChart" style={{}}></div>
+              <div id="progressLegend" style={{ paddingLeft: "24px", display: "flex" }}>
+                <div id="incomeLegend" style={{ flex: "1 1" }}>
+                  <div style={legendTitleCss}>Tulot</div>
+                </div>
+                <div id="expenseLegend" style={{ flex: "1 1" }}>
+                  <div style={legendTitleCss}>Menot</div>
+                </div>
+              </div>
             </div>
           </div>
         );
         
+        const incomeColumns = progressColumns
+          .filter(column => column[0].substring(0, 1) === "+"); 
+        const expenseColumns = progressColumns
+          .filter(column => column[0].substring(0, 1) === "-");
+ 
         require(["d3", "c3"], function(d3, c3) {
-          c3.generate(progressData);
+          
+          const chart = c3.generate(progressData);
+          
+          const setLegend = (element, columns) => {
+
+            d3.select(element).insert("div", ".chart")
+            .attr("class", "legend").selectAll(".legend-item").data(columns)
+            .enter().append("div")
+              .attr("data-id", data => data[0])
+              .attr("class", "legend-item")
+            .html(data => {
+              const color = chart.color(data[0]);
+              return `
+                <div style="
+                  width: 12px;
+                  height: 12px;
+                  display: inline-block;
+                  background-color: ${color};">
+                </div>
+                <span>${data[0].substring(2)}</span>
+              `;
+            })
+            .each(function(data) {
+              //d3.select(this).style("background-color", chart.color(data[0]));
+            })
+            .on("mouseover", function(data) {
+              d3.select(this).style("font-weight", "bold");
+              chart.focus(data[0]);
+            })
+            .on("mouseout", function(data) {
+              d3.select(this).style("font-weight", "inherit");
+              chart.revert();
+            });
+          };
+        
+          setLegend("#incomeLegend", incomeColumns);
+          setLegend("#expenseLegend", expenseColumns);      
+
         });
-      
+         
       }
           
     }

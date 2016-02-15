@@ -66,6 +66,7 @@ class Html extends Component {
         <link href="/c3.min.css" rel="stylesheet" type="text/css" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
         <link href="/fonts.css" rel="stylesheet" type="text/css" />
+        <link href="/charts.css" rel="stylesheet" type="text/css" />
         <style id="css" dangerouslySetInnerHTML={{ __html: this.props.css }} />
         <script dangerouslySetInnerHTML={this.initialState()} />
         {intlPolyfill}
