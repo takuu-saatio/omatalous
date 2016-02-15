@@ -11,7 +11,6 @@ export const staticCategories = {
     "communication": "Puhelin ja internet",
     "restaurant": "Kahvilat & ravintolat",
     "groceries": "Ruokakauppa",
-    "alcohol": "Alkoholi",
     "saving": "Säästäminen",
     "health": "Terveys",
     "clothing": "Vaatteet",

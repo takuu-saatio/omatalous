@@ -50,6 +50,7 @@ const router = new Router(on => {
   on("/planning/:user?", (state) => <PlanningContainer params={state.params} />);
   on("/admin", () => <AdminContainer />);
   on("/denied", (state) => {
+    console.log("state", state);
     return <ContentContainer path={state.path} />
   });
 
