@@ -64,9 +64,11 @@ class Header extends BaseComponent {
     let leftNavIcon = null;
     let adminNavItem = null;
     let logoStyles = s.logo;
-    
+    let logoNavPath = "/";
+        
     if (auth && auth.user) {
       
+      logoNavPath = "/consumption";  
       logoStyles = cx(s.logo, s.loggedIn);
          
       leftNavIcon = (
@@ -98,7 +100,7 @@ class Header extends BaseComponent {
         <div className={s.container}>
           {leftNavIcon}
           <div className={logoStyles}>
-            <a className={s.brand} href="/" onClick={Link.handleClick}>
+            <a className={s.brand} href={logoNavPath} onClick={Link.handleClick}>
               <i className="material-icons">&#xE251;</i>
               <span className={s.brandTxt}>Omatalous</span>
             </a>

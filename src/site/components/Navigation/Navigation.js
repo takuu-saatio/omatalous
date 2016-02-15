@@ -7,7 +7,10 @@ import cx from "classnames";
 import s from "./Navigation.scss";
 import withStyles from "../../decorators/withStyles";
 import FlatButton from "material-ui/lib/flat-button";
+import FontIcon from "material-ui/lib/font-icon";
+import IconButton from "material-ui/lib/icon-button";
 import Link from "../Link";
+import Location from "../../../core/Location";
 
 @withStyles(s)
 @reactMixin.decorate(ReactIntl.IntlMixin)
@@ -30,12 +33,29 @@ class Navigation extends Component {
 
     if (auth && auth.user) {
         
+      const iconItemStyle = {
+        fontSize: "36px",
+        color: "#e0e0e0"
+      };
+      const iconStyle = {
+        paddingLeft: "0px",
+        paddingRight: "0px",
+        paddingBottom: "0px",
+        paddingTop: "2px",
+        width: "initial",
+        height: "initial"
+      };
+ 
       if (auth.user.email === "vhalme@gmail.com") {
         adminElem = (
           <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-            <a className={s.link} href="/admin" onClick={Link.handleClick}>
-              <i className="material-icons">&#xE8D3;</i>  
-            </a>
+            <IconButton onClick={() => Location.go("/admin")}
+              iconClassName="material-icons"
+              tooltip="Hallinta"
+              iconStyle={iconItemStyle}
+              style={iconStyle}>
+              &#xE8D3;
+            </IconButton>
           </div>
         );
       }
@@ -54,32 +74,45 @@ class Navigation extends Component {
       
       consumptionElem = (
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-          <a className={s.link} href="/consumption" onClick={Link.handleClick}>
-            <i className="material-icons">&#xE870;</i>
-          </a>
+          <IconButton onClick={() => Location.go("/consumption")}
+            iconClassName="material-icons"
+            tooltip="Kulutus"
+            iconStyle={iconItemStyle}
+            style={iconStyle}>
+            &#xE870;
+          </IconButton>
         </div>
       );
       
       goalsElem = (
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-          <a className={s.link} href="/goals" onClick={Link.handleClick}>
-            <i className="material-icons">&#xE850;</i>
-          </a>
+          <IconButton onClick={() => Location.go("/goals")}
+            iconClassName="material-icons"
+            tooltip="Tavoitteet"
+            iconStyle={iconItemStyle}
+            style={iconStyle}>
+            &#xE850;
+          </IconButton>
         </div>
       );
       
       planningElem = (
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-          <a className={s.link} href="/planning" onClick={Link.handleClick}>
-            <i className="material-icons">&#xE878;</i>
-          </a>
+          <IconButton onClick={() => Location.go("/planning")}
+            iconClassName="material-icons"
+            tooltip="Suunnittelu"
+            iconStyle={iconItemStyle}
+            style={iconStyle}>
+            &#xE878;
+          </IconButton>
         </div>
       );
 
       loginElem = (
         <div className={cx(s.navItem, s.buttonItem, s.logoutItem)}>
           <a className={s.link} style={{ verticalAlign: "top" }} href="/logout">
-            <FlatButton label={this.getIntlMessage("logout")} />
+            <FlatButton labelStyle={{ color: "#e0e0e0" }} 
+              label={this.getIntlMessage("logout")} />
           </a>
         </div>
       );
@@ -90,7 +123,8 @@ class Navigation extends Component {
       loginElem = this.props.path !== "/login" ? (
         <div className={cx(s.navItem, s.buttonItem)}>
           <a className={s.link} href="/login" onClick={Link.handleClick}>
-            <FlatButton label={this.getIntlMessage("login")} />
+            <FlatButton labelStyle={{ color: "#e0e0e0" }} 
+              label={this.getIntlMessage("login")} />
           </a>
         </div>
       ) : null;

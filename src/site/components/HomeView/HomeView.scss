@@ -4,11 +4,20 @@
 
 .banner {
 
-  background-color: #e0e0e0;
-  color: black;
+  background-color: #333;
+  color: white;
   text-align: center;
-  padding-bottom: 12px;
+  padding-bottom: 64px;
   padding-top: 20px;
+  
+  .smallHeading {
+    font-size: 22px; 
+  }
+  
+  .bigHeading {
+    font-size: 42px;
+    font-weight: bold; 
+  }
 
   h1 {
     margin: 0px;
@@ -17,7 +26,15 @@
 }
 
 .content {
+
   max-width: 660px;
   padding: 24px;
   margin: auto;
+  text-align: center;
+  
+  position: relative;
+
+  .loginButton {
+  }
+
 }

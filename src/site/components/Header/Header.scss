@@ -3,9 +3,8 @@
 $brand-color: #61dafb;
 
 .root {
-  background: #e0e0e0;
-  color: black;
-  border-bottom: 1px dashed black;
+  background: #333;
+  color: white;
 }
 
 .container {
@@ -22,7 +21,7 @@ $brand-color: #61dafb;
   .brand {
     
     text-decoration: none;
-    color: black;
+    color: white;
     font-size: 1.75em; /* ~28px */
     display: block;
     padding-top: 6px;

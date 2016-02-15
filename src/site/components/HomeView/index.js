@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from "react";
 import s from "./HomeView.scss";
 import withStyles from "../../decorators/withStyles";
+import RaisedButton from "material-ui/lib/raised-button";
 import BaseComponent from "../BaseComponent";
+import Location from "../../../core/Location";
 
 @withStyles(s)
 class HomeView extends BaseComponent {
@@ -39,15 +41,15 @@ class HomeView extends BaseComponent {
     return (
       <div className={s.root}>
         <div className={s.banner}>
-          <h1>Takuu-Säätio</h1>
-          <h3>Omatalous</h3>
-          <p>Työkalu säästämiseen</p>
+          <div className={s.smallHeading}>Takuu-Säätio</div>
+          <div className={s.bigHeading}>Omatalous</div>
         </div>
         <div className={s.content}>
-          <h1>Aloita säästäminen!</h1>
+          <RaisedButton style={{ position: "absolute", top: "-18px", left: "calc(50% - 75px)" }} 
+            onTouchTap={() => Location.go("/login")}
+            label="Kirjaudu sisään" secondary={true} />
           <p>
-            Omatalous-sovellus auttaa sinua hallitsemaan talouttasi paremmin!
-            Päästäksesi alkuun sinun tulee <a href="/login">kirjautua sisään</a> sovellukseen.
+            Omatalous-sovellus auttaa sinua hallitsemaan talouttasi paremmin.
           </p>
         </div>
       </div>

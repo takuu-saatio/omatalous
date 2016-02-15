@@ -54,19 +54,19 @@
 .link,
 .link:active,
 .link:visited {
-  color: rgba(0, 0, 0, .6);
+  color: rgba(255, 255, 255, .6);
   i {
     font-size: 36px;
   }
 }
 
 .link:hover {
-  color: rgba(0, 0, 0, 1);
+  color: rgba(255, 255, 255, 1);
 }
 
 .highlight {
   border-radius: 3px;
-  background: rgba(0, 0, 0, .15);
+  background: rgba(255, 255, 255, .15);
   color: #fff;
 }
 
@@ -77,3 +77,5 @@
 .spacer {
   color: rgba(255, 255, 255, .3);
 }
+
+
