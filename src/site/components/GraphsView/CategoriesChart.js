@@ -157,7 +157,8 @@ class CategoriesChart extends Component {
         </div>
       </div>
     );
-
+    
+    const sortedColumns = chartColumns.sort((a, b) => b[1] - a[1]);
     const categories = this._createCategoriesData(this.props.categories); 
     require(["d3", "c3"], function(d3, c3) {
       
@@ -165,7 +166,7 @@ class CategoriesChart extends Component {
        
       d3.select("#catLegend").selectAll("*").remove();
       d3.select("#catLegend").insert("div", ".chart")
-      .attr("class", "legend").selectAll(".legend-item").data(chartColumns)
+      .attr("class", "legend").selectAll(".legend-item").data(sortedColumns)
       .enter().append("div")
         .attr("data-id", data => data[0])
         .attr("class", "legend-item")

@@ -168,80 +168,82 @@ class FinanceService {
         
         for(let goal of goals) {
           
-          if (goal.start && goal.end) {
-              
-            const currentMonth = getCurrentMonth();
+          const currentMonth = getCurrentMonth();
+          const goalEnd = goal.finite ? goal.end : currentMonth;
 
-            let params = {
-              user: user,
-              $or: [
-                { type: "single" },
-                { type: "copy" }
-              ],
-              month: { 
-                $gte: goal.start,
-                $lte: goal.end
-              }
-            };
+          let params = {
+            user: user,
+            $or: [
+              { type: "single" },
+              { type: "copy" }
+            ],
+            month: { 
+              $gte: goal.start,
+              $lte: goalEnd
+            }
+          };
+          
+          try {
             
-            try {
-              
-              const nonRepeating = await Transaction.selectAll(params);
-              
-              let nonRepeatingTotal = 0;
-              let nonRepeatingCurrentMonthTotal = 0;
-              
-              for (let transaction of nonRepeating) {  
-                if (transaction.month !== currentMonth) {
-                  nonRepeatingTotal += transaction.sign === "+" ? 
-                    transaction.amount : -transaction.amount;
-                } else {
-                  nonRepeatingCurrentMonthTotal += transaction.sign === "+" ?
-                    transaction.amount : -transaction.amount;
-                }
-              }
-              
-              params = {
-                user: user,
-                repeats: { $ne: null }
-              };
-
-              const repeating = await Transaction.selectAll(params);
-              let repeatingTotal = 0;
-              for (let transaction of repeating) { 
-                repeatingTotal += transaction.sign === "+" ?
+            const nonRepeating = await Transaction.selectAll(params);
+            
+            let nonRepeatingTotal = 0;
+            let nonRepeatingCurrentMonthTotal = 0;
+            
+            for (let transaction of nonRepeating) {  
+              if (transaction.month !== currentMonth) {
+                nonRepeatingTotal += transaction.sign === "+" ? 
+                  transaction.amount : -transaction.amount;
+              } else {
+                nonRepeatingCurrentMonthTotal += transaction.sign === "+" ?
                   transaction.amount : -transaction.amount;
               }
-
-              const startMonth = goal.start > currentMonth ? goal.start : currentMonth;
-              const startYYYY = parseInt(startMonth.substring(0, 4));
-              const startMM = parseInt(startMonth.substring(5, 7));
-              const endYYYY = parseInt(goal.end.substring(0, 4));
-              const endMM = parseInt(goal.end.substring(5, 7));
-
-              const remainingYears = endYYYY - startYYYY;
-              let remainingMonths = (endMM - startMM) + (remainingYears * 12);
-              
-              const currentMonthSavingGoal =
-                (goal.amount - nonRepeatingTotal) / remainingMonths;
-
-              const currentMonthAvailable =
-                (repeatingTotal + nonRepeatingCurrentMonthTotal);
-
-              goal.extras = {
-                totalSaved: nonRepeatingTotal,
-                currentMonthAvailable,
-                currentMonthSavingGoal
-              };
+            }
             
-            } catch(err) { 
-              log.debug("SAVINGS PROJ ERROR", err); 
+            params = {
+              user: user,
+              repeats: { $ne: null }
+            };
+
+            const repeating = await Transaction.selectAll(params);
+            let repeatingTotal = 0;
+            for (let transaction of repeating) { 
+              repeatingTotal += transaction.sign === "+" ?
+                transaction.amount : -transaction.amount;
             }
 
+            const startMonth = goal.start > currentMonth ? goal.start : currentMonth;
+            const startYYYY = parseInt(startMonth.substring(0, 4));
+            const startMM = parseInt(startMonth.substring(5, 7));
+            const endYYYY = parseInt(goalEnd.substring(0, 4));
+            const endMM = parseInt(goalEnd.substring(5, 7));
+
+            const remainingYears = endYYYY - startYYYY;
+            let remainingMonths = (endMM - startMM) + (remainingYears * 12);
+            
+            let currentMonthSavingGoal = 0;
+            if (goal.finite) {
+              currentMonthSavingGoal = 
+                ((goal.targetAmount - goal.startAmount) 
+                  - nonRepeatingTotal) / remainingMonths;
+            }
+
+            const currentMonthAvailable =
+              (repeatingTotal + nonRepeatingCurrentMonthTotal);
+
+            goal.extras = {
+              totalSaved: goal.startAmount + nonRepeatingTotal,
+              currentMonthAvailable,
+              currentMonthSavingGoal
+            };
+          
+          } catch(err) { 
+            log.debug("SAVINGS PROJ ERROR", err); 
           }
 
         }
-        
+ 
+        console.log("resolve goals", goals); 
         resolve(goals)
       
       })

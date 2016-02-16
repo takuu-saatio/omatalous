@@ -7,6 +7,7 @@ import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
+import Toggle from "material-ui/lib/toggle";
 import BaseComponent from "../BaseComponent";
 import { EditRepeatingTransactionContainer } from "../../containers";
 
@@ -24,7 +25,9 @@ class GoalsView extends BaseComponent {
     let state = this.props.state;
 
     if (!state.goal) {
-      state.goal = {};
+      state.goal = {
+        finite: false
+      };
       state.startMonth = this._getStartMonth();
     } else {
       state.startMonth = this._getStartMonth(state.goal.start);
@@ -36,6 +39,7 @@ class GoalsView extends BaseComponent {
 
     state.expenseCategory = { type: "expense" };
     state.incomeCategory = { type: "income" };
+    state.amountErrors = {};
 
     this.state = state;
     
@@ -84,6 +88,27 @@ class GoalsView extends BaseComponent {
 
   _handleFormChange(target, name, value) {
     
+    if (name === "startAmount" || name === "targetAmount") {
+ 
+      let amount = value;
+      if (amount) {
+        amount = (""+amount).replace(/,/g, ".");
+      }
+
+      if (isNaN(amount)) {
+        this.state.amountErrors[name] = "Ei ole numero";
+      } else if (parseFloat(amount) < 0) {
+        this.state.amountErrors[name] = "Väärä arvo: < 0";
+      } else {
+        delete this.state.amountErrors[name];
+      }
+      
+      if (!amount || amount === "") {
+        delete this.state.amountErrors[name];
+      }
+
+    }
+
     let formParams = {};
     formParams[name] = value;
     let object = Object.assign(this.state[target], formParams);
@@ -151,7 +176,12 @@ class GoalsView extends BaseComponent {
       this.props.deleteTransaction(user, uuid);
     }
   }
-  
+ 
+  _toggleFiniteGoal() {
+    this.state.goal.finite = !this.state.goal.finite;
+    this.setState(this.state);
+  }
+ 
   _editTransaction(uuid) {
     this.state.edit = uuid;
     this.setState(this.state);
@@ -169,7 +199,11 @@ class GoalsView extends BaseComponent {
   
   _deleteGoal() {
     const user = this.props.params.user || this.state.auth.user.uuid; 
-    this.props.deleteGoal(user, this.state.goal.uuid);
+    this.state.goal.end = null;
+    this.state.goal.targetAmount = null;
+    this.state.goal.startAmount = 0;
+    this.state.goal.finite = false;
+    this.props.saveGoal(user, this.state.goal);
   }
   
   _saveCategory(category) {
@@ -184,7 +218,7 @@ class GoalsView extends BaseComponent {
     }
   }
 
-  _renderDropdown(startMonth, value, minTotal, handler) {
+  _renderDropdown(startMonth, value, minTotal, handler, disabled) {
      
     const dropdownLabelCss = {
       paddingLeft: "initial",
@@ -242,6 +276,7 @@ class GoalsView extends BaseComponent {
         underlineStyle={dropdownUnderlineCss} 
         iconStyle={iconStyleCss}
         value={value}
+        disabled={disabled}
         onChange={handler.bind(this)}>
         {menuItems}
       </DropDownMenu>
@@ -397,7 +432,22 @@ class GoalsView extends BaseComponent {
       endFirstMonth = nowMonth;
     }
 
-    const saveGoalDisabled = !(goal.amount && goal.start && goal.end);
+    let saveGoalDisabled = true;
+    
+    if (goal.finite) {
+      saveGoalDisabled = !(
+        goal.startAmount !== undefined && goal.startAmount !== "" &&
+        goal.targetAmount !== undefined && goal.targetAmount !== "" &&
+        !this.state.amountErrors["startAmount"] &&
+        !this.state.amountErrors["targetAmount"] &&
+        goal.start && goal.end);
+    } else {
+      saveGoalDisabled = !(
+        goal.startAmount !== undefined && goal.startAmount !== "" &&
+        !this.state.amountErrors["startAmount"] &&
+        goal.start); 
+    }
+    console.log("save goal disabled?", goal);
      
     let incomeSummary = null;
     let expensesSummary = null;
@@ -486,26 +536,46 @@ class GoalsView extends BaseComponent {
             </div>
           </div>
           <div className={s.goals}>
-            <div className={s.goalLabel}>Säästötavoite</div>
+            <div className={s.goalLabel}>Säästöasetukset</div>
             <div className={s.goal}>
-              <div className={s.goalAmount}>
-                <TextField style={fullWidth} 
-                  name="amount"
-                  floatingLabelText="Summa"
-                  value={this.state.goal.amount}
-                  onChange={this._handleGoalChange.bind(this)} />
-              </div>
-              <div className={s.goalStart}>
-                <div className={s.dropdownLabel}>Aloitus-kk</div>
-                {this._renderDropdown(firstMonth, this.state.goal.start, 0, 
+              <div className={s.goalRow}>
+                <div className={s.goalAmount}>
+                  <TextField style={fullWidth} 
+                    name="startAmount"
+                    errorText={this.state.amountErrors["startAmount"]}
+                    floatingLabelText="Aloitussumma"
+                    value={this.state.goal.startAmount}
+                    onChange={this._handleGoalChange.bind(this)} />
+                </div>
+                <div className={s.goalStart}>
+                  <div className={s.dropdownLabel}>Aloitus-kk</div>
+                  {this._renderDropdown(firstMonth, this.state.goal.start, 0, 
                                       this._handleStartDropdown)}
+                </div>
               </div>
-              <div className={s.goalEnd}>
-                <div className={s.dropdownLabel}>Lopetus-kk</div>
-                <div>
+              <div className={s.goalRow}>
+                <div className={s.finiteToggle}>
+                  <Toggle
+                    label="Tavoite"
+                    toggled={this.state.goal.finite}
+                    onToggle={() => this._toggleFiniteGoal()}
+                    labelStyle={{ width: "initial", marginRight: "8px" }}
+                    style={{ width: "initial", margin: "auto" }}
+                  />  
+                </div>
+                <div className={s.goalAmount}>
+                  <TextField style={fullWidth} disabled={!this.state.goal.finite} 
+                    name="targetAmount"
+                    errorText={this.state.amountErrors["targetAmount"]}
+                    floatingLabelText="Tavoite €"
+                    value={this.state.goal.targetAmount}
+                    onChange={this._handleGoalChange.bind(this)} />
+                </div>
+                <div className={s.goalEnd}>
+                  <div className={s.dropdownLabel}>Lopetus-kk</div>
                   {this._renderDropdown(endFirstMonth, this.state.goal.end, 12,
-                                        this._handleEndDropdown)}
-                </div>                      
+                                        this._handleEndDropdown, !this.state.goal.finite)}
+                </div>
               </div>
             </div>
             <div className={s.goalsSubmit}>

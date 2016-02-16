@@ -76,7 +76,7 @@ class AuthService {
 
     return new Promise((resolve, reject) => {
       
-      const { User, Alert, Event, Category } = this.app.entities;
+      const { User, Goal, Alert, Event, Category } = this.app.entities;
     
       let { 
         method, email, password, firstName, lastName,
@@ -147,6 +147,21 @@ class AuthService {
             })
             .catch((err) => {
               log.debug("Error creating reg event");
+            });
+            
+            const goal = {
+              user: user.uuid,
+              startAmount: 0,
+              start: getCurrentMonth(),
+              finite: false
+            };
+            
+            Goal.schema.create(goal)
+            .then((goal) => {
+              log.debug("Def goal created");
+            })
+            .catch((err) => {
+              log.debug("Error creating def goal");
             });
 
             //Category.schema.create({ user: user.uuid, name: "own1", label: "Oma 1" });

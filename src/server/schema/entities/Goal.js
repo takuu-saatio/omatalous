@@ -12,11 +12,13 @@ class Goal extends BaseEntity {
     this.fields = Object.assign(this.fields, {
       
       user: { type: Sequelize.STRING },
-      amount: { type: Sequelize.FLOAT },
+      startAmount: { type: Sequelize.FLOAT },
+      targetAmount: { type: Sequelize.FLOAT },
       description: { type: Sequelize.STRING },
       start: { type: Sequelize.STRING },
-      end: { type: Sequelize.STRING }
-      
+      end: { type: Sequelize.STRING },
+      finite: { type: Sequelize.BOOLEAN }
+
     });
 
     this.hiddenFields = this.hiddenFields.concat([]);

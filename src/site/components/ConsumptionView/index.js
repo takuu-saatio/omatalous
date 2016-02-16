@@ -351,27 +351,58 @@ class ConsumptionView extends BaseComponent {
     }
 
     let goalElem = null;
+    
     if (goal) {
+    
+      let totalSaved = goal.totalSaved;
       
-      const totalSaved = Math.floor(goal.totalSaved);
-      goalElem = (
-        <div className={s.goal}>
-          <div className={s.goalLabel}>
-            Säästetty
+      if (monthStats) {
+      
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const origAvg = (monthStats.fixedIncome - monthStats.fixedExpenses) / daysInMonth;
+        const available = 
+          monthStats.fixedIncome - 
+          monthStats.fixedExpenses - 
+          monthStats.expenses +
+          monthStats.income;
+       
+        const remainingDays = (daysInMonth - now.getDate()) + 1;
+        const spendable = available;
+        console.log(daysInMonth, remainingDays, spendable, origAvg);
+        totalSaved += ((spendable / remainingDays) - origAvg);
+ 
+      }
+      
+      totalSaved = Math.floor(totalSaved);
+      
+      if (goal.finite) {
+      
+        goalElem = (
+          <div className={s.goal}>
+            <div className={s.goalLabel}>
+              Säästetty
+            </div>
+            <div className={s.goalContent}>
+              {totalSaved}/{goal.targetAmount} €
+            </div>
           </div>
-          <div className={s.goalContent}>
-            {totalSaved}/{goal.amount} €
+        );
+
+      } else {
+
+        goalElem = (
+          <div className={s.goal}>
+            <div className={s.goalLabel}>
+              Säästetty
+            </div>
+            <div className={s.goalContent}>
+              {totalSaved} €
+            </div>
           </div>
-        </div>
-      );
+        );
 
-    } else {
-
-      goalElem = (
-        <div className={s.noGoal}>
-          Ei tavoitetta
-        </div>
-      );
+      }
 
     }
 
@@ -384,17 +415,14 @@ class ConsumptionView extends BaseComponent {
         monthStats.fixedExpenses - 
         monthStats.expenses +
         monthStats.income;
-      //available = Math.round(available * 100) / 100;
       available = Math.floor(available);
       let spendable = available;
       
       let monthContent = "" + available;
       let savingGoal = 0;
       if (goal) {
-        //savingGoal = Math.round(goal.currentMonthSavingGoal * 100) / 100;
         savingGoal = Math.floor(goal.currentMonthSavingGoal);
         monthContent += " - " + savingGoal;
-        //spendable = Math.round((spendable - savingGoal) * 100) / 100;
         spendable = Math.floor(spendable - savingGoal);
       }
 
@@ -403,9 +431,6 @@ class ConsumptionView extends BaseComponent {
         new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       
       if (this.state.spendablePeriod === "week") {
-        //let remainingDays = now.getDay() > 0 ? 8 - now.getDay() : 1;
-        //const overflow = (now.getDate() + remainingDays) - lastDay;
-        //remainingDays = remainingDays - overflow + 1;
         const remainingWeeks = (lastDay - now.getDate()) / 7;
         spendable = Math.floor((available - savingGoal) / remainingWeeks);
       } else if (this.state.spendablePeriod === "day") {
@@ -462,7 +487,7 @@ class ConsumptionView extends BaseComponent {
             </div>
             <div className={s.section}>
               <div className={s.sectionLabel}>
-                Kk-säästö
+                Säästötavoite
               </div>
               <div className={s.sectionValue}>
                 {savingGoal} €
