@@ -7,6 +7,9 @@ import SelectField from "material-ui/lib/select-field";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
+import CategoriesChart from "./CategoriesChart";
+import ForecastChart from "./ForecastChart";
+import ProgressChart from "./ProgressChart";
 import { staticCategories } from "../../constants";
 
 
@@ -19,22 +22,18 @@ class GraphsView extends BaseComponent {
 
   constructor(props) {
     super(props);
-    const state = props.state;
-    state.catParams = {
-      graphs: "categories,forecast,progress",
-      sign: "-",
-      start: "2016-02",
-      end: "2016-02"
-    };
-    
+    const state = props.state; 
     this.state = state;
   
   }
 
-  async fetchData(props = this.props) { 
+  async fetchData(props = this.props, params) { 
     const user = this.props.params.user || this.state.auth.user.uuid; 
     console.log("fetching graphs", user);
-    this.props.fetchGraphStats(user, this.state.catParams);
+    this.props.fetchGraphStats(user, params || { 
+      sign: "-", 
+      graphs: "categories,forecast,progress" 
+    });
   }
 
   updateState(state) {
@@ -45,68 +44,7 @@ class GraphsView extends BaseComponent {
       this.setState(state); 
     }
 
-  }
-   
-  _handleCatTypeChange(event, index, value) {
-    this._handleFormChange("catParams", "sign", value);
-  }
-
-  _handleFormChange(target, name, value) {
-    
-    let formParams = {};
-    formParams[name] = value;
-    let object = Object.assign(this.state[target], formParams);
-    this.state[target] = object;
-    this.fetchData();
-
-  }
-  
-  _monthDec(target, key) {
-    
-    let monthElems = target[key].split("-");
-    let [ prevYear, prevMonth ] = monthElems;
-    if (prevMonth === "01") {
-      prevYear = parseInt(prevYear) - 1;
-      prevMonth = "12";
-    } else {
-      let monthPadding = parseInt(prevMonth) < 11 ? "0" : "";
-      prevMonth = monthPadding + (parseInt(prevMonth) - 1);
-    }
-    
-    target[key] = prevYear + "-" + prevMonth;
-    console.log("month dec", target[key], this.state.catParams);
-    this.fetchData();
- 
-  }
-  
-  _monthInc(target, key) {
-    
-    let monthElems = target[key].split("-");
-    let [ nextYear, nextMonth ] = monthElems;
-    if (nextMonth === "12") {
-      nextYear = parseInt(nextYear) + 1;
-      nextMonth = "01";
-    } else {
-      let monthPadding = parseInt(nextMonth) < 9 ? "0" : "";
-      nextMonth = monthPadding + (parseInt(nextMonth) + 1);
-    }
-
-    target[key] = nextYear + "-" + nextMonth;
-    this.fetchData();
-  
-  }
-
-  _createCategoriesData(categories) {
-    
-    const categoriesData = [];
-    const keys = Object.keys(categories);
-    keys.forEach(key => {
-      categoriesData.push({ label: key, value: categories[key] });
-    });
-    
-    return categoriesData;  
-  
-  }
+  } 
    
   render() {
     
@@ -125,445 +63,25 @@ class GraphsView extends BaseComponent {
     if (stats) {
       
       if (stats.categories) {
-        
-        const catKeys = Object.keys(stats.categories);
-        const chartColumns = catKeys.map(catKey => {
-          const catLabels = this.state.catParams.sign === "+" ?
-            staticCategories.income : staticCategories.expenses;
-          return [catLabels[catKey], stats.categories[catKey]]
-        });
-        
-        const chartData = {
-          bindto: "#catChart",
-          data: {
-            columns: chartColumns,
-            type : "pie",
-            //onclick: function (d, i) { console.log("onclick", d, i); },
-            //onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-            //onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-          }
-        };
- 
-        const categories = this._createCategoriesData(stats.categories);
-        require(["d3", "c3"], function(d3, c3) {
-          c3.generate(chartData);
-        });
-
-        categoriesElem = (
-          <div className={s.graph}>
-            <div className={s.graphLabel}>
-              Kulutusjakauma
-            </div>
-            <div className={s.chartSettings}>
-              <div className={s.signSelector}>
-                <SelectField style={{ width: "100%" }} value={this.state.catParams.sign} 
-                  onChange={this._handleCatTypeChange.bind(this)}>
-                  <MenuItem value="-" primaryText="Menot"/>
-                  <MenuItem value="+" primaryText="Tulot"/>
-                </SelectField>
-              </div>
-              <div className={s.range}>
-                <div className={s.monthSelector}>
-                  <div className={s.selectorLabel}>
-                    Alkaen
-                  </div>
-                  <div className={s.monthDec} 
-                    onTouchTap={() => this._monthDec(this.state.catParams, "start")}>
-                    <i className="material-icons">&#xE5CB;</i>
-                  </div>
-                  <div className={s.monthLabel}>{this.state.catParams.start}</div>
-                  <div className={s.monthInc}
-                    onTouchTap={() => this._monthInc(this.state.catParams, "start")}>
-                    <i className="material-icons">&#xE5CC;</i>
-                  </div>
-                </div>
-                <div className={s.monthSelector}>
-                  <div className={s.selectorLabel}>
-                    Asti
-                  </div>
-                  <div className={s.monthDec}
-                    onTouchTap={() => this._monthDec(this.state.catParams, "end")}>
-                    <i className="material-icons">&#xE5CB;</i>
-                  </div>
-                  <div className={s.monthLabel}>{this.state.catParams.end}</div>
-                  <div className={s.monthInc}
-                    onTouchTap={() => this._monthInc(this.state.catParams, "end")}>
-                    <i className="material-icons">&#xE5CC;</i>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={s.graphContainer} style={{ width: `${graphSize}px` }}>
-              <div id="catChart"></div>
-            </div>
-          </div>
-        );
-      
+        categoriesElem = <CategoriesChart 
+          categories={stats.categories}
+          fetchData={this.fetchData.bind(this)}
+          graphSize={graphSize} />
       }
 
       if (stats.forecast) {
-        
-        const now = new Date();
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-        const meta = {
-          "Toistuvat": [],
-          "Toteutuneet": []
-        };
-
-        const x1 = [ "x1", firstDay ];
-        const data1 = [ "Toistuvat", 0 ];
-        stats.forecast.repeating.forEach(val => {
-          x1.push(new Date(val.x));
-          data1.push(val.y);
-          meta["Toistuvat"].push(val.txs);
-        });
-        
-        x1.push(lastDay);
-        data1.push(data1[data1.length - 1]);
-        
-        const x2 = [ "x2", firstDay ]; 
-        const data2 = [ "Toteutuneet", 0 ];
-        stats.forecast.actual.forEach(val => {
-          x2.push(new Date(val.x));
-          data2.push(val.y);
-          meta["Toteutuneet"].push(val.txs);
-        });
- 
-        const chartData = {
-          bindto: "#chart",
-          data: {
-            xs: {
-                "Toistuvat": "x1",
-                "Toteutuneet": "x2",
-            },
-            columns: [
-                x1,
-                x2,
-                data1,
-                data2
-            ],
-            types: {
-              "Toistuvat": "spline",
-              "Toteutuneet": "spline"
-            }
-          },
-          axis: {
-            x: {
-              label: "päivä",
-              type: "timeseries",
-              tick: {
-                format: "%d"
-              }
-            },
-            y: {
-              label: "euroa kertynyt"
-            }
-          },
-          tooltip: {
-            grouped: false,
-            contents: (d, defaultTitleFormat, defaultValueFormat, color) => {
-
-              const month = d[0].x.getMonth() + 1;
-              const day = d[0].x.getDate();
-              let dateTitle = weekDays[d[0].x.getDay()] + " " + 
-                (day < 10 ? "0" + day : day) + "." +
-                (month < 10 ? "0" + month : month);
-              let htmlContent = "";
-              d.forEach(point => {
-                
-                if (point.index === 0) {
-                  htmlContent += "<div>Alku</div>";
-                  return;
-                }
-                
-                htmlContent += `<div style="display: flex;">`;
-
-                htmlContent += `<div style="flex: 1 1 auto;">`;
-                meta[point.id][point.index - 1].forEach(tx => {
-                  const catLabels = tx.sign === "+" ?
-                    staticCategories.income : staticCategories.expenses;
-                  const text = tx.description || catLabels[tx.category];
-                  htmlContent += `
-                    <div style="
-                      border-top: 1px solid #a0a0a0;
-                      padding-top: 2px;
-                      padding-bottom: 2px;
-                      ">
-                      <span style="
-                        margin-left: 4px;
-                        margin-right: 6px;">
-                        ${text}
-                      </span>
-                    </div>`;
-                });
-                htmlContent += "</div>";
-                
-                htmlContent += `<div style="flex: 1 1 auto;">`;
-                meta[point.id][point.index - 1].forEach(tx => {
-                  const color = tx.sign === "+" ? "green" : "red";
-                  htmlContent += `
-                  <div style="
-                    border-top: 1px solid #a0a0a0;
-                    padding-top: 2px;
-                    padding-bottom: 2px;
-                    text-align: right;
-                    display: block;
-                    position: relative;">
-                      <span style="
-                        color: ${color};
-                        margin-left: 6px;
-                        margin-right: 4px;
-                        ">
-                        ${tx.sign}${tx.amount}€
-                      </span>
-                      <div style="
-                        border-left: 1px dotted #a0a0a0;
-                        width: 2px;
-                        height: calc(100% - 2px); 
-                        top: 1px; 
-                        position: absolute;">
-                      </div>
-                    </div>`;
-                });
-                htmlContent += "</div>";
-                
-                htmlContent += "</div>";
-
-              });
-
-              return `
-                <div style="
-                  font-size: 14px;
-                  background-color: white;
-                  opacity: 0.9;
-                  border: 1px solid #a0a0a0;">
-                  <div style="
-                    background-color: #c0c0c0;
-                    color: white;
-                    font-weight: bold;
-                    padding-left: 4px;">
-                    ${dateTitle}
-                  </div>
-                  ${htmlContent}
-                </div>`;
-            } 
-            /*
-            format: {
-              title: function (d) { return d.getDate() + "." + d.getMonth(); },
-              value: function (value, ratio, id) {
-                  return value + "€";
-              }
-              }*/  
-          }
-        }
-
-        forecastElem = (   
-          <div className={s.graph}>
-            <div className={s.graphLabel}>
-              Tilanne/ennuste
-            </div>
-            <div className={s.graphContainer} style={{ width: `${graphSize}px` }}>
-              <div id="chart"></div>
-            </div>
-          </div>
-        );
-        
-        require(["d3", "c3"], function(d3, c3) {
-          c3.generate(chartData);
-        });
-
+        forecastElem = <ForecastChart 
+          data={stats.forecast}
+          graphSize={graphSize} />
       }
 
       if (stats.progress) {
-
-        const months = Object.keys(stats.progress);
-        const valsByCat = {};
-        
-        months.forEach(month => {
-          
-          const cats = stats.progress[month];
-          const income = Object.keys(cats.income);
-          income.forEach(cat => {
-            if (!valsByCat[`inc_${cat}`]) {
-              valsByCat[`inc_${cat}`] = [ `inc_${cat}` ];
-            }
-          });
-
-          const expenses = Object.keys(cats.expenses);
-          expenses.forEach(cat => {
-            if (!valsByCat[`exp_${cat}`]) {
-              valsByCat[`exp_${cat}`] = [ `exp_${cat}` ];
-            }
-          });
-
-        });
-        
-        const savingsColumn = [ "Säästö" ];
-
-        months.forEach(month => {
-          
-          const cats = stats.progress[month];
-          
-          const catKeys = Object.keys(valsByCat);
-          catKeys.forEach(catKey => {
-            valsByCat[catKey].push(null);
-          });
-          
-          const income = Object.keys(cats.income);
-          let totalIncome = 0;
-          income.forEach(cat => {
-            const vals = valsByCat[`inc_${cat}`];
-            vals[vals.length - 1] = cats.income[cat];
-            totalIncome += cats.income[cat];
-          });
-
-          const expenses = Object.keys(cats.expenses);
-          let totalExpenses = 0;
-          expenses.forEach(cat => {
-            const vals = valsByCat[`exp_${cat}`];
-            vals[vals.length - 1] = cats.expenses[cat];
-            totalExpenses += cats.expenses[cat];
-          });
-
-          savingsColumn.push(totalIncome - totalExpenses);
-
-        });
-        
-        
-        const progressColumns = [];
-        Object.keys(valsByCat).forEach(cat => {
-          
-          const vals = valsByCat[cat];
-          if (vals[0].substring(0, 4) === "inc_") {
-            vals[0] = "+ " + staticCategories.income[vals[0].substring(4)];
-          } else {
-            vals[0] = "- " + staticCategories.expenses[vals[0].substring(4)];
-          }
-
-          progressColumns.push(vals);
-       
-        });
-
-        savingsColumn[savingsColumn.length - 1] = null; 
-        progressColumns.push(savingsColumn);
-
-        const progressGroups = [[],[]];
-        progressColumns.forEach(column => {
-          if (column[0].substring(0, 1) === "+") {
-            progressGroups[0].push(column[0]);
-          } else {
-            progressGroups[1].push(column[0]);
-          }
-        });
-        
-        console.log("PROG CHART DATA", progressColumns, progressGroups);
-
-        const progressData = {
-          bindto: "#progressChart",
-          data: {
-            columns: progressColumns,
-            type: "bar",
-            types: {
-              "Säästö": "line" 
-            },
-            groups: progressGroups,
-            order: "asc"
-          },
-          grid: {
-            y: {
-              lines: [{value:0}]
-            }
-          },
-          axis: {
-            x: {
-              label: "Kuukausi"
-            },
-            y: {
-              label: "Tulot / menot €"
-            }
-          },
-          legend: {
-            show: false
-          }
-        };
-        
-        const legendTitleCss = {
-          textAlign: "center",
-          font: "14px sans-serif"   
-        };
- 
-        progressElem = (   
-          <div className={s.graph}>
-            <div className={s.graphLabel}>
-              Kehitys
-            </div>
-            <div className={s.graphContainer} style={{ width: `${graphSize}px` }}>
-              <div id="progressChart" style={{}}></div>
-              <div id="progressLegend" style={{ paddingLeft: "24px", display: "flex" }}>
-                <div id="incomeLegend" style={{ flex: "1 1" }}>
-                  <div style={legendTitleCss}>Tulot</div>
-                </div>
-                <div id="expenseLegend" style={{ flex: "1 1" }}>
-                  <div style={legendTitleCss}>Menot</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-        
-        const incomeColumns = progressColumns
-          .filter(column => column[0].substring(0, 1) === "+"); 
-        const expenseColumns = progressColumns
-          .filter(column => column[0].substring(0, 1) === "-");
- 
-        require(["d3", "c3"], function(d3, c3) {
-          
-          const chart = c3.generate(progressData);
-          
-          const setLegend = (element, columns) => {
-
-            d3.select(element).insert("div", ".chart")
-            .attr("class", "legend").selectAll(".legend-item").data(columns)
-            .enter().append("div")
-              .attr("data-id", data => data[0])
-              .attr("class", "legend-item")
-            .html(data => {
-              const color = chart.color(data[0]);
-              return `
-                <div style="
-                  width: 12px;
-                  height: 12px;
-                  display: inline-block;
-                  background-color: ${color};">
-                </div>
-                <span>${data[0].substring(2)}</span>
-              `;
-            })
-            .each(function(data) {
-              //d3.select(this).style("background-color", chart.color(data[0]));
-            })
-            .on("mouseover", function(data) {
-              d3.select(this).style("font-weight", "bold");
-              chart.focus(data[0]);
-            })
-            .on("mouseout", function(data) {
-              d3.select(this).style("font-weight", "inherit");
-              chart.revert();
-            });
-          };
-        
-          setLegend("#incomeLegend", incomeColumns);
-          setLegend("#expenseLegend", expenseColumns);      
-
-        });
-         
+        progressElem = <ProgressChart 
+          data={stats.progress}
+          graphSize={graphSize} />
       }
           
     }
-    
-    console.log("cat elem", categoriesElem); 
     
     return (
       <div>
