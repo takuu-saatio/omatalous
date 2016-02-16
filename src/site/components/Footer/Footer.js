@@ -28,7 +28,7 @@ class Footer extends Component {
           <a className={s.link} href="/instructions" onClick={Link.handleClick}>Ohjeet</a>
           <span className={s.spacer}></span>
           <a className={s.link} href="/instructions">
-            <img src="/RAY_tukee.png"/>
+            <img src="/RAY_Tukee.png"/>
           </a>
         </div>
       </div>
