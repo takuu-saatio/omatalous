@@ -1,7 +1,8 @@
 @import "../variables.scss";
 
 .root {
-  margin-bottom: 24px;  
+  padding-bottom: 24px;  
+  background-color: #f0f0f0;
 }
 
 
@@ -9,8 +10,8 @@
   
   width: 100%;
   display: flex;
-  margin-top: -12px;
   padding-bottom: 4px;
+  background-color: white;
  
   .topGroup {
     display: flex;
@@ -106,24 +107,23 @@
 .month {
   
   position: relative;
-  height: 32px;
-  margin-top: 12px;
-  margin-bottom: 22px;
-  
+  padding-top: 12px;
+  padding-bottom: 32px;
+  background-color: white;
+ 
   .monthHeader {
     
     width: 90%;
     max-width: 600px;
-    border-top: 1px solid #e0e0e0;
-    border-left: 1px solid #e0e0e0;
-    border-right: 1px solid #e0e0e0;
     margin: auto;
     text-align: center;
     position: relative;
-    
+    font-weight: bold;
+    padding-bottom: 6px;
+ 
     > i {
       position: absolute;
-      top: 0px;
+      top: -2px;
       right: 4px;
       cursor: pointer;
     }    
@@ -146,7 +146,6 @@
     margin: auto;
     position: relative;
     background-color: white;
-    border: 1px solid #e0e0e0;
     
     display: flex;
     
@@ -154,9 +153,12 @@
       font-size: 12px;
       text-align: left;
       margin-bottom: 2px;
+      margin-left: 2px;
     }
     
     .sectionValue {
+      font-size: 32px;
+      font-weight: 300;
     }
 
     > div {
@@ -188,10 +190,9 @@
     
     .periodSwitch {
       position: absolute;
-      bottom: -12px;
+      bottom: -22px;
       left: -6%;
       width: 110%;
-      border: 1px solid #e0e0e0;
       background-color: white;
       font-size: 12px;
       display: flex;
@@ -210,9 +211,9 @@
   width: 100%;
   max-width: 660px;
   margin: auto;  
-  padding-top: 24px;
+  padding-top: 0px;
   overflow: hidden;
-  transition: height 500ms ease-out;
+  transition: height 500ms ease-out, padding-top 500ms ease-out;
   
   .futureTransactionsList {
     
@@ -271,6 +272,9 @@
   width: 100%;
   max-width: 420px;
   margin: auto;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  background-color: white;
  
   .transactionsList {
 
@@ -282,29 +286,26 @@
       padding-left: 6px;
       padding-bottom: 2px;
       padding-top: 2px;
+      border-top: 1px solid #f0f0f0;
 
       &:hover {
         padding-top: 9px;
         padding-bottom: 9px;
       }
 
-      > div:nth-child(1) {
+      .txAmount {
         flex: 1 1;
         padding-left: 3%;
       }       
-      
-      > div:nth-child(2) {
-        flex: 1 1;
-      }       
-      
-      > div:nth-child(3) {
+       
+      .txCategory {
         flex: 2 1;
         text-overflow: ellipsis;
         overflow-x: hidden;
         white-space: nowrap;
       }       
       
-      > div:nth-child(4) {
+      .txDescription {
         
         flex: 2 1;
         text-overflow: ellipsis;
@@ -315,6 +316,10 @@
         }
 
       }
+      
+      .txDate {
+        flex: 1 1;
+      }       
        
     }
 
@@ -357,52 +362,58 @@
 
 }
 
-.topMonthNav {
-
-  width: 90%;
-  max-width: 600px;
-  margin: auto;
-  padding-bottom: 12px;
-  display: flex;
-
-  > div {
-    flex: 1 1; 
-  }
-
-  > div:nth-child(1) {
-    text-align: left;
-  }
-
-  > div:nth-child(2) {
-    text-align: center;
-  }
-  
-  > div:nth-child(3) {
-    text-align: right;
-  }
-
-}
-
 .monthSummary {
   
-  width: 90%;
-  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 6px;
   margin-bottom: 6px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: white;
+ 
+  .monthNav {
 
-  border-bottom: 1px solid #e0e0e0;
-  display: flex;
+    width: 90%;
+    max-width: 600px;
+    margin: auto;
+    padding-bottom: 12px;
+    display: flex;
+
+    .nextMonth {
+      margin-top: 1px;
+      text-align: left;
+      flex: 1 1;
+    }
+
+    .currentMonth {
+      text-align: center;
+      flex: 1 1;
+    }
+    
+    .prevMonth {
+      margin-top: 1px;
+      text-align: right;
+      flex: 1 1;
+    }
+
+  }
 
   .summaryLabel {
-    flex: 1 1;
-    text-align: left;  
+    display: inline-block;
+    vertical-align: sub;
+    text-align: center;
+    font-weight: bold;  
   }
   
   .summaryData {
-    flex: 1 1;
-    text-align: right;
+    
+    text-align: center;
+    
+    > span {
+      margin-left: 4px;
+      margin-right: 4px;
+    }
+
   }
 
 }

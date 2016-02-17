@@ -68,8 +68,9 @@ class FinanceService {
         
         for (let transaction of transactions) {
           transaction.extras = {
-            createdAt: DAY_NAMES[transaction.createdAt.getDay()] + " " +
-              transaction.createdAt.getDate()
+            dateLabel: DAY_NAMES[transaction.createdAt.getDay()] + " " +
+              transaction.createdAt.getDate(),
+            createdAt: transaction.createdAt
           };
         }
 

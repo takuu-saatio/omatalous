@@ -200,6 +200,137 @@ class ConsumptionView extends BaseComponent {
     return {};
 
   }
+  
+  _getMonthSummary(transactions, days) {
+  
+    const summary = {
+      total: 0, 
+      singlesTotal: 0, 
+      dayAvg: 0
+    };
+    
+    if (!transactions || transactions.length === 0) {
+      return summary;
+    }
+
+    const txDate = new Date(transactions[0].createdAt);
+    console.log("tx summary", transactions);
+    const monthLastDay = 
+      new Date(txDate.getFullYear(), txDate.getMonth() + 1, 0).getDate();
+    transactions.forEach(tx => {
+      
+      const value = tx.sign === "+" ? tx.amount : -tx.amount;
+      
+      summary.total += value;
+      if (tx.type === "single") {
+        summary.singlesTotal += value;
+      }
+    
+    });
+    
+    days = days ||
+      new Date(txDate.getFullYear(), txDate.getMonth() + 1, 0).getDate();
+    
+    summary.dayAvg = Math.abs(Math.ceil(summary.singlesTotal / days));
+    return summary;
+
+  }
+  
+  _renderMonthStats(monthStats, goal) {
+    
+    console.log("RENDER MONTH", monthStats); 
+    
+    if (!monthStats) {
+      return null;
+    }
+
+    let available = 
+      monthStats.fixedIncome - 
+      monthStats.fixedExpenses - 
+      monthStats.expenses +
+      monthStats.income;
+    available = Math.floor(available);
+    let spendable = available;
+    
+    let monthContent = "" + available;
+    let savingGoal = 0;
+    if (goal) {
+      savingGoal = Math.floor(goal.currentMonthSavingGoal);
+      monthContent += " - " + savingGoal;
+      spendable = Math.floor(spendable - savingGoal);
+    }
+
+    const now = new Date();
+    const lastDay = 
+      new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    
+    if (this.state.spendablePeriod === "week") {
+      const remainingWeeks = (lastDay - now.getDate()) / 7;
+      spendable = Math.floor((available - savingGoal) / remainingWeeks);
+    } else if (this.state.spendablePeriod === "day") {
+      const remainingDays = (lastDay - now.getDate()) + 1;
+      spendable = Math.floor((available - savingGoal) / remainingDays);
+    }
+    
+    const expandIcon = this.state.futureTransactionsOpen ?
+      <span>&#xE5CE;</span> : <span>&#xE5CF;</span>;
+    
+    return (
+      <div className={s.month}>
+        <div className={s.monthHeader}>
+          <span>Kuluva kuukausi</span>
+          <i className="material-icons"
+            onTouchTap={() => this._toggleFutureTransactions()}>
+            {expandIcon}
+          </i>
+        </div>  
+        <div className={s.monthData}>
+          <div className={s.section}>
+            <div className={s.sectionLabel}>
+              Jäljellä
+            </div>
+            <div className={s.sectionValue}>
+              {available} €
+            </div>
+          </div>
+          <div className={s.section}>
+            <div className={s.sectionLabel}>
+              Käytettävissä
+            </div>
+            <div className={s.sectionValue}>
+              {spendable} €
+            </div>
+            <div className={s.periodSwitch}>
+              <div style={this._getPeriodCss("month")}
+                className={s.periodSwitchCell}
+                onTouchTap={() => this._setSpendablePeriod("month")}>
+                KK
+              </div>
+              <div style={this._getPeriodCss("week")}
+                className={s.periodSwitchCell}
+                onTouchTap={() => this._setSpendablePeriod("week")}>
+                VK
+              </div>
+              <div style={this._getPeriodCss("day")}
+                className={s.periodSwitchCell}
+                onTouchTap={() => this._setSpendablePeriod("day")}>
+                PV
+              </div>
+            </div>
+          </div>
+          <div className={s.section}>
+            <div className={s.sectionLabel}>
+              Säästötavoite
+            </div>
+            <div className={s.sectionValue}>
+              {savingGoal} €
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  
+  }
 
   _renderTransactionElems(transactions) {
       
@@ -215,14 +346,19 @@ class ConsumptionView extends BaseComponent {
 
         return (
           <div key={transaction.uuid} style={highlightCss} className={s.transaction}>
-            <div>
-              {transaction.createdAt}
-            </div>
-            <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
+            <div className={s.txAmount}
+              style={{ color: transaction.sign === "+" ? "green" : "red" }}>
               {transaction.sign}{transaction.amount}
             </div>
-            <div>{categories[transaction.category]}</div>
-            <div>{transaction.description}</div>
+            <div className={s.txCategory}>
+              {categories[transaction.category]}
+            </div>
+            <div className={s.txDescription}>
+              {transaction.description}
+            </div>
+            <div className={s.txDate}>
+              {transaction.dateLabel}
+            </div>
             <div className={s.txControls}>
               <div className={s.txControlContainer}>
                 <div>
@@ -269,11 +405,198 @@ class ConsumptionView extends BaseComponent {
 
   }
 
+  _renderMonthSummary(transactions, month, days) {
+
+    const summary = this._getMonthSummary(transactions, days);    
+     
+    const amountColor = (amount) => {
+      return { color: amount < 0 ? "red" : "green" };
+    };
+    
+    const summaryLabel = month === this.state.monthStats.label ?
+      "Tapahtumat" : "Historia " + month;
+  
+    const nextMonthButton = month !== this.state.monthStats.label ?
+      <FlatButton style={Object.assign({ lineHeight: "28px" })} 
+        onTouchTap={() => this._loadMonth(this._nextMonth())}
+        labelStyle={{ padding: "0px" }}
+        label={"< " + this._nextMonth()} /> : null;
+      
+    return (
+      <div>
+        <div className={s.monthSummary}>
+          <div className={s.monthNav}>
+            <div className={s.nextMonth}>
+              {nextMonthButton}
+            </div>
+            <div className={s.currentMonth}>
+              <div className={s.summaryLabel}>{summaryLabel}</div>
+            </div>
+            <div className={s.prevMonth}>
+              <FlatButton style={Object.assign({ lineHeight: "28px" })} 
+                onTouchTap={() => this._loadMonth(this._prevMonth())}
+                labelStyle={{ padding: "0px" }}
+                label={this._prevMonth() + " >"} />
+            </div>
+          </div>
+          <div className={s.summaryData}>
+            
+            <span>
+              <span>Yht. </span>
+              <span>
+                {Math.abs(Math.ceil(summary.singlesTotal))} €
+              </span>
+            </span>
+
+            <span>KA/pv: {summary.dayAvg} €</span>
+          </div>
+        </div>
+        <div className={s.topMonthNav}>
+        </div>
+      </div>
+    );
+
+  }
+  
+  _renderAlerts(alerts) {
+    
+    if (!alerts || alerts.length === 0) {
+      return null;
+    }
+
+    const alertElems = alerts.map(alert => {
+      return (
+        <div className={s.alert}>
+          <div className={s.message}>
+            {alert.message}
+          </div>
+          <div onTouchTap={() => this._dismissAlert(alert.uuid)} 
+            className={s.dismiss}>
+            <i className="material-icons">&#xE14C;</i>
+          </div>
+        </div>
+      );
+    });
+    
+    return (
+      <div className={s.alerts}>
+        {alertElems}
+      </div>
+    );
+    
+  }
+
+  _renderQuickTransaction() {
+    
+    const quickTransaction = this.state.quickTransaction;
+
+    const ownCategories = this.state.categories;
+    let categories = null;
+    let categoryType = null;
+    if(quickTransaction.sign === "+") {
+      categories = staticCategories.income;
+      categoryType = "income";
+    } else {
+      categories = staticCategories.expenses;
+      categoryType = "expense";
+    }
+
+    if (ownCategories) {
+      ownCategories.forEach(category => {
+        if (category.type === categoryType) {
+          categories[category.name] = category.label;
+        }
+      });
+    }
+
+    const catKeys = Object.keys(categories);
+    let categoryElems = catKeys.map(catKey => {
+      return (
+        <MenuItem key={catKey} value={catKey} 
+          primaryText={categories[catKey]} />
+      );
+    });
+    let fullWidth = { width: "100%", minWidth: "initial" };
+    const txBorderCss = {
+      transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
+    };
+    let txSignSymbol = null;
+    if (quickTransaction.sign === "-") {
+      //txBorderCss.borderBottom = "2px solid red";
+      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
+    } else {
+      //txBorderCss.borderBottom = "2px solid green";
+      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
+    }
+    
+    let inputErrorElem = null;
+    if (this.state.amountError) {
+      const inputErrorCss = {
+        color: "red",
+        fontSize: "12px",
+        position: "absolute",
+        top: "16px",
+        whiteSpace: "nowrap",
+        backgroundColor: "white",
+        zIndex: "2",
+        lineHeight: "24px"
+      };
+      inputErrorElem = (
+        <div style={inputErrorCss}>{this.state.amountError}</div>
+      );
+    }
+
+    return (
+      <div className={s.saveTransaction} style={txBorderCss}>
+        <div className={s.sign}>
+          <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+            onTouchTap={() => this._toggleTxSign()}>
+            {txSignSymbol}
+          </FlatButton>
+        </div> 
+        <div className={s.amount}>
+          {inputErrorElem}
+          <TextField style={fullWidth} 
+            name="amount" 
+            errorStyle={{ display: "none" }}
+            errorText={this.state.amountError}
+            floatingLabelText="Määrä"
+            value={quickTransaction.amount}
+            onChange={this._handleInputChange.bind(this)} />
+        </div>
+        <div className={s.category}>
+          <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+            name="category" 
+            value={quickTransaction.category} 
+            onChange={this._handleDropdownChange.bind(this)}>
+            {categoryElems}
+          </DropDownMenu>
+        </div>
+        <div className={s.description}>
+          <TextField style={fullWidth} 
+            name="description"
+            floatingLabelText="Selite"
+            value={quickTransaction.description}
+            onChange={this._handleInputChange.bind(this)} />
+        </div>
+        <div className={s.submit}>
+          <FlatButton disabled={this.state.quickTxDisabled}
+            style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+            onTouchTap={() => this._saveTransaction()}>
+            <i style={{ width: "100%", verticalAlign: "top" }} 
+              className="material-icons">&#xE163;</i>
+          </FlatButton>
+        </div>
+      </div>
+    );
+
+  }
+
   render() {
      
     console.log("render consumption", this.props, this.state);
     let { transactions, goal, monthStats, 
-      alerts, quickTransaction, messages } = this.state;
+      alerts, messages } = this.state;
     
     if (this.state.edit) {
       
@@ -319,8 +642,6 @@ class ConsumptionView extends BaseComponent {
       );
     }
  
-    let fullWidth = { width: "100%", minWidth: "initial" };
-
     let dayNames = [
       "Ma", "Ti", "Ke", "To", "Pe", "La", "Su"
     ];
@@ -338,18 +659,6 @@ class ConsumptionView extends BaseComponent {
       );
     }
     
-    const txBorderCss = {
-      transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
-    };
-    let txSignSymbol = null;
-    if (quickTransaction.sign === "-") {
-      //txBorderCss.borderBottom = "2px solid red";
-      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
-    } else {
-      //txBorderCss.borderBottom = "2px solid green";
-      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
-    }
-
     let goalElem = null;
     
     if (goal) {
@@ -406,228 +715,41 @@ class ConsumptionView extends BaseComponent {
 
     }
 
-    console.log("RENDER MONTH", monthStats); 
-    let currentMonthElem = null; 
-    if (monthStats) {
-
-      let available = 
-        monthStats.fixedIncome - 
-        monthStats.fixedExpenses - 
-        monthStats.expenses +
-        monthStats.income;
-      available = Math.floor(available);
-      let spendable = available;
-      
-      let monthContent = "" + available;
-      let savingGoal = 0;
-      if (goal) {
-        savingGoal = Math.floor(goal.currentMonthSavingGoal);
-        monthContent += " - " + savingGoal;
-        spendable = Math.floor(spendable - savingGoal);
-      }
-
-      const now = new Date();
-      const lastDay = 
-        new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      
-      if (this.state.spendablePeriod === "week") {
-        const remainingWeeks = (lastDay - now.getDate()) / 7;
-        spendable = Math.floor((available - savingGoal) / remainingWeeks);
-      } else if (this.state.spendablePeriod === "day") {
-        const remainingDays = (lastDay - now.getDate()) + 1;
-        spendable = Math.floor((available - savingGoal) / remainingDays);
-      }
-      
-      const expandIcon = this.state.futureTransactionsOpen ?
-        <span>&#xE5CE;</span> : <span>&#xE5CF;</span>;
-      
-      currentMonthElem = (
-        <div className={s.month}>
-          <div className={s.monthLine}></div>
-          <div className={s.monthHeader}>
-            <span>KULUVA KUUKAUSI</span>
-            <i className="material-icons"
-              onTouchTap={() => this._toggleFutureTransactions()}>
-              {expandIcon}
-            </i>
-          </div>  
-          <div className={s.monthData}>
-            <div className={s.section}>
-              <div className={s.sectionLabel}>
-                Jäljellä
-              </div>
-              <div className={s.sectionValue}>
-                {available} €
-              </div>
-            </div>
-            <div className={s.section}>
-              <div className={s.sectionLabel}>
-                Käytettävissä
-              </div>
-              <div className={s.sectionValue}>
-                {spendable} €
-              </div>
-              <div className={s.periodSwitch}>
-                <div style={this._getPeriodCss("month")}
-                  className={s.periodSwitchCell}
-                  onTouchTap={() => this._setSpendablePeriod("month")}>
-                  KK
-                </div>
-                <div style={this._getPeriodCss("week")}
-                  className={s.periodSwitchCell}
-                  onTouchTap={() => this._setSpendablePeriod("week")}>
-                  VK
-                </div>
-                <div style={this._getPeriodCss("day")}
-                  className={s.periodSwitchCell}
-                  onTouchTap={() => this._setSpendablePeriod("day")}>
-                  PV
-                </div>
-              </div>
-            </div>
-            <div className={s.section}>
-              <div className={s.sectionLabel}>
-                Säästötavoite
-              </div>
-              <div className={s.sectionValue}>
-                {savingGoal} €
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-      
-    }
-    
-    let floatLabelCss = {
-      //transform: "perspective(1px) scale(0.75) translate3d(2px, -20px, 0px)"
-    };
-    
-    let bottomMonthNav = null;
+    const currentMonthElem = this._renderMonthStats(monthStats, goal);
+ 
     let topMonthNav = null;
     if (this.state.month !== monthStats.label) {
-      topMonthNav = (
-        <div>
-          <div className={s.monthSummary}>
-            <div className={s.summaryLabel}>HISTORIA</div>
-            <div className={s.summaryData}>
-              <span>{this.state.month}</span>
-            </div>
-          </div>
-          <div className={s.topMonthNav}>
-            <div>
-              <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-                onTouchTap={() => this._loadMonth(this._nextMonth())}
-                labelStyle={{ padding: "0px" }}
-                label={"< " + this._nextMonth()} />
-            </div>
-            <div></div>
-            <div>
-              <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-                onTouchTap={() => this._loadMonth(this._prevMonth())}
-                labelStyle={{ padding: "0px" }}
-                label={this._prevMonth() + " >"} />
-            </div>
-          </div>
-        </div>
-      );
+      
+      topMonthNav = this._renderMonthSummary(transactions, this.state.month);
+    
     } else {
       
       const total = Math.floor(monthStats.income - monthStats.expenses);
-      const totalCss = total < 0 ?
-        { color: "red" } : { color: "green" };
-
-      topMonthNav = (
-        <div className={s.monthSummary}>
-          <div className={s.summaryLabel}>TAPAHTUMAT</div>
-          <div className={s.summaryData}>
-            <span>Yht. </span>
-            <span style={totalCss}>{total} €</span>
-          </div>
-        </div>
-      );
-
-      bottomMonthNav = (
-        <div className={s.bottomMonthNav}>
-          <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-            onTouchTap={() => this._loadMonth(this._prevMonth())}
-            label="Selaa historiaa" />
-        </div>
-      );
+      
+      const summary = this._getMonthSummary(transactions, (new Date()).getDate());
+      console.log("got summary", summary);
+      topMonthNav = this._renderMonthSummary(transactions,
+        this.state.month, (new Date()).getDate());
 
     }
   
-    let alertElems = null;
-    if (alerts) {
-
-      alertElems = alerts.map(alert => {
-        return (
-          <div className={s.alert}>
-            <div className={s.message}>
-              {alert.message}
-            </div>
-            <div onTouchTap={() => this._dismissAlert(alert.uuid)} 
-              className={s.dismiss}>
-              <i className="material-icons">&#xE14C;</i>
-            </div>
-          </div>
-        );
-      });
-    
-    }
-
-    let inputErrorElem = null;
-    if (this.state.amountError) {
-      const inputErrorCss = {
-        color: "red",
-        fontSize: "12px",
-        position: "absolute",
-        top: "16px",
-        whiteSpace: "nowrap",
-        backgroundColor: "white",
-        zIndex: "2",
-        lineHeight: "24px"
-      };
-      inputErrorElem = (
-        <div style={inputErrorCss}>{this.state.amountError}</div>
-      );
-    }
-
-    const ownCategories = this.state.categories;
-    let categories = null;
-    let categoryType = null;
-    if(quickTransaction.sign === "+") {
-      categories = staticCategories.income;
-      categoryType = "income";
-    } else {
-      categories = staticCategories.expenses;
-      categoryType = "expense";
-    }
-
-    if (ownCategories) {
-      ownCategories.forEach(category => {
-        if (category.type === categoryType) {
-          categories[category.name] = category.label;
-        }
-      });
-    }
-
-    const catKeys = Object.keys(categories);
-    let categoryElems = catKeys.map(catKey => {
-      return (
-        <MenuItem key={catKey} value={catKey} 
-          primaryText={categories[catKey]} />
-      );
-    });
-    
+    let alertsElem = this._renderAlerts(alerts);
+ 
     const futureTransactions = monthStats ? monthStats.futureTransactions : [];
     const futureTransactionElems = this._renderFutureTransactionElems(futureTransactions);
     
-    const listHeight = this.state.futureTransactionsOpen ?
-      23 + (futureTransactions.length * 26) : 0;
+    const boxStyles = this.state.futureTransactionsOpen ?
+      {
+        height: (23 + (futureTransactions.length * 26)) + "px", 
+        paddingTop: "24px" 
+      } :
+      {
+        height: "0px",
+        paddingTop: "0px"
+      };
 
     const futureTransactionsList = (
-      <div style={{ height: listHeight+"px" }} className={s.futureTransactions}>
+      <div style={boxStyles} className={s.futureTransactions}>
         <div>
           <div style={{ textAlign: "center" }}>TULEVAT TAPAHTUMAT</div>
           <div>
@@ -638,68 +760,26 @@ class ConsumptionView extends BaseComponent {
         </div>
       </div>
     );
+    
+    const quickTransaction = this._renderQuickTransaction();
 
     return (
       <div>
         {formError}
         <div className={s.root}>
-          <div className={s.saveTransaction} style={txBorderCss}>
-            <div className={s.sign}>
-              <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                onTouchTap={() => this._toggleTxSign()}>
-                {txSignSymbol}
-              </FlatButton>
-            </div> 
-            <div className={s.amount}>
-              {inputErrorElem}
-              <TextField style={fullWidth} 
-                name="amount" 
-                errorStyle={{ display: "none" }}
-                errorText={this.state.amountError}
-                floatingLabelText="Määrä"
-                floatingLabelStyle={floatLabelCss}
-                value={quickTransaction.amount}
-                onChange={this._handleInputChange.bind(this)} />
-            </div>
-            <div className={s.category}>
-              <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-                name="category" 
-                value={quickTransaction.category} 
-                onChange={this._handleDropdownChange.bind(this)}>
-                {categoryElems}
-              </DropDownMenu>
-            </div>
-            <div className={s.description}>
-              <TextField style={fullWidth} 
-                name="description"
-                floatingLabelText="Selite"
-                value={quickTransaction.description}
-                onChange={this._handleInputChange.bind(this)} />
-            </div>
-            <div className={s.submit}>
-              <FlatButton disabled={this.state.quickTxDisabled}
-                style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                onTouchTap={() => this._saveTransaction()}>
-                <i style={{ width: "100%", verticalAlign: "top" }} 
-                  className="material-icons">&#xE163;</i>
-              </FlatButton>
-            </div>
-          </div>
           <div>
-            {goalElem}
             {currentMonthElem}
+            {goalElem}
           </div>
-          <div className={s.alerts}>
-            {alertElems}
-          </div>
+          {alertsElem}
           {futureTransactionsList}
           {topMonthNav}
+          {quickTransaction}
           <div className={s.transactions}>
             <div className={s.transactionsList}>
               {transactionElems}
             </div>
           </div>
-          {bottomMonthNav}
         </div>
       </div>
     );

@@ -21,13 +21,10 @@ class Footer extends Component {
         <div className={s.container}>
           <span className={s.text}>© Takuu-Säätiö</span>
           <span className={s.spacer}>·</span>
-          <a className={s.link} href="/cookies" onClick={Link.handleClick}>Evästeet</a>
-          <span className={s.spacer}>·</span>
           <a className={s.link} href="/conditions" onClick={Link.handleClick}>Ehdot</a>
           <span className={s.spacer}>·</span>
           <a className={s.link} href="/instructions" onClick={Link.handleClick}>Ohjeet</a>
-          <span className={s.spacer}></span>
-          <a className={s.link} href="/instructions">
+          <a className={s.link} href="http://www.ray.fi/">
             <img src="/RAY_Tukee.png"/>
           </a>
         </div>
