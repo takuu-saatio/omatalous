@@ -154,7 +154,7 @@ class StatsService {
         }
         
         const repeatingValsMap = {};
-        for (let day = 1; day <= lastDay.getDate(); day++) {
+        for (let day = 1; day <= 31; day++) {
           repeatingValsMap[day] = [];
           if (repeatingMap.D.length > 0) {
             for (let tx of repeatingMap.D) {
