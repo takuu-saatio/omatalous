@@ -363,7 +363,7 @@ class FinanceService {
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     
     const txMap = {};
-    for (let day = tomorrow.getDate(); day <= lastDay.getDate(); day++) {
+    for (let day = tomorrow.getDate(); day <= 31; day++) {
       txMap[day] = [];
     }
  
