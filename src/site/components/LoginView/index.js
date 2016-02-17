@@ -72,6 +72,97 @@ class LoginPage extends BaseComponent {
       imageElem.innerHTML = "&#xE8F5;";
     }
   }
+  
+  _emailValid(email) {
+
+    if (!email) {
+      return {
+        text: "Sähköposti",
+        style: {}
+      }
+    }
+
+    const at = email.indexOf("@");
+    
+    if (at === -1) {
+      return {
+        text: "@ merkki puuttuu",
+        style: { color: "orange" }
+      };
+    }
+     
+    if (at === 0) {
+      return {
+        text: "Etumääre puuttuu",
+        style: { color: "orange" }
+      };
+    }
+    
+    const domain = email.substring(at + 1);
+    
+    if (domain.indexOf("@") !== -1) {
+      return {
+        text: "Liikaa @ merkkejä",
+        style: { color: "orange" }
+      };
+    }
+    
+    if (domain === "") {
+      return {
+        text: "Verkkotunnus puuttuu",
+        style: { color: "orange" }
+      }; 
+    }
+    
+    const dot = domain.indexOf(".");
+
+    if (dot === -1) {
+      return {
+        text: "Loppumääre puuttuu",
+        style: { color: "orange" }
+      }; 
+    }
+    
+    if (domain.substring(dot + 1).length < 2) {
+      return {
+        text: "Loppumääre liian lyhyt",
+        style: { color: "orange" }
+      }; 
+    }
+
+    return {
+      text: "Sähköposti",
+      style: { color: "green" },
+      pass: true
+    };
+
+  }
+  
+  _passwordValid(password) {
+    
+    if (!password) {
+      return {
+        text: "Salasana",
+        style: {}
+      }
+    }
+
+    if (password.length < 4) {
+      return {
+        text: "Vähintään 4 merkkiä",
+        style: { color: "orange" }
+      };
+    }
+
+    return {
+      text: "Salasana",
+      style: { color: "green" },
+      pass: true
+    };
+    
+    return "Salasana";
+
+  }
 
   render() {
     
@@ -125,6 +216,10 @@ class LoginPage extends BaseComponent {
       top: "40px",
       cursor: "pointer"
     };
+    
+    const emailStatus = this._emailValid(loginParams.email);
+    const passwordStatus = this._passwordValid(loginParams.password);
+    const disableLogin = !(emailStatus.pass && passwordStatus.pass);
 
     return (
       <div>
@@ -163,7 +258,8 @@ class LoginPage extends BaseComponent {
                   <TextField
                     style={textFieldCss}
                     name="email"
-                    floatingLabelText="Sähköposti"
+                    floatingLabelText={emailStatus.text}
+                    floatingLabelStyle={emailStatus.style}
                     value={loginParams.email} 
                     onChange={this.handleInputChange.bind(this)} />
                 </div>
@@ -174,7 +270,8 @@ class LoginPage extends BaseComponent {
                     style={textFieldCss}
                     type="password"
                     name="password"
-                    floatingLabelText="Salasana"
+                    floatingLabelText={passwordStatus.text}
+                    floatingLabelStyle={passwordStatus.style}
                     value={loginParams.password}
                     onChange={this.handleInputChange.bind(this)} /> 
                   <div onClick={() => this._togglePassword()} style={showPwdCss}>
@@ -189,7 +286,8 @@ class LoginPage extends BaseComponent {
                   </a>
                 </div>
                 <div className={s.submitButton}>
-                  <FlatButton type="submit" label="Sisään">
+                  <FlatButton disabled={disableLogin}
+                    type="submit" label="Sisään">
                   </FlatButton>
                 </div>
               </div>
