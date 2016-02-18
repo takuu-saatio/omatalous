@@ -2,10 +2,12 @@ import { TEST } from "../actions/test"
 
 export default function status(state = { testVal: "test-def" }, action) {
   switch (action.type) {
-    case TEST:
-      return { testVal: "test-testing" };
     default:
-      state.pass = true;
-      return state
+      console.log("init reducer", action);
+      if (action.error && action.error.id === "auth_failed") {
+        window.location.href = "/home";
+        return;
+      }
+      return state;
   }
 }

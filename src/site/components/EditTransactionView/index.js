@@ -1,6 +1,8 @@
 "use strict";
 
 import React, { Component, PropTypes } from "react";
+import reactMixin from "react-mixin";
+import ReactIntl from "react-intl";
 import s from "./EditTransactionView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
@@ -170,12 +172,15 @@ class EditTransactionView extends BaseComponent {
         case "saved":
           statusColor = { color: "green" };
           break;
+        case "save_failed":
+          statusColor = { color: "red" };
+          break;
         default:
           statusColor = {};
       }
 
       editStatus = (
-        <span style={statusColor}>{messages.editStatus}</span>
+        <span style={statusColor}>{this.getIntlMessage(messages.editStatus)}</span>
       );
 
     }
@@ -302,4 +307,5 @@ class EditTransactionView extends BaseComponent {
 export const EditTransactionViewClass = EditTransactionView;
 
 @withStyles(s)
+@reactMixin.decorate(ReactIntl.IntlMixin)
 export default class StyledEditTransactionView extends EditTransactionView {};

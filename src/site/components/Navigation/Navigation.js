@@ -50,7 +50,7 @@ class Navigation extends Component {
         marginLeft: "-6px"
       };
  
-      if (auth.user.email === "vhalme@gmail.com") {
+      if (auth.user.isAdmin) {
         adminElem = (
           <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
             <IconButton onClick={() => Location.go("/admin")}

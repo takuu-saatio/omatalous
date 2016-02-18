@@ -6,7 +6,7 @@ const log = log4js.getLogger("server/services/auth/service");
 import bcrypt from "bcrypt-nodejs";
 import generatePassword from "password-generator";
 import uuid from "node-uuid";
-import { getCurrentMonth } from "../../../core/utils";
+import { isAdmin, getCurrentMonth } from "../../../core/utils";
 import { 
   BaseError,
   NotFound, 
@@ -167,7 +167,7 @@ class AuthService {
             //Category.schema.create({ user: user.uuid, name: "own1", label: "Oma 1" });
             //Category.schema.create({ user: user.uuid, name: "own2", label: "Oma 2" });
             //Category.schema.create({ user: user.uuid, name: "own3", label: "Oma 3" });
-
+            
             resolve({ user: Object.assign(user, { isNew: true }) });
           
           })
@@ -178,7 +178,7 @@ class AuthService {
           return;
           
         }
-
+        
         // If token auth, reset the token and resolve
         if (email === "token") {
           user.token = null;

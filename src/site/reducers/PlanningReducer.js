@@ -16,11 +16,11 @@ export default function (state = {}, action) {
         categories: action.categories,
         isUpdated: true 
       };
-    case txActions.DELETE_SUCCESS:
+    case txActions.TX_DELETE_SUCCESS:
       return { status: "deleted" };
     case planningActions.PLANNED_TXS_FETCH_FAIL:
       return { error: action.error, isUpdated: true };
-    case txActions.DELETE_FAIL:
+    case txActions.TX_DELETE_FAIL:
       state.error = action.error;
       return state;
     default:

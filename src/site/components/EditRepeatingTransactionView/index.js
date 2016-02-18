@@ -1,6 +1,8 @@
 "use strict";
 
 import React, { Component, PropTypes } from "react";
+import reactMixin from "react-mixin";
+import ReactIntl from "react-intl";
 import s from "../EditTransactionView/EditTransactionView.scss";
 import withStyles from "../../decorators/withStyles";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
@@ -8,6 +10,7 @@ import MenuItem from "material-ui/lib/menus/menu-item";
 import { EditTransactionViewClass } from "../EditTransactionView";
 
 @withStyles(s)
+@reactMixin.decorate(ReactIntl.IntlMixin)
 class EditRepeatingTransactionView extends EditTransactionViewClass {
   
   constructor(props) {

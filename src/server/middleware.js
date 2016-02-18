@@ -4,7 +4,7 @@ import log4js from "log4js";
 const log = log4js.getLogger("server/middleware");
 
 import assets from "./assets"
-import { readLocalizedMessages } from "../core/utils"
+import { isAdmin, readLocalizedMessages } from "../core/utils"
 
 import { BaseError } from "../core/errors"
 
@@ -64,8 +64,10 @@ export function registerMiddleware(app) {
     log.debug("req authorized", req.isAuthenticated());
 
     if (req.isAuthenticated()) {
+      const user = req.user.json();
+      user.isAdmin = isAdmin(user.email);
       context.initialState.auth = {
-        user: req.user.json()
+        user: user
       };
     }
 

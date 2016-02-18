@@ -5,6 +5,7 @@ const log = log4js.getLogger("server/services/user/service");
 
 import bcrypt from "bcrypt-nodejs";
 import { Forbidden } from "../../../core/errors";
+import { isAdmin } from "../../../core/utils";
 
 class UserService {
 
@@ -18,7 +19,9 @@ class UserService {
       
       const { User } = this.app.entities;
       User.findByUuid(uuid)
-      .then((user) => resolve(user))
+      .then((user) => {
+          resolve(user)
+      })
       .catch((err) => reject(err));  
 
     });

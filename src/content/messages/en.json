@@ -4,5 +4,8 @@
   "login": "SISÄÄN",
   "logout": "ULOS",
   "pwd_mismatch": "Väärä salasana",
-  "token_not_found": "Väärä kirjautumislinkki"
+  "token_not_found": "Väärä kirjautumislinkki",
+  "changed": "Muutettu",
+  "saved": "Tallennettu",
+  "save_failed": "Tallennusvirhe"
 }

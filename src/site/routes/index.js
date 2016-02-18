@@ -216,6 +216,7 @@ export function registerRoutes(app) {
       }
 
       req.logIn(user, (err) => {
+        console.log("logged in user", user);
         if (err) return next(err);
         req.session.newUser = user.isNew;
         res.redirect("/consumption");

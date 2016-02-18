@@ -7,6 +7,7 @@ import generatePassword from "password-generator";
 import bcrypt from "bcrypt-nodejs";
 
 import { BaseError, Unauthorized } from "../core/errors";
+import { isAdmin } from "../core/utils";
 
 const FB_GRAPH_API_URL = "https://graph.facebook.com/v2.5";
 

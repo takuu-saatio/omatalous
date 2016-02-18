@@ -1,6 +1,8 @@
 "use strict";
 
 import React, { Component, PropTypes } from "react";
+import reactMixin from "react-mixin";
+import ReactIntl from "react-intl";
 import s from "./GoalsView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
@@ -12,6 +14,7 @@ import BaseComponent from "../BaseComponent";
 import { EditRepeatingTransactionContainer } from "../../containers";
 
 @withStyles(s)
+@reactMixin.decorate(ReactIntl.IntlMixin)
 class GoalsView extends BaseComponent {
   
   static contextTypes = {
@@ -339,12 +342,15 @@ class GoalsView extends BaseComponent {
           case "saved":
             statusColor = { color: "green" };
             break;
+          case "save_failed":
+            statusColor = { color: "red" };
+            break;
           default:
             statusColor = {};
         }
 
         const statusElem = (
-          <span style={statusColor}>{editStatus}</span>
+          <span style={statusColor}>{this.getIntlMessage(editStatus)}</span>
         );
 
         editStatuses[messageKey] = statusElem;

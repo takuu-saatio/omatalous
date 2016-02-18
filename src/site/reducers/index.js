@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import { routeReducer } from "redux-simple-router";
+import initialReducer from "./test";
 import test from "./test";
 import auth from "./auth";
 import home from "./home";
@@ -20,7 +21,7 @@ export default function(reducers) {
    
   return combineReducers({
     routing: routeReducer,
-    test,
+    initialReducer,
     auth,
     home,
     login,

@@ -7,25 +7,27 @@ export default function (state = {}, action) {
   state = Object.assign({}, state);
   state.error = null;
   state.messages = null;
+  delete state.pass;
   
   console.log("action", state, action);
   switch (action.type) {
-    case actions.FETCH_SUCCESS:
+    case actions.TX_FETCH_SUCCESS:
       return { transaction: action.transaction, isUpdated: true };
-    case actions.SAVE_SUCCESS:
+    case actions.TX_SAVE_SUCCESS:
       console.log("return save state");
       return { messages: { editStatus: "saved" }, created: action.created, isUpdated: true };
-    case actions.DELETE_SUCCESS:
+    case actions.TX_DELETE_SUCCESS:
       return { status: "deleted" };
-    case actions.SAVE_FAIL:
+    case actions.TX_SAVE_FAIL:
       state.messages = { editStatus: "save_failed" };
       return state;
-    case actions.FETCH_FAIL:
-    case actions.DELETE_FAIL:
+    case actions.TX_FETCH_FAIL:
+      state.pass = true;
+      return state;
+    case actions.TX_DELETE_FAIL:
       state.error = action.error;
       return state;
     default:
-      console.log("set pass to true");
       state.pass = true;
       return state;
   }

@@ -8,7 +8,8 @@ export default function (state = {}, action) {
   state = Object.assign({}, state);
   state.error = null;
   state.messages = null;
-  
+  delete state.pass;
+ 
   switch (action.type) {
     case goalsActions.TXS_FETCH_SUCCESS:
       return { transactions: action.transactions, isUpdated: true };
@@ -54,7 +55,7 @@ export default function (state = {}, action) {
       return { error: action.error, isUpdated: true };
     case goalsActions.CAT_DELETE_SUCCESS:
       return { categoryDeleted: true };
-    case txActions.DELETE_SUCCESS:
+    case txActions.TX_DELETE_SUCCESS:
       return { status: "deleted" };
     case goalsActions.GOAL_SAVE_FAIL:
       state.error = action.error;
@@ -74,7 +75,7 @@ export default function (state = {}, action) {
         categories: { editStatus: "save_failed" }
       };
       return state;
-    case txActions.DELETE_FAIL:
+    case txActions.TX_DELETE_FAIL:
       state.error = action.error;
       return state;
     default:

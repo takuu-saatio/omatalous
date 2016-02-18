@@ -77,7 +77,7 @@ class Header extends BaseComponent {
         </div>
       );
       
-      if (auth.user.email === "vhalme@gmail.com") {
+      if (auth.user.isAdmin) {
         adminNavItem = (
           <MenuItem onTouchTap={() => this._menuGo("/admin")}>
             <div className={s.menuItem}>
