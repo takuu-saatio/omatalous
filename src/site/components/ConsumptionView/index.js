@@ -291,7 +291,7 @@ class ConsumptionView extends BaseComponent {
               Jäljellä
             </div>
             <div className={s.sectionValue}>
-              {available} <span>€</span>
+              {available} <span className={s.euroSign}>€</span>
             </div>
           </div>
           <div className={s.section}>
@@ -299,7 +299,7 @@ class ConsumptionView extends BaseComponent {
               Käytettävissä
             </div>
             <div className={s.sectionValue}>
-              {spendable} <span>€</span>
+              {spendable} <span className={s.euroSign}>€</span>
             </div>
             <div className={s.periodSwitch}>
               <div style={this._getPeriodCss("month")}
@@ -324,7 +324,7 @@ class ConsumptionView extends BaseComponent {
               Säästötavoite
             </div>
             <div className={s.sectionValue}>
-              {savingGoal} <span>€</span>
+              {savingGoal} <span className={s.euroSign}>€</span>
             </div>
           </div>
         </div>

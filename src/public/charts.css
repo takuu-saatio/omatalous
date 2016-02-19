@@ -1,3 +1,26 @@
+#forecastChart {
+  margin-left: -12px;
+}
+
+#progressChart {
+  margin-left: -12px;
+}
+
+#catLegend {
+  text-align: initial;
+  padding: 12px;
+  max-width: 300px;
+  margin: auto;
+}
+
+#progressLegend {
+  text-align: initial;
+  padding: 12px;
+  display: flex;
+  max-width: 300px;
+  margin: auto;
+}
+
 .legend-item {
   width: 100%;
   cursor: pointer;

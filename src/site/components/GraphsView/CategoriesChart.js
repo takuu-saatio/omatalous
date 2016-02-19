@@ -112,7 +112,7 @@ class CategoriesChart extends Component {
       <div className={s.chartContent}>
         <div className={s.chartSettings}>
           <div className={s.signSelector}>
-            <SelectField style={{ width: "100%" }} value={this.state.catParams.sign} 
+            <SelectField style={{ marginLeft: "8px", width: "calc(100% - 8px)" }} value={this.state.catParams.sign} 
               onChange={this._handleCatTypeChange.bind(this)}>
               <MenuItem value="-" primaryText="Menot"/>
               <MenuItem value="+" primaryText="Tulot"/>

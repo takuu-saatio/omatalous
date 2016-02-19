@@ -64,7 +64,11 @@ class GraphsView extends BaseComponent {
 
     console.log("rendering graphs", window.innerWidth, this.state);
     
-    const graphSize = window.innerWidth >= 420 ? 420 : 300; 
+    let graphSize = window.innerWidth;
+    
+    if (window.innerWidth >= 640) {
+      graphSize = 600;
+    } 
     
     const categoriesElem = <CategoriesChart 
       data={categoriesData}

@@ -103,52 +103,56 @@ class ForecastChart extends Component {
             htmlContent += `<div style="display: flex;">`;
 
             htmlContent += `<div style="flex: 1 1 auto;">`;
-            meta[point.id][point.index - 1].forEach(tx => {
-              const catLabels = tx.sign === "+" ?
-                staticCategories.income : staticCategories.expenses;
-              const text = tx.description || catLabels[tx.category];
-              htmlContent += `
+            
+            if (meta[point.id][point.index - 1]) {
+              meta[point.id][point.index - 1].forEach(tx => {
+                const catLabels = tx.sign === "+" ?
+                  staticCategories.income : staticCategories.expenses;
+                const text = tx.description || catLabels[tx.category];
+                htmlContent += `
+                  <div style="
+                    border-top: 1px solid #a0a0a0;
+                    padding-top: 2px;
+                    padding-bottom: 2px;
+                    ">
+                    <span style="
+                      margin-left: 4px;
+                      margin-right: 6px;">
+                      ${text}
+                    </span>
+                  </div>`;
+              });
+              htmlContent += "</div>";
+              
+              htmlContent += `<div style="flex: 1 1 auto;">`;
+              meta[point.id][point.index - 1].forEach(tx => {
+                const color = tx.sign === "+" ? "green" : "red";
+                htmlContent += `
                 <div style="
                   border-top: 1px solid #a0a0a0;
                   padding-top: 2px;
                   padding-bottom: 2px;
-                  ">
-                  <span style="
-                    margin-left: 4px;
-                    margin-right: 6px;">
-                    ${text}
-                  </span>
-                </div>`;
-            });
-            htmlContent += "</div>";
-            
-            htmlContent += `<div style="flex: 1 1 auto;">`;
-            meta[point.id][point.index - 1].forEach(tx => {
-              const color = tx.sign === "+" ? "green" : "red";
-              htmlContent += `
-              <div style="
-                border-top: 1px solid #a0a0a0;
-                padding-top: 2px;
-                padding-bottom: 2px;
-                text-align: right;
-                display: block;
-                position: relative;">
-                  <span style="
-                    color: ${color};
-                    margin-left: 6px;
-                    margin-right: 4px;
-                    ">
-                    ${tx.sign}${tx.amount}€
-                  </span>
-                  <div style="
-                    border-left: 1px dotted #a0a0a0;
-                    width: 2px;
-                    height: calc(100% - 2px); 
-                    top: 1px; 
-                    position: absolute;">
-                  </div>
-                </div>`;
-            });
+                  text-align: right;
+                  display: block;
+                  position: relative;">
+                    <span style="
+                      color: ${color};
+                      margin-left: 6px;
+                      margin-right: 4px;
+                      ">
+                      ${tx.sign}${tx.amount}€
+                    </span>
+                    <div style="
+                      border-left: 1px dotted #a0a0a0;
+                      width: 2px;
+                      height: calc(100% - 2px); 
+                      top: 1px; 
+                      position: absolute;">
+                    </div>
+                  </div>`;
+              });
+            }
+
             htmlContent += "</div>";
             
             htmlContent += "</div>";

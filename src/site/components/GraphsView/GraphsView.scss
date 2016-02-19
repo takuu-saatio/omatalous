@@ -4,7 +4,6 @@
 .graph {
   
   width: 100%;
-  max-width: 420px;
   margin: auto;
   padding-top: 24px;
   padding-bottom: 24px;
@@ -28,7 +27,7 @@
   .chartSettings { 
     
     display: flex;
-    
+
     .signSelector {
       flex: 1 1 auto;
       display: inline-block;

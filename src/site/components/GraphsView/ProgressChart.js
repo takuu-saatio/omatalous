@@ -133,6 +133,11 @@ class ProgressChart extends Component {
       },
       legend: {
         show: false
+      },
+      tooltip: {
+        format: {
+          value: value => value + " €"
+        }
       }
     };
     
