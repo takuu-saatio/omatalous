@@ -5,6 +5,7 @@ import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
+import CircularProgress from "material-ui/lib/circular-progress";
 import BaseComponent from "../BaseComponent";
 import { EditTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
@@ -290,7 +291,7 @@ class ConsumptionView extends BaseComponent {
               Jäljellä
             </div>
             <div className={s.sectionValue}>
-              {available} €
+              {available} <span>€</span>
             </div>
           </div>
           <div className={s.section}>
@@ -298,7 +299,7 @@ class ConsumptionView extends BaseComponent {
               Käytettävissä
             </div>
             <div className={s.sectionValue}>
-              {spendable} €
+              {spendable} <span>€</span>
             </div>
             <div className={s.periodSwitch}>
               <div style={this._getPeriodCss("month")}
@@ -323,7 +324,7 @@ class ConsumptionView extends BaseComponent {
               Säästötavoite
             </div>
             <div className={s.sectionValue}>
-              {savingGoal} €
+              {savingGoal} <span>€</span>
             </div>
           </div>
         </div>
@@ -444,11 +445,11 @@ class ConsumptionView extends BaseComponent {
             <span>
               <span>Yht. </span>
               <span>
-                {Math.abs(Math.ceil(summary.singlesTotal))} €
+                <b>{Math.abs(Math.ceil(summary.singlesTotal))} €</b>
               </span>
             </span>
 
-            <span>KA/pv: {summary.dayAvg} €</span>
+            <span>KA/pv: <b>{summary.dayAvg} €</b></span>
           </div>
         </div>
         <div className={s.topMonthNav}>
@@ -645,12 +646,16 @@ class ConsumptionView extends BaseComponent {
     let dayNames = [
       "Ma", "Ti", "Ke", "To", "Pe", "La", "Su"
     ];
-
-    let transactionElems = null; 
-    if (transactions && transactions.length > 0) {
-      
-      transactionElems = this._renderTransactionElems(transactions);
     
+    let transactionElems = null;
+    if (!transactions) {
+      transactionElems = <CircularProgress />;
+    } else if (transactions.length > 0) {  
+      transactionElems = (
+        <div className={s.transactionsList}>
+          {this._renderTransactionElems(transactions)}
+        </div>
+      );
     } else {
       transactionElems = (
         <div className={s.noTransactions}>
@@ -778,9 +783,7 @@ class ConsumptionView extends BaseComponent {
           {topMonthNav}
           {quickTransaction}
           <div className={s.transactions}>
-            <div className={s.transactionsList}>
-              {transactionElems}
-            </div>
+            {transactionElems}
           </div>
         </div>
       </div>

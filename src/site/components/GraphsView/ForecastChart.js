@@ -1,10 +1,12 @@
 "use strict";
+
 import React, { Component, PropTypes } from "react";
 import s from "./GraphsView.scss";
 import withStyles from "../../decorators/withStyles";
 import SelectField from "material-ui/lib/select-field";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
+import CircularProgress from "material-ui/lib/circular-progress";
 import { staticCategories } from "../../constants";
 
 class ForecastChart extends Component {
@@ -13,8 +15,8 @@ class ForecastChart extends Component {
     super(props);    
   }
 
-  render() {
-  
+  _renderChartContent(data) {
+    
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -28,7 +30,7 @@ class ForecastChart extends Component {
 
     const x1 = [ "x1", firstDay ];
     const data1 = [ "Toistuvat", 0 ];
-    this.props.data.repeating.forEach(val => {
+    data.repeating.forEach(val => {
       x1.push(new Date(val.x));
       data1.push(val.y);
       meta["Toistuvat"].push(val.txs);
@@ -39,7 +41,7 @@ class ForecastChart extends Component {
     
     const x2 = [ "x2", firstDay ]; 
     const data2 = [ "Toteutuneet", 0 ];
-    this.props.data.actual.forEach(val => {
+    data.actual.forEach(val => {
       x2.push(new Date(val.x));
       data2.push(val.y);
       meta["Toteutuneet"].push(val.txs);
@@ -172,23 +174,40 @@ class ForecastChart extends Component {
       }
     }
 
-    const forecastElem = (   
+    const chartContent = (   
+      <div className={s.chartContent}>
+        <div id="forecastChart"></div>
+      </div>
+    );
+
+    require(["d3", "c3"], function(d3, c3) {
+      console.log("forecast chart data", chartData);
+      c3.generate(chartData);
+    
+    });
+
+    return chartContent;
+    
+  }
+
+  render() {
+
+    let chartContent = <CircularProgress />;
+    
+    if (this.props.data) {
+      chartContent = this._renderChartContent(this.props.data);
+    }
+   
+    return ( 
       <div className={s.graph}>
         <div className={s.graphLabel}>
           Tilanne/ennuste
         </div>
         <div className={s.graphContainer} style={{ width: `${this.props.graphSize}px` }}>
-          <div id="forecastChart"></div>
+          {chartContent}
         </div>
       </div>
     );
-    
-    require(["d3", "c3"], function(d3, c3) {
-      console.log("forecast chart data", chartData);
-      c3.generate(chartData);
-    });
-
-    return forecastElem;
 
   }
 

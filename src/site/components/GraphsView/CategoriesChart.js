@@ -5,6 +5,7 @@ import withStyles from "../../decorators/withStyles";
 import SelectField from "material-ui/lib/select-field";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
+import CircularProgress from "material-ui/lib/circular-progress";
 import { staticCategories } from "../../constants";
 
 class CategoriesChart extends Component {
@@ -84,13 +85,13 @@ class CategoriesChart extends Component {
   
   }
 
-  render() {
-    
-    const catKeys = Object.keys(this.props.categories);
+  _renderChartContent(data) {
+      
+    const catKeys = Object.keys(data);
     const chartColumns = catKeys.map(catKey => {
       const catLabels = this.state.catParams.sign === "+" ?
         staticCategories.income : staticCategories.expenses;
-      return [catLabels[catKey], this.props.categories[catKey]]
+      return [catLabels[catKey], data[catKey]]
     });
 
     const chartData = {
@@ -106,12 +107,9 @@ class CategoriesChart extends Component {
         show: false
       }
     };
-    
-    const chartElem = (
-      <div className={s.graph}>
-        <div className={s.graphLabel}>
-          Kulutusjakauma
-        </div>
+  
+    const chartContent = (
+      <div className={s.chartContent}>
         <div className={s.chartSettings}>
           <div className={s.signSelector}>
             <SelectField style={{ width: "100%" }} value={this.state.catParams.sign} 
@@ -157,9 +155,9 @@ class CategoriesChart extends Component {
         </div>
       </div>
     );
-    
+  
     const sortedColumns = chartColumns.sort((a, b) => b[1] - a[1]);
-    const categories = this._createCategoriesData(this.props.categories); 
+    const categories = this._createCategoriesData(data); 
     require(["d3", "c3"], function(d3, c3) {
       
       const chart = c3.generate(chartData);
@@ -201,7 +199,28 @@ class CategoriesChart extends Component {
     
     });
 
-    return chartElem;
+    return chartContent;
+
+  }
+
+  render() {
+    
+    let chartContent = <CircularProgress />;
+    
+    if (this.props.data) {
+      chartContent = this._renderChartContent(this.props.data);
+    }
+
+    return (
+      <div className={s.graph}>
+        <div className={s.graphLabel}>
+          Kulutusjakauma
+        </div>
+        <div className={s.graphContainer} style={{ width: `${this.props.graphSize}px` }}>
+          {chartContent}
+        </div>
+      </div>
+    );
 
   }
 

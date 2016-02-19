@@ -6,6 +6,7 @@ import FlatButton from "material-ui/lib/flat-button";
 import SelectField from "material-ui/lib/select-field";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
+import CircularProgress from "material-ui/lib/circular-progress";
 import BaseComponent from "../BaseComponent";
 import CategoriesChart from "./CategoriesChart";
 import ForecastChart from "./ForecastChart";
@@ -49,40 +50,35 @@ class GraphsView extends BaseComponent {
   render() {
     
     const { stats } = this.state;
-    
+    const [
+      categoriesData,
+      forecastData,
+      progressData
+    ] = 
+    stats ? [
+      stats.categories,
+      stats.forecast,
+      stats.progress
+    ] :
+    [ null, null, null ];
+
     console.log("rendering graphs", window.innerWidth, this.state);
     
     const graphSize = window.innerWidth >= 420 ? 420 : 300; 
     
-    const weekDays = [ "Su", "Ma", "Ti", "Ke", "To", "Pe", "La" ];
-    
-    let categoriesElem = null;
-    let forecastElem = null;
-    let progressElem = null;
-    
-    if (stats) {
-      
-      if (stats.categories) {
-        categoriesElem = <CategoriesChart 
-          categories={stats.categories}
-          fetchData={this.fetchData.bind(this)}
-          graphSize={graphSize} />
-      }
+    const categoriesElem = <CategoriesChart 
+      data={categoriesData}
+      fetchData={this.fetchData.bind(this)}
+      graphSize={graphSize} />
 
-      if (stats.forecast) {
-        forecastElem = <ForecastChart 
-          data={stats.forecast}
-          graphSize={graphSize} />
-      }
+    const forecastElem = <ForecastChart 
+      data={forecastData}
+      graphSize={graphSize} />
 
-      if (stats.progress) {
-        progressElem = <ProgressChart 
-          data={stats.progress}
-          graphSize={graphSize} />
-      }
-          
-    }
-    
+    const progressElem = <ProgressChart 
+      data={progressData}
+      graphSize={graphSize} />
+           
     return (
       <div>
         <div className={s.root}>

@@ -5,6 +5,7 @@ import withStyles from "../../decorators/withStyles";
 import SelectField from "material-ui/lib/select-field";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
+import CircularProgress from "material-ui/lib/circular-progress";
 import { staticCategories } from "../../constants";
 
 class ProgressChart extends Component {
@@ -13,14 +14,14 @@ class ProgressChart extends Component {
     super(props);    
   }
 
-  render() {
-        
-    const months = Object.keys(this.props.data);
+  _renderChartContent(data) {
+    
+    const months = Object.keys(data);
     const valsByCat = {};
     
     months.forEach(month => {
       
-      const cats = this.props.data[month];
+      const cats = data[month];
       const income = Object.keys(cats.income);
       income.forEach(cat => {
         if (!valsByCat[`inc_${cat}`]) {
@@ -41,7 +42,7 @@ class ProgressChart extends Component {
     
     months.forEach(month => {
        
-      const cats = this.props.data[month];
+      const cats = data[month];
       
       const catKeys = Object.keys(valsByCat);
       catKeys.forEach(catKey => {
@@ -140,20 +141,15 @@ class ProgressChart extends Component {
       font: "14px sans-serif"   
     };
 
-    const progressElem = (   
-      <div className={s.graph}>
-        <div className={s.graphLabel}>
-          Kehitys
-        </div>
-        <div className={s.graphContainer} style={{ width: `${this.props.graphSize}px` }}>
-          <div id="progressChart" style={{}}></div>
-          <div id="progressLegend" style={{ paddingLeft: "24px", display: "flex" }}>
-            <div id="incomeLegend" style={{ flex: "1 1" }}>
-              <div style={legendTitleCss}>Tulot</div>
-            </div>
-            <div id="expenseLegend" style={{ flex: "1 1" }}>
-              <div style={legendTitleCss}>Menot</div>
-            </div>
+    const chartContent = (   
+      <div className={s.chartContent}>
+        <div id="progressChart" style={{}}></div>
+        <div id="progressLegend" style={{ paddingLeft: "24px", display: "flex" }}>
+          <div id="incomeLegend" style={{ flex: "1 1" }}>
+            <div style={legendTitleCss}>Tulot</div>
+          </div>
+          <div id="expenseLegend" style={{ flex: "1 1" }}>
+            <div style={legendTitleCss}>Menot</div>
           </div>
         </div>
       </div>
@@ -205,7 +201,25 @@ class ProgressChart extends Component {
 
     });
 
-    return progressElem;
+    return chartContent;
+
+  }
+
+  render() {
+        
+    let chartContent = this.props.data ?
+      this._renderChartContent(this.props.data) : <CircularProgress />;
+    
+    return (   
+      <div className={s.graph}>
+        <div className={s.graphLabel}>
+          Kehitys
+        </div>
+        <div className={s.graphContainer} style={{ width: `${this.props.graphSize}px` }}>
+          {chartContent}
+        </div>
+      </div>
+    );
 
   }
 
