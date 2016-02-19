@@ -25,7 +25,7 @@ class EditPlannedTransactionView extends EditTransactionViewClass {
   renderChildren() {
     let fullWidth = { width: "100%", minWidth: "initial" };
     return (
-      <div> 
+      <div className={s.extraGroup}> 
         <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
           name="month" 
           value={this.state.transaction.month} 

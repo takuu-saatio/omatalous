@@ -69,19 +69,21 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
     }
 
     return (
-      <div className={s.repetitionSettings}> 
-        <div className={s.repetitionType}>
-          <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-            name="repeats" 
-            value={this.state.transaction.repeats} 
-            onChange={this._handleRepeatDropdown.bind(this)}>
-            <MenuItem value="D" primaryText="Päivittäin" />
-            <MenuItem value="W" primaryText="Viikottain" />
-            <MenuItem value="M" primaryText="Kuukausittain" />
-          </DropDownMenu>
-        </div>
-        <div className={s.repetitionValue}>
-          {valueElem}
+      <div className={s.extraGroup}>
+        <div className={s.repetitionSettings}> 
+          <div className={s.repetitionType}>
+            <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+              name="repeats" 
+              value={this.state.transaction.repeats} 
+              onChange={this._handleRepeatDropdown.bind(this)}>
+              <MenuItem value="D" primaryText="Päivittäin" />
+              <MenuItem value="W" primaryText="Viikottain" />
+              <MenuItem value="M" primaryText="Kuukausittain" />
+            </DropDownMenu>
+          </div>
+          <div className={s.repetitionValue}>
+            {valueElem}
+          </div>
         </div>
       </div>
     );

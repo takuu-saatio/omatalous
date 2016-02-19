@@ -220,7 +220,7 @@ class FinanceService {
             const endMM = parseInt(goalEnd.substring(5, 7));
 
             const remainingYears = endYYYY - startYYYY;
-            let remainingMonths = (endMM - startMM) + (remainingYears * 12);
+            let remainingMonths = (endMM - startMM + 1) + (remainingYears * 12);
             
             let currentMonthSavingGoal = 0;
             if (goal.finite) {
