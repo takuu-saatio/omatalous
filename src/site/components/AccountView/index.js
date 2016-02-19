@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from "react";
+import reactMixin from "react-mixin";
+import ReactIntl from "react-intl";
 import s from "./AccountView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
@@ -8,6 +10,7 @@ import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
 
 @withStyles(s)
+@reactMixin.decorate(ReactIntl.IntlMixin)
 class AccountView extends BaseComponent {
   
   static contextTypes = {
@@ -51,12 +54,33 @@ class AccountView extends BaseComponent {
   }
 
   _handleFormChange(name, value) {
+     
     let formParams = {};
     formParams[name] = value;
     let account = Object.assign(this.state.account, formParams);
     let state = Object.assign(this.state, { account });
     state.messages = { editStatus: "changed" };
+    
+    if (name === "age") {
+         
+      delete state.ageError;
+      
+      if (value && value !== "") {
+        if (isNaN(value)) {
+          state.ageError = "Ei numero";        
+        } else if (parseFloat(value) < 1900) {
+          state.ageError = "Liian vanha";
+        } else if (parseFloat(value) > 2006) {
+          state.ageError = "Liian nuori";
+        } else if (parseFloat(value) % 1 !== 0) {
+          state.ageError = "Ei kokonaisluku";
+        }
+      }
+
+    }
+
     return state;
+  
   }
   
   _handleInputChange(event) {
@@ -64,7 +88,7 @@ class AccountView extends BaseComponent {
     let state = this._handleFormChange(event.target.name, event.target.value);
     
     if (event.target.name === "password") {
-      state = { account: Object.assign(account, { password: account.password }) };
+      state = { account: Object.assign(this.state.account, { password: account.password }) };
       this.setState(state);
     } else {
       delete state.account.password;
@@ -142,12 +166,15 @@ class AccountView extends BaseComponent {
         case "saved":
           statusColor = { color: "green" };
           break;
+        case "save_failed":
+          statusColor = { color: "red" };
+          break;
         default:
           statusColor = {};
       }
 
       editStatus = (
-        <span style={statusColor}>{messages.editStatus}</span>
+        <span style={statusColor}>{this.getIntlMessage(messages.editStatus)}</span>
       );
     }
 
@@ -223,9 +250,10 @@ class AccountView extends BaseComponent {
                 </DropDownMenu>
               </div>
               <div className={s.profileCell}>
-                <TextField style={fullWidth} 
+                <TextField style={Object.assign({ marginTop: "-5px" }, fullWidth)} 
                   name="age" 
                   floatingLabelText="Syntymävuosi"
+                  errorText={this.state.ageError}
                   value={account.age}
                   onChange={this._handleInputChange.bind(this)} />
               </div>
