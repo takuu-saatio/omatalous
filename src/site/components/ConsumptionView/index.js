@@ -679,7 +679,9 @@ class ConsumptionView extends BaseComponent {
         const remainingDays = (daysInMonth - now.getDate()) + 1;
         const spendable = available;
         console.log(daysInMonth, remainingDays, spendable, origAvg);
-        totalSaved += ((spendable / remainingDays) - origAvg);
+        const monthSaving = spendable < 0 ? spendable :
+          ((spendable / remainingDays) - origAvg);
+        totalSaved += monthSaving;
  
       }
       
