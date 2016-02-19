@@ -7,6 +7,7 @@ import FlatButton from "material-ui/lib/flat-button";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import BaseComponent from "../BaseComponent";
+import * as utils from "../../utils";
 
 const title = "Log In";
 
@@ -73,97 +74,6 @@ class LoginPage extends BaseComponent {
     }
   }
   
-  _emailValid(email) {
-
-    if (!email) {
-      return {
-        text: "Sähköposti",
-        style: {}
-      }
-    }
-
-    const at = email.indexOf("@");
-    
-    if (at === -1) {
-      return {
-        text: "@ merkki puuttuu",
-        style: { color: "orange" }
-      };
-    }
-     
-    if (at === 0) {
-      return {
-        text: "Etumääre puuttuu",
-        style: { color: "orange" }
-      };
-    }
-    
-    const domain = email.substring(at + 1);
-    
-    if (domain.indexOf("@") !== -1) {
-      return {
-        text: "Liikaa @ merkkejä",
-        style: { color: "orange" }
-      };
-    }
-    
-    if (domain === "") {
-      return {
-        text: "Verkkotunnus puuttuu",
-        style: { color: "orange" }
-      }; 
-    }
-    
-    const dot = domain.indexOf(".");
-
-    if (dot === -1) {
-      return {
-        text: "Loppumääre puuttuu",
-        style: { color: "orange" }
-      }; 
-    }
-    
-    if (domain.substring(dot + 1).length < 2) {
-      return {
-        text: "Loppumääre liian lyhyt",
-        style: { color: "orange" }
-      }; 
-    }
-
-    return {
-      text: "Sähköposti",
-      style: { color: "green" },
-      pass: true
-    };
-
-  }
-  
-  _passwordValid(password) {
-    
-    if (!password) {
-      return {
-        text: "Salasana",
-        style: {}
-      }
-    }
-
-    if (password.length < 4) {
-      return {
-        text: "Vähintään 4 merkkiä",
-        style: { color: "orange" }
-      };
-    }
-
-    return {
-      text: "Salasana",
-      style: { color: "green" },
-      pass: true
-    };
-    
-    return "Salasana";
-
-  }
-
   render() {
     
     const { register, logIn, test } = this.props;
@@ -217,8 +127,8 @@ class LoginPage extends BaseComponent {
       cursor: "pointer"
     };
     
-    const emailStatus = this._emailValid(loginParams.email);
-    const passwordStatus = this._passwordValid(loginParams.password);
+    const emailStatus = utils.emailValid(loginParams.email);
+    const passwordStatus = utils.passwordValid(loginParams.password);
     const disableLogin = !(emailStatus.pass && passwordStatus.pass);
 
     return (

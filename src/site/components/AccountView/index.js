@@ -8,6 +8,7 @@ import FlatButton from "material-ui/lib/flat-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
+import * as utils from "../../utils";
 
 @withStyles(s)
 @reactMixin.decorate(ReactIntl.IntlMixin)
@@ -54,13 +55,18 @@ class AccountView extends BaseComponent {
   }
 
   _handleFormChange(name, value) {
-     
+    
     let formParams = {};
     formParams[name] = value;
     let account = Object.assign(this.state.account, formParams);
     let state = Object.assign(this.state, { account });
-    state.messages = { editStatus: "changed" };
     
+    if (name === "password") {
+      state.pwdSaved = false;
+    } else {
+      state.messages = { editStatus: "changed" };
+    }
+
     if (name === "age") {
          
       delete state.ageError;
@@ -87,8 +93,9 @@ class AccountView extends BaseComponent {
     
     let state = this._handleFormChange(event.target.name, event.target.value);
     
+    const { account } = this.state;
     if (event.target.name === "password") {
-      state = { account: Object.assign(this.state.account, { password: account.password }) };
+      state = { account: Object.assign(account, { password: account.password }) };
       this.setState(state);
     } else {
       delete state.account.password;
@@ -197,7 +204,24 @@ class AccountView extends BaseComponent {
       top: "40px",
       cursor: "pointer"
     };
+    
+    const emailStatus = utils.emailValid(account.email); 
+    if (!account.email || account.email === "") {
+      emailStatus.text = "Pakollinen tieto";
+      emailStatus.style = { color: "red" };
+      delete emailStatus.pass;
+    }
 
+    const saveDisabled = !(!this.state.ageError && emailStatus.pass);
+
+    const passwordStatus = utils.passwordValid(account.password); 
+    if (passwordStatus.text === "Salasana") {
+      passwordStatus.text = "Uusi salasana";
+    }
+    if (!account.password || account.password === "") {
+      delete passwordStatus.pass;
+    }
+ 
     return (
       <div>
         {formError}
@@ -210,7 +234,8 @@ class AccountView extends BaseComponent {
               <div className={s.profileCell}>
                 <TextField style={fullWidth}
                   name="email" 
-                  floatingLabelText="Sähköposti"
+                  floatingLabelText={emailStatus.text}
+                  floatingLabelStyle={emailStatus.style}
                   value={account.email}
                   onChange={this._handleInputChange.bind(this)} />
               </div>
@@ -263,7 +288,8 @@ class AccountView extends BaseComponent {
                 {editStatus}
               </div>
               <div className={s.saveButton}>
-                <FlatButton onClick={() => this._saveAccount()} label="Tallenna" />
+                <FlatButton disabled={saveDisabled}
+                  onTouchTap={() => this._saveAccount()} label="Tallenna" />
               </div>
             </div>
           </div>
@@ -275,7 +301,8 @@ class AccountView extends BaseComponent {
               <TextField style={fullWidth} 
                 type="password"
                 name="password" 
-                floatingLabelText="Uusi salasana"
+                floatingLabelText={passwordStatus.text}
+                floatingLabelStyle={passwordStatus.style}
                 value={account.password}
                 onChange={this._handleInputChange.bind(this)} />
               <div onClick={() => this._togglePassword()} style={showPwdCss}>
@@ -287,7 +314,8 @@ class AccountView extends BaseComponent {
                 {pwdStatus}
               </div>
               <div className={s.changePwdButton}>
-                <FlatButton onClick={() => this._savePassword()} label="Vaihda" />
+                <FlatButton disabled={!passwordStatus.pass}
+                  onTouchTap={() => this._savePassword()} label="Vaihda" />
               </div>
             </div>
           </div>
