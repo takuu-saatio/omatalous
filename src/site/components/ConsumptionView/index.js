@@ -21,7 +21,6 @@ class ConsumptionView extends BaseComponent {
   constructor(props) {
     
     super(props);
-    console.log("constr consumption", props);
 
     this.state = Object.assign(props.state, {
       quickTransaction: {
@@ -223,7 +222,6 @@ class ConsumptionView extends BaseComponent {
     }
 
     const txDate = new Date(transactions[0].createdAt);
-    console.log("tx summary", transactions);
     const monthLastDay = 
       new Date(txDate.getFullYear(), txDate.getMonth() + 1, 0).getDate();
     transactions.forEach(tx => {
@@ -284,36 +282,48 @@ class ConsumptionView extends BaseComponent {
         savingMax = Math.ceil(monthSavingGoal);
       }
 
-      console.log("draw calues", savingMax, savingValue); 
       goalElem = (
-        <div className={s.goal}>
-          <div className={s.goalContent}>
-            {savingValue} <span className={s.euroSign}>€</span>
+        <div>
+          <div className={s.sectionLabel}>
+            Säästetty
           </div>
-          <LinearProgress mode="determinate" max={savingMax} value={savingValue} />
+          <div className={s.sectionValue}>
+            <div className={s.goal}>
+              <div className={s.goalContent}>
+                {savingValue} <span className={s.euroSign}>€</span>
+              </div>
+              <LinearProgress mode="determinate" max={savingMax} value={savingValue} />
+            </div>
+          </div>
         </div>
       );
 
     } else {
 
       goalElem = (
-        <div className={s.goal}>
-          <div className={s.goalContent}>
-            {totalSaved} <span className={s.euroSign}>€</span>
+        <div>
+          <div className={s.sectionLabel}>
+            Säästetty
+          </div>
+          <div className={s.sectionValue}>
+            <div className={s.goal}>
+              <div className={s.goalContent}>
+                {totalSaved} <span className={s.euroSign}>€</span>
+              </div>
+            </div>
           </div>
         </div>
       );
 
     }
-
+    
+    
     return goalElem;
 
   }
 
   _renderMonthStats(monthStats, goal) {
-    
-    console.log("RENDER MONTH", monthStats); 
-    
+     
     if (!monthStats) {
       return null;
     }
@@ -390,12 +400,7 @@ class ConsumptionView extends BaseComponent {
             </div>
           </div>
           <div className={s.section}>
-            <div className={s.sectionLabel}>
-              Säästötavoite
-            </div>
-            <div className={s.sectionValue}>
-              {savingElem}
-            </div>
+            {savingElem}
             <div className={s.periodSwitch}>
               <div style={this._getHighlightCss(this.state.savingView, "total")}
                 className={s.periodSwitchCell}
@@ -677,7 +682,7 @@ class ConsumptionView extends BaseComponent {
 
   render() {
      
-    console.log("render consumption", this.props, this.state);
+    console.log("render consumption");
     let { transactions, goal, monthStats, 
       alerts, messages } = this.state;
     
@@ -758,7 +763,6 @@ class ConsumptionView extends BaseComponent {
       const total = Math.floor(monthStats.income - monthStats.expenses);
       
       const summary = this._getMonthSummary(transactions, (new Date()).getDate());
-      console.log("got summary", summary);
       topMonthNav = this._renderMonthSummary(transactions,
         this.state.month, (new Date()).getDate());
 
