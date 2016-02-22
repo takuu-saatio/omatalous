@@ -6,6 +6,7 @@ import FlatButton from "material-ui/lib/flat-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import CircularProgress from "material-ui/lib/circular-progress";
+import LinearProgress from "material-ui/lib/linear-progress";
 import BaseComponent from "../BaseComponent";
 import { EditTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
@@ -29,7 +30,8 @@ class ConsumptionView extends BaseComponent {
         category: "misc"
       },
       quickTxDisabled: true,
-      spendablePeriod: "month"
+      spendablePeriod: "month",
+      savingView: "total"
     });
 
     if (!this.state.month) {
@@ -192,9 +194,15 @@ class ConsumptionView extends BaseComponent {
     }));
   }
   
-  _getPeriodCss(period) {
+  _setSavingView(view) {
+    this.setState(Object.assign(this.state, {
+      savingView: view
+    }));
+  }
+  
+  _getHighlightCss(field, value) {
     
-    if (this.state.spendablePeriod === period) {
+    if (field === value) {
       return { backgroundColor: "#f0f0f0" };
     }
     
@@ -236,7 +244,72 @@ class ConsumptionView extends BaseComponent {
     return summary;
 
   }
+ 
+  _renderGoal(goal, monthStats) {
   
+    if (!goal) {
+      return null;
+    }
+    
+    let totalSaving = goal.totalSaved;
+    let totalSavingGoal = goal.targetAmount;
+    
+    let monthSaving = 0; 
+    let monthSavingGoal = goal.currentMonthSavingGoal;
+
+    if (monthStats) {
+    
+      const now = new Date();
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const origAvg = (monthStats.fixedIncome - monthStats.fixedExpenses) / daysInMonth; 
+      const zeroLevel = (origAvg * (now.getDate() + 1));
+      monthSaving = Math.floor(zeroLevel - monthStats.expenses + monthStats.income);
+      // const remainingDays = (daysInMonth - now.getDate()) + 1;
+      // const monthSaving = spendable < 0 ? spendable :
+      //   ((spendable / remainingDays) - origAvg);
+      
+      totalSaving += monthSaving;
+
+    }
+     
+    let goalElem = null;
+ 
+    if (goal.finite) {
+      
+      let savingValue = Math.floor(totalSaving);
+      let savingMax = Math.ceil(totalSavingGoal);
+
+      if (this.state.savingView === "month") {
+        savingValue = Math.floor(monthSaving);
+        savingMax = Math.ceil(monthSavingGoal);
+      }
+
+      console.log("draw calues", savingMax, savingValue); 
+      goalElem = (
+        <div className={s.goal}>
+          <div className={s.goalContent}>
+            {savingValue} <span className={s.euroSign}>€</span>
+          </div>
+          <LinearProgress mode="determinate" max={savingMax} value={savingValue} />
+        </div>
+      );
+
+    } else {
+
+      goalElem = (
+        <div className={s.goal}>
+          <div className={s.goalContent}>
+            {totalSaved} <span className={s.euroSign}>€</span>
+          </div>
+        </div>
+      );
+
+    }
+
+    return goalElem;
+
+  }
+
   _renderMonthStats(monthStats, goal) {
     
     console.log("RENDER MONTH", monthStats); 
@@ -275,7 +348,9 @@ class ConsumptionView extends BaseComponent {
     
     const expandIcon = this.state.futureTransactionsOpen ?
       <span>&#xE5CE;</span> : <span>&#xE5CF;</span>;
-    
+   
+    const savingElem = this._renderGoal(goal, monthStats);
+ 
     return (
       <div className={s.month}>
         <div className={s.monthHeader}>
@@ -302,17 +377,12 @@ class ConsumptionView extends BaseComponent {
               {spendable} <span className={s.euroSign}>€</span>
             </div>
             <div className={s.periodSwitch}>
-              <div style={this._getPeriodCss("month")}
+              <div style={this._getHighlightCss(this.state.spendablePeriod, "month")}
                 className={s.periodSwitchCell}
                 onTouchTap={() => this._setSpendablePeriod("month")}>
                 KK
               </div>
-              <div style={this._getPeriodCss("week")}
-                className={s.periodSwitchCell}
-                onTouchTap={() => this._setSpendablePeriod("week")}>
-                VK
-              </div>
-              <div style={this._getPeriodCss("day")}
+              <div style={this._getHighlightCss(this.state.spendablePeriod, "day")}
                 className={s.periodSwitchCell}
                 onTouchTap={() => this._setSpendablePeriod("day")}>
                 PV
@@ -324,7 +394,19 @@ class ConsumptionView extends BaseComponent {
               Säästötavoite
             </div>
             <div className={s.sectionValue}>
-              {savingGoal} <span className={s.euroSign}>€</span>
+              {savingElem}
+            </div>
+            <div className={s.periodSwitch}>
+              <div style={this._getHighlightCss(this.state.savingView, "total")}
+                className={s.periodSwitchCell}
+                onTouchTap={() => this._setSavingView("total")}>
+                YHT
+              </div>
+              <div style={this._getHighlightCss(this.state.savingView, "month")}
+                className={s.periodSwitchCell}
+                onTouchTap={() => this._setSavingView("month")}>
+                KK
+              </div>
             </div>
           </div>
         </div>
@@ -664,64 +746,6 @@ class ConsumptionView extends BaseComponent {
       );
     }
     
-    let goalElem = null;
-    
-    if (goal) {
-    
-      let totalSaved = goal.totalSaved;
-      
-      if (monthStats) {
-      
-        const now = new Date();
-        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-        const origAvg = (monthStats.fixedIncome - monthStats.fixedExpenses) / daysInMonth;
-        const available = 
-          monthStats.fixedIncome - 
-          monthStats.fixedExpenses - 
-          monthStats.expenses +
-          monthStats.income;
-       
-        const remainingDays = (daysInMonth - now.getDate()) + 1;
-        const spendable = available;
-        console.log(daysInMonth, remainingDays, spendable, origAvg);
-        const monthSaving = spendable < 0 ? spendable :
-          ((spendable / remainingDays) - origAvg);
-        totalSaved += monthSaving;
- 
-      }
-      
-      totalSaved = Math.floor(totalSaved);
-      
-      if (goal.finite) {
-      
-        goalElem = (
-          <div className={s.goal}>
-            <div className={s.goalLabel}>
-              Säästetty
-            </div>
-            <div className={s.goalContent}>
-              {totalSaved}/{goal.targetAmount} €
-            </div>
-          </div>
-        );
-
-      } else {
-
-        goalElem = (
-          <div className={s.goal}>
-            <div className={s.goalLabel}>
-              Säästetty
-            </div>
-            <div className={s.goalContent}>
-              {totalSaved} €
-            </div>
-          </div>
-        );
-
-      }
-
-    }
-
     const currentMonthElem = this._renderMonthStats(monthStats, goal);
  
     let topMonthNav = null;
@@ -776,7 +800,6 @@ class ConsumptionView extends BaseComponent {
         <div className={s.root}>
           <div>
             {currentMonthElem}
-            {goalElem}
           </div>
           {alertsElem}
           {futureTransactionsList}

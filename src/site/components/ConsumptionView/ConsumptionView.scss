@@ -88,10 +88,8 @@
 
 .goal {
   
-  padding: 12px;
   text-align: center;
   margin: auto;
-  background-color: #f0f0f0;
 
   .goalLabel {
     font-size: 12px;
@@ -157,12 +155,22 @@
     }
     
     .sectionValue {
+      
       font-size: 32px;
       font-weight: 300;
+      
+      @media (max-width: 380px) {
+        font-size: 26px;
+      }
+      
       .euroSign {
         font-size: 24px;
         font-weight: 100;
+        @media (max-width: 380px) {
+          font-size: 14px;
+        }
       }
+      
     }
 
     > div {
@@ -186,6 +194,7 @@
     
     > div:nth-child(3) {
       flex: 1 1;
+      position: relative;
     }
     
     > div:nth-child(4) {
@@ -195,8 +204,8 @@
     .periodSwitch {
       position: absolute;
       bottom: -22px;
-      left: -6%;
-      width: 110%;
+      left: -1px;
+      width: 100%;
       background-color: white;
       font-size: 12px;
       display: flex;
