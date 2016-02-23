@@ -460,22 +460,11 @@ class GoalsView extends BaseComponent {
     }
     console.log("save goal disabled?", goal);
      
-    let incomeSummary = null;
-    let expensesSummary = null;
+    let incomeSummary = 0;
+    let expensesSummary = 0;
     if (monthStats) {
-      
-      incomeSummary = (
-        <div className={s.fixedSummary}>
-          Tässä kuussa yht. {monthStats.fixedIncome} €
-        </div>
-      );
-
-      expensesSummary = (
-        <div className={s.fixedSummary}>
-          Tässä kuussa yht. {monthStats.fixedExpenses} €
-        </div>
-      );
-
+      incomeSummary = monthStats.fixedIncome;
+      expensesSummary = monthStats.fixedExpenses;
     }
 
     const catInputCss = {
@@ -490,29 +479,45 @@ class GoalsView extends BaseComponent {
       <div>
         {formError}
         <div className={s.root}>
+          <div className={s.transactionsHeader}>
+            <div className={s.transactionsLabel}>Toistuvat tulot</div>
+            <div className={s.transactionsSummary}>
+              <span style={{ color: "green" }} className={s.dataValue}>
+                +{incomeSummary}
+              </span>
+              <span className={s.euroSign}>
+                €/kk
+              </span>
+            </div>
+          </div>
+          <div className={s.transactions}>
+            {incomeTxElems}
+            <div onClick={() => this._editTransaction("+")} className={s.newTransaction}>
+              + UUSI
+            </div>
+          </div>
+          <div className={s.transactionsHeader}>
+            <div className={s.transactionsLabel}>Toistuvat menot</div>
+            <div className={s.transactionsSummary}>
+              <span style={{ color: "red" }} className={s.dataValue}>
+                -{expensesSummary}
+              </span>
+              <span className={s.euroSign}>
+                €/kk
+              </span>
+            </div>
+          </div>
+          <div className={s.transactions}>
+            {expenseTxElems}
+            <div onClick={() => this._editTransaction("-")} className={s.newTransaction}>
+              + UUSI
+            </div>
+          </div>
           <div>
             <div>
-              <div className={s.transactionsLabel}>Toistuvat tulot</div>
-              <div className={s.transactions}>
-                {incomeTxElems}
-                <div onClick={() => this._editTransaction("+")} className={s.newTransaction}>
-                  + UUSI
-                </div>
+              <div className={s.transactionsHeader}>
+                <div className={s.transactionsLabel}>Omat kategoriat</div>
               </div>
-              <div>{incomeSummary}</div>
-            </div>
-            <div>
-              <div className={s.transactionsLabel}>Toistuvat menot</div>
-              <div className={s.transactions}>
-                {expenseTxElems}
-                <div onClick={() => this._editTransaction("-")} className={s.newTransaction}>
-                  + UUSI
-                </div>
-              </div>
-              <div>{expensesSummary}</div>
-            </div>
-            <div>
-              <div className={s.transactionsLabel}>Omat kategoriat</div>
               <div className={s.transactions}>
                 <div className={s.catTypeLabel}>Tulot</div>
                 {incomeCatElems}

@@ -1,21 +1,52 @@
-.transactionsLabel {
+.transactionsHeader {
+  
   width: 100%;
-  text-align: center;
-  padding: 6px;
+  padding-left: 6px;
+  padding-top: 6px;
   margin-bottom: 6px;
-  background-color: #f0f0f0;
+  background-color: white;
+  position: relative;
+
+  .transactionsLabel {
+    margin-top: 12px;
+    margin-left: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+  }
+  
+  .transactionsSummary {
+    
+    display: inline-block;
+    position: absolute;
+    right: 12px;
+    bottom: 0px;
+    
+    .dataValue {
+      font-size: 28px;
+      font-weight: 300;
+    }
+
+    .euroSign {
+      margin-left: 4px;
+    }
+
+  }
+
 }
 
 .transactions {
   
-  margin-bottom: 24px;
   padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 12px;
+  background: #f0f0f0;
 
   .transaction {
     
     display: inline-block;
     margin: 6px;
-    background-color: #e0e0e0;
+    background-color: white;
     cursor: pointer;
 
     .txTitle {
@@ -70,12 +101,6 @@
     }
   }
 
-}
-
-.fixedSummary {
-  text-align: right;
-  padding-right: 12px;
-  margin-bottom: 12px;
 }
 
 .goals {
