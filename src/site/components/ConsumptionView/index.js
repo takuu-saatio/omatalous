@@ -21,6 +21,11 @@ class ConsumptionView extends BaseComponent {
   constructor(props) {
     
     super(props);
+    
+    this.summaryTypes = [
+      "singlesTotal",
+      "dayAvg"
+    ];
 
     this.state = Object.assign(props.state, {
       quickTransaction: {
@@ -30,6 +35,7 @@ class ConsumptionView extends BaseComponent {
       },
       quickTxDisabled: true,
       spendablePeriod: "month",
+      summaryType: 0,
       savingView: "total"
     });
 
@@ -380,19 +386,12 @@ class ConsumptionView extends BaseComponent {
       spendable = Math.floor((available - savingGoal) / remainingDays);
     }
     
-    const expandIcon = this.state.futureTransactionsOpen ?
-      <span>&#xE5CE;</span> : <span>&#xE5CF;</span>;
-   
     const savingElem = this._renderGoal(goal, monthStats);
  
     return (
       <div className={s.month}>
         <div className={s.monthHeader}>
           <span>Kuluva kuukausi</span>
-          <i className="material-icons"
-            onTouchTap={() => this._toggleFutureTransactions()}>
-            {expandIcon}
-          </i>
         </div>  
         <div className={s.monthData}>
           <div className={s.section}>
@@ -516,6 +515,28 @@ class ConsumptionView extends BaseComponent {
     });
 
   }
+  
+  _nextSummaryType() {
+    
+    this.state.summaryType += 1;
+    if (this.state.summaryType === this.summaryTypes.length) {
+      this.state.summaryType = 0;
+    }
+
+    this.setState(this.state);
+
+  }
+
+  _prevSummaryType() {
+    
+    this.state.summaryType -= 1;
+    if (this.state.summaryType === -1) {
+      this.state.summaryType = this.summaryTypes.length - 1;
+    }
+
+    this.setState(this.state);
+
+  }
 
   _renderMonthSummary(transactions, month, days) {
 
@@ -533,7 +554,22 @@ class ConsumptionView extends BaseComponent {
         onTouchTap={() => this._loadMonth(this._nextMonth())}
         labelStyle={{ padding: "0px" }}
         label={"< " + this._nextMonth()} /> : null;
-      
+
+    const selectedSummaryType = this.summaryTypes[this.state.summaryType];
+    const summaryDataValues = {
+      "singlesTotal": Math.abs(Math.ceil(summary.singlesTotal)),
+      "dayAvg": summary.dayAvg
+    };
+    
+    const summaryTypeNames = {
+      "singlesTotal": "Yhteensä",
+      "dayAvg": "Keskikulutus päivässä"
+    };
+
+    const summaryTypeLabel = summaryTypeNames[selectedSummaryType];
+    const expandIcon = this.state.futureTransactionsOpen ?
+      <span>&#xE5C9;</span> : <span>&#xE5C6;</span>;
+
     return (
       <div>
         <div className={s.monthSummary}>
@@ -552,15 +588,22 @@ class ConsumptionView extends BaseComponent {
             </div>
           </div>
           <div className={s.summaryData}>
-            
-            <span>
-              <span>Yht. </span>
-              <span>
-                <b>{Math.abs(Math.ceil(summary.singlesTotal))} €</b>
-              </span>
-            </span>
-
-            <span>KA/pv: <b>{summary.dayAvg} €</b></span>
+            <div className={s.futureButton}> 
+              <i className="material-icons"
+                onTouchTap={() => this._toggleFutureTransactions()}>
+                {expandIcon}
+              </i>
+            </div>  
+            <div className={s.dataDisplay}>
+              <div className={s.typeLabel}>{summaryTypeLabel}</div>
+              <span>{summaryDataValues[selectedSummaryType]} €</span>
+            </div>
+            <div className={s.dataSelector}> 
+              <div className={s.typePrev} 
+                onTouchTap={() => this._prevSummaryType()}>
+                <i className="material-icons">&#xE8D6;</i>
+              </div>
+            </div>
           </div>
         </div>
         <div className={s.topMonthNav}>
@@ -635,10 +678,12 @@ class ConsumptionView extends BaseComponent {
     let txSignSymbol = null;
     if (quickTransaction.sign === "-") {
       //txBorderCss.borderBottom = "2px solid red";
-      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE15B;</i>);
+      txSignSymbol = (<i style={Object.assign({ color: "#C53636" }, fullWidth)} 
+                      className="material-icons">&#xE15D;</i>);
     } else {
       //txBorderCss.borderBottom = "2px solid green";
-      txSignSymbol = (<i style={fullWidth} className="material-icons">&#xE145;</i>);
+      txSignSymbol = (<i style={Object.assign({ color: "#3B8021" }, fullWidth)} 
+                      className="material-icons">&#xE148;</i>);
     }
     
     let inputErrorElem = null;
@@ -660,6 +705,9 @@ class ConsumptionView extends BaseComponent {
 
     return (
       <div className={s.saveTransaction} style={txBorderCss}>
+        <div className={s.quickTxLabel}>
+          Lisää tapahtuma
+        </div>
         <div className={s.sign}>
           <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
             onTouchTap={() => this._toggleTxSign()}>
@@ -830,8 +878,8 @@ class ConsumptionView extends BaseComponent {
             {currentMonthElem}
           </div>
           {alertsElem}
-          {futureTransactionsList}
           {topMonthNav}
+          {futureTransactionsList}
           {quickTransaction}
           <div className={s.transactions}>
             {transactionElems}

@@ -24,25 +24,31 @@ export default function(app) {
 
   const loginWithProfile = async (method, profile) => {
     
-    let email = (profile && profile.emails && profile.emails.length > 0) ? 
-      profile.emails[0].value : null;
-    let username = profile.username;
-    let extId = profile.id;
-    let gender = profile.gender ? (profile.gender === "male" ? "M" : "F") : null;
-    let icon = profile.icon;
-    let firstName = profile.name.givenName;
-    let lastName = profile.name.familyName;
+    try {  
+      
+      let email = (profile && profile.emails && profile.emails.length > 0) ? 
+        profile.emails[0].value : null;
+      let username = profile.username;
+      let extId = profile.id;
+      let gender = profile.gender ? (profile.gender === "male" ? "M" : "F") : null;
+      let icon = profile.icon;
+      let firstName = profile.name.givenName;
+      let lastName = profile.name.familyName;
     
-    if (!email) {
-      return { error: new Unauthorized(null, "missing_provider_data") };
-    }
+      if (!email) {
+        return { error: new Unauthorized(null, "missing_provider_data") };
+      }
 
-    try {
-      const result = await auth.login({ 
-        method, email, firstName, lastName, 
-        extId, username, gender, icon 
-      });
-      return result;
+      try {
+        const result = await auth.login({ 
+          method, email, firstName, lastName, 
+          extId, username, gender, icon 
+        });
+        return result;
+      } catch (err) {
+        return { error: err };
+      }
+
     } catch (err) {
       return { error: err };
     }
@@ -88,11 +94,18 @@ export default function(app) {
     profileFields: ["id", "emails", "name", "gender", "age_range" ],
     passReqToCallback: true
   }, async (req, accessToken, refreshToken, profile, done) => {
-
-      log.debug("Invoke Facebook login strategy", accessToken, refreshToken, profile); 
-      profile.icon = `${FB_GRAPH_API_URL}/${profile.id}/picture`;
-      const result = await loginWithProfile("Facebook", profile);
-      done(result.error, result.user);
+      
+      try {
+        
+        log.debug("Invoke Facebook login strategy", accessToken, refreshToken, profile); 
+        profile.icon = `${FB_GRAPH_API_URL}/${profile.id}/picture`;
+        const result = await loginWithProfile("Facebook", profile);
+        log.debug("FB REG RESULT", result);
+        done(result.error, result.user);
+      
+      } catch (err) {
+        log.debug("FB REG ERR", err);
+      }
 
     }
   
@@ -105,13 +118,19 @@ export default function(app) {
     profileFields: ["id", "emails", "name", "username", "gender", "birthday" ],
     passReqToCallback: true
   }, async (req, accessToken, refreshToken, profile, done) => {
-      
-      log.debug("Invoke Google login strategy", accessToken, refreshToken, profile);
-      profile.icon = (profile.photos && profile.photos.length > 0) ? 
-        profile.photos[0].value : null;
-      const result = await loginWithProfile("Google", profile);
-      
-      done(result.error, result.user);
+
+      try {
+
+        log.debug("Invoke Google login strategy", accessToken, refreshToken, profile);
+        profile.icon = (profile.photos && profile.photos.length > 0) ? 
+          profile.photos[0].value : null;
+        const result = await loginWithProfile("Google", profile);
+        log.debug("GOOGLE REG RESULT", result);   
+        done(result.error, result.user);
+
+      } catch (err) {
+        log.debug("GOOGLE REG ERR", err);
+      }
 
     }
                                                        
