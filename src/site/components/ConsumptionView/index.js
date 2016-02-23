@@ -50,17 +50,16 @@ class ConsumptionView extends BaseComponent {
   }
  
   updateState(state) {
-
-    if (state.transactions) {
-      delete this.state.transactions;
-    }
-
-    if (state.monthStats) {
-      delete this.state.monthStats;
-    }
     
+    // Win7/IE10 hacks :(
+    if (state.transactions) {
+      this.state.transactions = [];
+    }
+    if (state.monthStats) {
+      this.state.monthStats = null;
+    }
     if (state.goal) {
-      delete this.state.goal;
+      this.state.goal = null;
     }
     
     super.updateState(state);

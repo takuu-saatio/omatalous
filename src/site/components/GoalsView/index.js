@@ -64,8 +64,9 @@ class GoalsView extends BaseComponent {
   
   updateState(state) {
     
-    if (state.transactions) { 
-      delete this.state.transactions;
+    // Win7/IE10 hack :( 
+    if (state.transactions) {
+      this.state.transactions = [];
     }
 
     if (state.categoryCreated === true) {
