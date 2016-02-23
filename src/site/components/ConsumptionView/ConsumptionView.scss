@@ -370,23 +370,42 @@
   text-align: center;
  
   .transactionsList {
-    
-    background-color: white;
+     
+    .transactionBox {
+      
+      height: 36px;
+      position: relative;
+      width: calc(100% - 16px);
+      margin: auto;
+      text-align: right;
+
+      &:hover {
+        .transaction {
+          left: -72px;
+          top: -4px;
+          width: 100%;
+          height: 44px;
+          z-index: 1;
+        }
+      }
+
+    }
 
     .transaction {
     
       display: flex;
-      position: relative;
-      
+      position: absolute;
+      width: calc(100% - 10px);
+      top: 0px;
+      left: 0px;
+      height: 36px;
+      background-color: white;
       padding-left: 6px;
-      padding-bottom: 2px;
-      padding-top: 2px;
-      border-top: 1px solid #f0f0f0;
+      border: 1px solid #f0f0f0;
+      align-items: center;
+      text-align: center;
 
-      &:hover {
-        padding-top: 9px;
-        padding-bottom: 9px;
-      }
+      transition: top 200ms, left 200ms, width 200ms, height 200ms;
 
       .txAmount {
         flex: 1 1;
@@ -413,38 +432,36 @@
       }
       
       .txDate {
+        
         flex: 1 1;
+      
+        > i {
+          
+          vertical-align: bottom;
+          color: #e0e0e0;
+          @media (min-width: 361px) {
+            display: none;
+          }
+
+        }
+
       }       
        
     }
 
     .txControls {
       
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      background-color: rgba(0, 0, 0, 0.2);
-      text-align: right;
+      display: inline-block;
+      margin-right: 4px;
 
-      &:hover {
-        opacity: 1;
-      }
-      
       .txControlContainer {
         
         display: inline-block;
         vertical-align: super;
         margin-top: 3px;
-
+        
         > div {
-          background: rgba(255, 255, 255, 0.8);
-          border-radius: 4px;
           padding-top: 3px;
-          padding-left: 3px;
-          padding-right: 3px;
           margin-right: 3px;
           cursor: pointer;
           display: inline-block;

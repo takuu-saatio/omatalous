@@ -454,11 +454,11 @@ class ConsumptionView extends BaseComponent {
         if (transaction.type === "copy") {
           highlightCss.backgroundColor = "#f0f0f0";
         }
-
-        return (
-          <div key={transaction.uuid} style={highlightCss} className={s.transaction}>
+        
+        const transactionElem = (
+          <div style={highlightCss} className={s.transaction}>
             <div className={s.txAmount}
-              style={{ color: transaction.sign === "+" ? "green" : "red" }}>
+              style={{ color: transaction.sign === "+" ? "#3B8021" : "#C53636" }}>
               {transaction.sign}{transaction.amount}
             </div>
             <div className={s.txCategory}>
@@ -469,25 +469,35 @@ class ConsumptionView extends BaseComponent {
             </div>
             <div className={s.txDate}>
               {transaction.dateLabel}
+              <i className="material-icons">
+                &#xE315;
+              </i>
             </div>
+          </div>
+        );
+
+        return (
+          <div key={transaction.uuid} className={s.transactionBox}>
+            {transactionElem}
             <div className={s.txControls}>
               <div className={s.txControlContainer}>
                 <div>
                   <i className="material-icons"
                     onClick={() => this._editTransaction(transaction.uuid)}>
-                    &#xE150;
+                    &#xE8B8;
                   </i>
                 </div>
                 <div>
                   <i className="material-icons"
                     onClick={() => this._deleteTransaction(transaction.uuid)}>
-                    &#xE14A;
+                    &#xE872;
                   </i>
                 </div>
               </div>
             </div>
           </div>
         );
+
     });
 
   }
@@ -505,7 +515,7 @@ class ConsumptionView extends BaseComponent {
               {transaction.dateLabel}
             </div>
             <div className={s.futureTxAmount}
-              style={{ color: transaction.sign === "+" ? "green" : "red" }}>
+              style={{ color: transaction.sign === "+" ? "#3B8021" : "#C53636" }}>
               {transaction.sign}{transaction.amount}
             </div>
             <div className={s.futureTxCategory}>{categories[transaction.category]}</div>
@@ -543,7 +553,7 @@ class ConsumptionView extends BaseComponent {
     const summary = this._getMonthSummary(transactions, days);    
      
     const amountColor = (amount) => {
-      return { color: amount < 0 ? "red" : "green" };
+      return { color: amount < 0 ? "#C53636" : "#3B8021" };
     };
     
     const summaryLabel = month === this.state.monthStats.label ?
@@ -689,7 +699,7 @@ class ConsumptionView extends BaseComponent {
     let inputErrorElem = null;
     if (this.state.amountError) {
       const inputErrorCss = {
-        color: "red",
+        color: "#C53636",
         fontSize: "12px",
         position: "absolute",
         top: "16px",
@@ -791,7 +801,7 @@ class ConsumptionView extends BaseComponent {
           statusColor = { color: "blue" };
           break;
         case "saved":
-          statusColor = { color: "green" };
+          statusColor = { color: "#3B8021" };
           break;
         default:
           statusColor = {};
