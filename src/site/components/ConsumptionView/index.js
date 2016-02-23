@@ -50,12 +50,27 @@ class ConsumptionView extends BaseComponent {
   }
  
   updateState(state) {
+
+    if (state.transactions) {
+      delete this.state.transactions;
+    }
+
+    if (state.monthStats) {
+      delete this.state.monthStats;
+    }
+    
+    if (state.goal) {
+      delete this.state.goal;
+    }
+    
     super.updateState(state);
+    
     if (state.messages && state.messages.editStatus === "saved") {
       this.setState(Object.assign(state, { 
         quickTransaction: { sign: "-", type: "single", category: "misc", amount: "" } 
       }));
     }
+
   }
 
   _nextMonth() {
@@ -512,7 +527,7 @@ class ConsumptionView extends BaseComponent {
     };
     
     const summaryLabel = month === this.state.monthStats.label ?
-      "Tapahtumat" : "Historia " + month;
+      "Tapahtumat" : month;
   
     const nextMonthButton = month !== this.state.monthStats.label ?
       <FlatButton style={Object.assign({ lineHeight: "28px" })} 

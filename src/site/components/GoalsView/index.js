@@ -63,6 +63,10 @@ class GoalsView extends BaseComponent {
   }
   
   updateState(state) {
+    
+    if (state.transactions) { 
+      delete this.state.transactions;
+    }
 
     if (state.categoryCreated === true) {
       this.state.categories.push(state.category);
