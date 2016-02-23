@@ -284,13 +284,23 @@ class ConsumptionView extends BaseComponent {
 
       goalElem = (
         <div>
-          <div className={s.sectionLabel}>
-            Säästetty
+          <div className={s.sectionLabelContainer}>
+            <div className={s.sectionLabel}>
+              Säästetty
+            </div>
+            <div className={s.sectionLabelAlt}>
+              Säästötavoite
+            </div>
           </div>
           <div className={s.sectionValue}>
             <div className={s.goal}>
-              <div className={s.goalContent}>
-                {savingValue} <span className={s.euroSign}>€</span>
+              <div className={s.sectionValueContainer}>
+                <div className={s.goalContent}>
+                  {savingValue} <span className={s.euroSign}>€</span>
+                </div>
+                <div className={s.goalContentAlt}>
+                  {savingMax} <span className={s.euroSign}>€</span>
+                </div>
               </div>
               <LinearProgress mode="determinate" max={savingMax} value={savingValue} />
             </div>
@@ -308,7 +318,7 @@ class ConsumptionView extends BaseComponent {
           <div className={s.sectionValue}>
             <div className={s.goal}>
               <div className={s.goalContent}>
-                {totalSaved} <span className={s.euroSign}>€</span>
+                {totalSaving} <span className={s.euroSign}>€</span>
               </div>
             </div>
           </div>
@@ -399,7 +409,7 @@ class ConsumptionView extends BaseComponent {
               </div>
             </div>
           </div>
-          <div className={s.section}>
+          <div className={s.savingsCell}>
             {savingElem}
             <div className={s.periodSwitch}>
               <div style={this._getHighlightCss(this.state.savingView, "total")}

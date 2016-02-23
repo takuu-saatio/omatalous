@@ -95,10 +95,6 @@
     font-size: 12px;
     margin-bottom: 4px;
   }
-  
-  .goalContent {
-  }
-
 
 }
 
@@ -192,9 +188,81 @@
       
     }
     
-    > div:nth-child(3) {
+    .savingsCell {
+    
       flex: 1 1;
       position: relative;
+    
+      .sectionLabelContainer {
+        
+        position: relative;
+        height: 16px;
+        overflow: hidden; 
+
+        .sectionLabel {
+          
+          position: absolute;
+          font-size: 12px;
+          left: 4px;
+          top: 0px;
+          transition: top 200ms ease-out;
+        
+        }
+
+        .sectionLabelAlt {
+           
+          position: absolute;
+          font-size: 12px;
+          left: 4px;
+          top: 24px;
+          transition: top 200ms ease-out;
+
+        }
+
+      }
+      
+      .sectionValueContainer {
+
+        position: relative;
+        height: 38px;
+        overflow: hidden;
+            
+        .goalContent {
+          position: absolute;
+          width: 100%;
+          top: 0px;
+          left: 0;
+          transition: top 200ms ease-out;
+        }
+
+        .goalContentAlt {
+          position: absolute;
+          width: 100%;
+          top: 40px;
+          left: 0;
+          transition: top 200ms ease-out;
+        }
+
+      }
+
+      &:hover {
+        
+        .sectionLabel {
+          top: -24px;
+        }
+        .sectionLabelAlt {
+          top: 0px;
+        }
+        
+        .goalContent {
+          top: -40px;
+        }
+        .goalContentAlt {
+          top: 0px;
+        }
+
+      }
+
     }
     
     > div:nth-child(4) {
