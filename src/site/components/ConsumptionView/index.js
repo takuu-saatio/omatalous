@@ -3,6 +3,8 @@ import s from "./ConsumptionView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
+import RaisedButton from "material-ui/lib/raised-button";
+import IconButton from "material-ui/lib/icon-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import CircularProgress from "material-ui/lib/circular-progress";
@@ -511,15 +513,15 @@ class ConsumptionView extends BaseComponent {
         
         return (
           <div key={transaction.uuid + "-" + index} className={s.futureTransaction}>
-            <div className={s.futureTxDate}>
-              {transaction.dateLabel}
-            </div>
             <div className={s.futureTxAmount}
               style={{ color: transaction.sign === "+" ? "#3B8021" : "#C53636" }}>
               {transaction.sign}{transaction.amount}
             </div>
             <div className={s.futureTxCategory}>{categories[transaction.category]}</div>
             <div className={s.futureTxDescription}>{transaction.description}</div>
+            <div className={s.futureTxDate}>
+              {transaction.dateLabel}
+            </div>
           </div>
         );
     });
@@ -576,12 +578,13 @@ class ConsumptionView extends BaseComponent {
       "dayAvg": "Keskikulutus päivässä"
     };
 
+    const blueBgCss = { color: "#00bcd4" };
     const summaryTypeLabel = summaryTypeNames[selectedSummaryType];
     const expandIcon = this.state.futureTransactionsOpen ?
-      <span>&#xE5C9;</span> : <span>&#xE5C6;</span>;
+      <span style={blueBgCss}>&#xE5C9;</span> : <span style={blueBgCss}>&#xE5C6;</span>;
 
     return (
-      <div>
+      <div className={s.monthSummaryContainer}>
         <div className={s.monthSummary}>
           <div className={s.monthNav}>
             <div className={s.nextMonth}>
@@ -611,7 +614,7 @@ class ConsumptionView extends BaseComponent {
             <div className={s.dataSelector}> 
               <div className={s.typePrev} 
                 onTouchTap={() => this._prevSummaryType()}>
-                <i className="material-icons">&#xE8D6;</i>
+                <i style={blueBgCss} className="material-icons">&#xE8D6;</i>
               </div>
             </div>
           </div>
@@ -673,6 +676,9 @@ class ConsumptionView extends BaseComponent {
         }
       });
     }
+    
+    const redColorCss = { color: "#C53636" };
+    const greenColorCss = { color: "#3B8021" };
 
     const catKeys = Object.keys(categories);
     let categoryElems = catKeys.map(catKey => {
@@ -685,15 +691,16 @@ class ConsumptionView extends BaseComponent {
     const txBorderCss = {
       transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
     };
+
+    
     let txSignSymbol = null;
+    let iconColorCss = null;
     if (quickTransaction.sign === "-") {
-      //txBorderCss.borderBottom = "2px solid red";
-      txSignSymbol = (<i style={Object.assign({ color: "#C53636" }, fullWidth)} 
-                      className="material-icons">&#xE15D;</i>);
+      iconColorCss = redColorCss;
+      txSignSymbol = (<span className="material-icons">&#xE15D;</span>);
     } else {
-      //txBorderCss.borderBottom = "2px solid green";
-      txSignSymbol = (<i style={Object.assign({ color: "#3B8021" }, fullWidth)} 
-                      className="material-icons">&#xE148;</i>);
+      iconColorCss = greenColorCss;
+      txSignSymbol = (<span className="material-icons">&#xE148;</span>);
     }
     
     let inputErrorElem = null;
@@ -713,49 +720,59 @@ class ConsumptionView extends BaseComponent {
       );
     }
 
+    const signIconCss = Object.assign({
+      fontSize: "32px",
+      padding: "0px"
+    }, iconColorCss);
+    
+    const signButtonCss = {
+      position: "absolute",
+      bottom: "4px",
+      right: "2px"
+    };
+
     return (
-      <div className={s.saveTransaction} style={txBorderCss}>
-        <div className={s.quickTxLabel}>
-          Lisää tapahtuma
-        </div>
-        <div className={s.sign}>
-          <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-            onTouchTap={() => this._toggleTxSign()}>
-            {txSignSymbol}
-          </FlatButton>
-        </div> 
-        <div className={s.amount}>
-          {inputErrorElem}
-          <TextField style={fullWidth} 
-            name="amount" 
-            errorStyle={{ display: "none" }}
-            errorText={this.state.amountError}
-            floatingLabelText="Määrä"
-            value={quickTransaction.amount}
-            onChange={this._handleInputChange.bind(this)} />
-        </div>
-        <div className={s.category}>
-          <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
-            name="category" 
-            value={quickTransaction.category} 
-            onChange={this._handleDropdownChange.bind(this)}>
-            {categoryElems}
-          </DropDownMenu>
-        </div>
-        <div className={s.description}>
-          <TextField style={fullWidth} 
-            name="description"
-            floatingLabelText="Selite"
-            value={quickTransaction.description}
-            onChange={this._handleInputChange.bind(this)} />
-        </div>
-        <div className={s.submit}>
-          <FlatButton disabled={this.state.quickTxDisabled}
-            style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-            onTouchTap={() => this._saveTransaction()}>
-            <i style={{ width: "100%", verticalAlign: "top" }} 
-              className="material-icons">&#xE163;</i>
-          </FlatButton>
+      <div className={s.saveTransactionContainer}>
+        <div className={s.saveTransaction} style={txBorderCss}>
+          <div className={s.sign}>
+            <IconButton iconStyle={signIconCss} 
+              style={signButtonCss} 
+              onTouchTap={() => this._toggleTxSign()}>
+              {txSignSymbol}
+            </IconButton>
+          </div> 
+          <div className={s.amount}>
+            {inputErrorElem}
+            <TextField style={fullWidth} 
+              name="amount" 
+              errorStyle={{ display: "none" }}
+              errorText={this.state.amountError}
+              floatingLabelText="Määrä"
+              value={quickTransaction.amount}
+              onChange={this._handleInputChange.bind(this)} />
+          </div>
+          <div className={s.category}>
+            <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
+              name="category" 
+              value={quickTransaction.category} 
+              onChange={this._handleDropdownChange.bind(this)}>
+              {categoryElems}
+            </DropDownMenu>
+          </div>
+          <div className={s.description}>
+            <TextField style={fullWidth} 
+              name="description"
+              floatingLabelText="Selite"
+              value={quickTransaction.description}
+              onChange={this._handleInputChange.bind(this)} />
+          </div>
+          <div className={s.submit}>
+            <RaisedButton secondary={true} disabled={this.state.quickTxDisabled}
+              style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+              onTouchTap={() => this._saveTransaction()}>
+              <span style={{ padding: "6px", fontSize: "16px", fontWeight: "300", color: "white" }}>Lisää</span>
+            </RaisedButton>
+          </div>
         </div>
       </div>
     );
@@ -857,7 +874,7 @@ class ConsumptionView extends BaseComponent {
     
     const boxStyles = this.state.futureTransactionsOpen ?
       {
-        height: (23 + (futureTransactions.length * 26)) + "px", 
+        height: (36 + (futureTransactions.length * 26)) + "px", 
         paddingTop: "24px" 
       } :
       {
@@ -867,8 +884,8 @@ class ConsumptionView extends BaseComponent {
 
     const futureTransactionsList = (
       <div style={boxStyles} className={s.futureTransactions}>
-        <div>
-          <div style={{ textAlign: "center" }}>TULEVAT TAPAHTUMAT</div>
+        <div className={s.futureTransactionsHeader}>
+          <div className={s.futureTransactionsLabel}>Tulevat tapahtumat</div>
           <div>
           </div>
         </div> 

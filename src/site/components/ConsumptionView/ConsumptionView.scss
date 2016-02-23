@@ -3,11 +3,19 @@
 .root {
   padding-bottom: 24px;  
   background-color: #f0f0f0;
+  width: 100%;
+}
+
+.saveTransactionContainer {
+  width: 100%;
+  background-color: white;
 }
 
 .saveTransaction {
   
   width: 100%;
+  max-width: 600px;
+  margin: auto;
   display: flex;
   padding-bottom: 4px;
   background-color: white;
@@ -38,11 +46,13 @@
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
-    
+    position: relative;
+
     > button { 
       > div {
         > i {
           vertical-align: middle;
+          font-size: 24px;
         }
       }
     }
@@ -114,9 +124,10 @@
   
   position: relative;
   padding-top: 12px;
-  padding-bottom: 32px;
+  padding-bottom: 36px;
   background-color: white;
- 
+  border-bottom: 1px solid #f0f0f0;
+
   .monthHeader {
     
     width: 90%;
@@ -308,6 +319,25 @@
   overflow: hidden;
   transition: height 500ms ease-out, padding-top 500ms ease-out;
   
+  .futureTransactionsHeader {
+    
+    width: 100%;
+    margin-top: -28px;
+    text-align: center;
+    padding-bottom: 12px;
+
+    .futureTransactionsLabel {
+      display: block;
+      padding-left: 12px;
+      padding-right: 12px;
+      padding-top: 12px;
+      padding-bottom: 9px;
+      background-color: white;  
+      font-weight: 500;
+    }
+
+  }
+
   .futureTransactionsList {
     
     width: 100%;
@@ -474,18 +504,24 @@
 
 }
 
+.monthSummaryContainer {
+  width: 100%;
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+}
+
 .monthSummary {
   
   margin-left: auto;
   margin-right: auto;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  max-width: 600px;
+  padding-top: 2px;
+  padding-bottom: 10px;
   background-color: white;
-  border-bottom: 1px solid #f0f0f0;
 
   .monthNav {
 
-    width: 90%;
+    width: 100%;
     max-width: 600px;
     margin: auto;
     padding-bottom: 12px;
@@ -526,7 +562,7 @@
     .futureButton {
       position: absolute;
       left: 6px;
-      bottom: -36px;
+      bottom: -34px;
       cursor: pointer;
       z-index: 1;
       > i {

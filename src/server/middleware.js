@@ -83,6 +83,17 @@ export function registerMiddleware(app) {
 
 export function registerErrorHandlers(app) {
   
+  app.use("/", (err, req, res, next) => {
+    
+    console.log("BASIC ERROR", err);
+    if (!err.id) {
+      err = new BaseError(err);
+    }
+  
+    next(err);   
+  
+  });
+
   app.use("/api", (err, req, res, next) => {
     
     console.log("ERROR!!!", err);
