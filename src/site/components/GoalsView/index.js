@@ -608,7 +608,7 @@ class GoalsView extends BaseComponent {
                           floatingLabelText="Uusi kategoria"
                           value={this.state.incomeCategory.label}
                           onChange={this._handleIncomeCatChange.bind(this)}
-                          style={{ width: "100%" }} />
+                           />
                       </div>
                       <div className={s.catSubmit}>
                         <RaisedButton secondary={true} style={catSubmitCss} 
@@ -632,7 +632,7 @@ class GoalsView extends BaseComponent {
                           floatingLabelText="Uusi kategoria"
                           value={this.state.expenseCategory.label}
                           onChange={this._handleExpenseCatChange.bind(this)}
-                          style={{ width: "100%" }} />
+                           />
                       </div>
                       <div className={s.catSubmit}>
                         <RaisedButton secondary={true} style={catSubmitCss} 
