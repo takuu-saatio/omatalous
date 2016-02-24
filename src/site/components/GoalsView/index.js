@@ -306,6 +306,7 @@ class GoalsView extends BaseComponent {
       const highlightCss = {};
       if (transaction.type === "copy") {
         highlightCss.backgroundColor = "#f0f0f0";
+        highlightCss.border = "1px solid #e0e0e0";
       }
       
       let repeatLabel = null;
@@ -316,7 +317,7 @@ class GoalsView extends BaseComponent {
         case "W":
           repeatLabel = "Joka " + weekDays[transaction.repeatValue];
           break;
-        case "W":
+        case "D":
           repeatLabel = "Joka päivä";
           break;
         default:

@@ -1,5 +1,10 @@
+.root {
+  background-color: #f0f0f0;
+}
+
 .repeatingTransactions {
   display: inline-block;
+  vertical-align: top;
   width: 100%;
   @media(min-width: 660px) {
     width: 50%;
@@ -11,6 +16,7 @@
   width: 100%;
   padding-left: 6px;
   padding-top: 6px;
+  padding-bottom: 6px;
   margin-bottom: 6px;
   background-color: white;
   position: relative;
@@ -265,7 +271,8 @@
 
 .goals {
   
-  margin-bottom: 24px;
+  padding-bottom: 24px;
+  background-color: white;
 
   .goalLabel {
     width: 100%;
