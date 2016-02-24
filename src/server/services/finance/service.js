@@ -224,9 +224,11 @@ class FinanceService {
             
             let currentMonthSavingGoal = 0;
             if (goal.finite) {
-              currentMonthSavingGoal = 
-                ((goal.targetAmount - goal.startAmount) 
+              if (goal.start <= currentMonth && goal.end >= currentMonth) {
+                currentMonthSavingGoal = 
+                  ((goal.targetAmount - goal.startAmount) 
                   - nonRepeatingTotal) / remainingMonths;
+              }
             }
 
             const currentMonthAvailable =

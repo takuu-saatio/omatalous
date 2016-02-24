@@ -248,7 +248,7 @@ class ConsumptionView extends BaseComponent {
       new Date(txDate.getFullYear(), txDate.getMonth() + 1, 0).getDate();
     transactions.forEach(tx => {
       
-      const value = tx.sign === "+" ? tx.amount : -tx.amount;
+      const value = tx.sign === "+" ? 0 : -tx.amount;
       
       summary.total += value;
       if (tx.type === "single") {
@@ -270,15 +270,15 @@ class ConsumptionView extends BaseComponent {
     if (!goal) {
       return null;
     }
-    
+
     let totalSaving = goal.totalSaved;
     let totalSavingGoal = goal.targetAmount;
     
     let monthSaving = 0; 
     let monthSavingGoal = goal.currentMonthSavingGoal;
-
-    if (monthStats) {
     
+    if (monthStats) {
+
       const now = new Date();
       const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       const origAvg = (monthStats.fixedIncome - monthStats.fixedExpenses) / daysInMonth; 
@@ -291,18 +291,15 @@ class ConsumptionView extends BaseComponent {
       totalSaving += monthSaving;
 
     }
-     
+        
     let goalElem = null;
- 
+    const savingValue = this.state.savingView === "month" ?
+      Math.floor(monthSaving) : Math.floor(totalSaving);
+
     if (goal.finite) {
       
-      let savingValue = Math.floor(totalSaving);
-      let savingMax = Math.ceil(totalSavingGoal);
-
-      if (this.state.savingView === "month") {
-        savingValue = Math.floor(monthSaving);
-        savingMax = Math.ceil(monthSavingGoal);
-      }
+      const savingMax = this.state.savingView === "month" ?
+        Math.floor(monthSavingGoal) : Math.floor(totalSavingGoal);
 
       goalElem = (
         <div>
@@ -340,7 +337,7 @@ class ConsumptionView extends BaseComponent {
           <div className={s.sectionValue}>
             <div className={s.goal}>
               <div className={s.goalContent}>
-                {totalSaving} <span className={s.euroSign}>€</span>
+                {savingValue} <span className={s.euroSign}>€</span>
               </div>
             </div>
           </div>

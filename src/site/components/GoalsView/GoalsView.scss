@@ -1,3 +1,11 @@
+.repeatingTransactions {
+  display: inline-block;
+  width: 100%;
+  @media(min-width: 660px) {
+    width: 50%;
+  }
+}
+
 .transactionsHeader {
   
   width: 100%;
@@ -36,69 +44,221 @@
 }
 
 .transactions {
-  
-  padding-left: 6px;
-  padding-right: 6px;
-  padding-bottom: 12px;
-  background: #f0f0f0;
+   
+  width: 100%;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  text-align: center;
+  background-color: #f0f0f0;
 
-  .transaction {
+  .transactionsList {
     
-    display: inline-block;
-    margin: 6px;
-    background-color: white;
-    cursor: pointer;
+    width: 100%; 
+    max-width: 420px;
+    margin: auto;
 
-    .txTitle {
-      display: inline-block;
-      padding-left: 8px;
-      padding-right: 8px;
-      padding-top: 4px;
-      padding-bottom: 4px;
-      border-right: 1px solid #f0f0f0;
-    }
-    
-    .txDelete {
-      display: inline-block;
-      padding-left: 4px;
-      padding-right: 4px;
-      > i {
-        vertical-align: middle;
+    .transactionBox {
+      
+      height: 36px;
+      position: relative;
+      width: calc(100% - 16px);
+      margin: auto;
+      text-align: right;
+
+      &:hover {
+        .transaction {
+          left: -72px;
+          top: -4px;
+          width: 100%;
+          height: 44px;
+          z-index: 1;
+        }
       }
+
     }
+
+    .transaction {
     
-  }
+      display: flex;
+      position: absolute;
+      width: calc(100% - 10px);
+      top: 0px;
+      left: 0px;
+      height: 36px;
+      background-color: white;
+      padding-left: 6px;
+      border: 1px solid #f0f0f0;
+      align-items: center;
+      text-align: center;
 
+      transition: top 200ms, left 200ms, width 200ms, height 200ms;
+
+      .txAmount {
+        flex: 1 1;
+        padding-left: 3%;
+      }       
+       
+      .txCategory {
+        flex: 2 1;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+      }       
+      
+      .txDescription {
+        
+        flex: 2 1;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+        @media (max-width: 660px) {
+          display: none;
+        }
+
+      }
+      
+      .txDate {
+        
+        flex: 2 1;
+        text-align: right;
+
+        > i {
+          vertical-align: bottom;
+          color: #e0e0e0;
+        }
+
+      }       
+       
+    }
+
+    .txControls {
+      
+      display: inline-block;
+      margin-right: 4px;
+
+      .txControlContainer {
+        
+        display: inline-block;
+        vertical-align: super;
+        margin-top: 3px;
+        
+        > div {
+          padding-top: 3px;
+          margin-right: 3px;
+          cursor: pointer;
+          display: inline-block;
+        }
+      }
+
+    }
+     
+  }
+  
   .newTransaction {
-    display: inline-block;
-    border: 1px solid #e0e0e0;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    margin: 6px;
-    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
+    width: calc(100% - 16px); 
+    max-width: calc(420px - 16px);
   }
 
-  .catTypeLabel {
-    text-align: center;
+}
+
+.categoriesHeader {
+  
+  width: 100%;
+  padding-left: 6px;
+  padding-top: 6px;
+  margin-bottom: 6px;
+  background-color: white;
+  position: relative;
+
+  .categoriesLabel {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    margin-left: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+  }
+
+}
+
+.categoriesContainer {
+  display: inline-block;
+  width: 100%;
+  vertical-align: top;
+  @media(min-width: 660px) {
+    width: 49%;
+  }
+}
+
+.categories {
+  
+  background-color: #f0f0f0;
+  padding-bottom: 16px;
+   
+  .categoriesList {
+
+    padding: 8px;
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+
+    .catTypeLabel {
+      padding-top: 8px;
+      font-weight: 300;
+    }
+
+    .category {
+      
+      display: inline-block;
+      background-color: white;
+      margin-left: 4px;
+      margin-right: 4px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      padding-left: 6px;
+      padding-right: 6px;
+
+      .catTitle {
+        display: inline-block;
+        padding-right: 6px;
+        > span {
+          vertical-align: middle;
+        }
+      }
+
+      .catDelete {
+        display: inline-block;
+        > i {
+          vertical-align: middle;
+        }
+      }
+
+    }
+
   }
 
   .newCategory {
-
-    display: inline-block;
-    margin-left: 12px;
     
-    button > div { 
-      
-      padding-left: 4px;
-      padding-right: 4px;
+    width: calc(100% - 16px);
 
-      > i {
-        vertical-align: middle;
-      }
+    display: flex;  
 
+    .catInput {
+      flex: 1 1 auto;
     }
+
+    .catSubmit {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 8px;
+    }
+  
   }
 
 }
@@ -125,8 +285,6 @@
         padding-left: 8px;
         padding-right: 4px;
         flex: 1 1;
-        display: flex;
-        align-items: center;
       }
 
       .goalAmount {

@@ -7,11 +7,13 @@ import s from "./GoalsView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
+import RaisedButton from "material-ui/lib/raised-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
-import Toggle from "material-ui/lib/toggle";
+import Checkbox from "material-ui/lib/checkbox";
 import BaseComponent from "../BaseComponent";
 import { EditRepeatingTransactionContainer } from "../../containers";
+import { staticCategories } from "../../constants";
 
 @withStyles(s)
 @reactMixin.decorate(ReactIntl.IntlMixin)
@@ -292,6 +294,79 @@ class GoalsView extends BaseComponent {
 
   }
 
+  _renderTransactionElems(transactions) {
+
+    const weekDays = [ "Su", "Ma", "Ti", "Ke", "To", "Pe", "La" ];
+
+    return transactions.map(transaction => {
+
+      const categories = transaction.sign === "+" ?
+        staticCategories.income : staticCategories.expenses;
+      
+      const highlightCss = {};
+      if (transaction.type === "copy") {
+        highlightCss.backgroundColor = "#f0f0f0";
+      }
+      
+      let repeatLabel = null;
+      switch (transaction.repeats) {
+        case "M":
+          repeatLabel = transaction.repeatValue + ". pv";
+          break;
+        case "W":
+          repeatLabel = "Joka " + weekDays[transaction.repeatValue];
+          break;
+        case "W":
+          repeatLabel = "Joka päivä";
+          break;
+        default:
+          break;
+      }
+
+      const transactionElem = (
+        <div style={highlightCss} className={s.transaction}>
+          <div className={s.txAmount}
+            style={{ color: transaction.sign === "+" ? "#3B8021" : "#C53636" }}>
+            {transaction.sign}{transaction.amount}
+          </div>
+          <div className={s.txCategory}>
+            {transaction.description || categories[transaction.category]}
+          </div>
+          <div className={s.txDate}>
+            {repeatLabel}
+            <i className="material-icons">
+              &#xE315;
+            </i>
+          </div>
+        </div>
+      );
+
+      return (
+        <div key={transaction.uuid} className={s.transactionBox}>
+          {transactionElem}
+          <div className={s.txControls}>
+            <div className={s.txControlContainer}>
+              <div>
+                <i className="material-icons"
+                  onClick={() => this._editTransaction(transaction.uuid)}>
+                  &#xE8B8;
+                </i>
+              </div>
+              <div>
+                <i className="material-icons"
+                  onClick={() => this._deleteTransaction(transaction.uuid)}>
+                  &#xE872;
+                </i>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+    });
+
+  }
+
   render() {
      
     console.log("render goals", this.props, this.state);
@@ -366,34 +441,25 @@ class GoalsView extends BaseComponent {
  
     const fullWidth = { width: "100%", minWidth: "initial" };
     const cursorCss = { cursor: "pointer" }; 
-    let incomeTxElems = [];
-    let expenseTxElems = [];
+    let incomeTransactions = [];
+    let expenseTransactions = [];
+    let incomeTxElems = null;
+    let expenseTxElems = null;
     
     if (transactions) {
 
       transactions.forEach(transaction => {
         
-        const txElem = (
-          <div className={s.transaction} style={cursorCss} key={transaction.uuid}>
-            <div onClick={() => this._editTransaction(transaction.uuid)} 
-              className={s.txTitle}>
-              {transaction.description}&nbsp;
-              {transaction.amount} €
-            </div>
-            <div onClick={() => this._deleteTransaction(transaction.uuid)} 
-              className={s.txDelete}>
-              <i className="material-icons">&#xE14C;</i> 
-            </div>
-          </div>
-        );
-        
         if (transaction.sign === "+") {
-          incomeTxElems.push(txElem);
+          incomeTransactions.push(transaction);
         } else {
-          expenseTxElems.push(txElem);
+          expenseTransactions.push(transaction);
         }
 
       });
+    
+      incomeTxElems = this._renderTransactionElems(incomeTransactions);
+      expenseTxElems = this._renderTransactionElems(expenseTransactions);
 
     }
     
@@ -403,12 +469,12 @@ class GoalsView extends BaseComponent {
       categories.forEach(category => {
 
         const catElem = (
-          <div className={s.transaction} style={cursorCss} key={category.uuid}>
-            <div className={s.txTitle}>
-              {category.label}&nbsp;
+          <div className={s.category} style={cursorCss} key={category.uuid}>
+            <div className={s.catTitle}>
+              <span>{category.label}</span>
             </div>
             <div onClick={() => this._deleteCategory(category.uuid)} 
-              className={s.txDelete}>
+              className={s.catDelete}>
               <i className="material-icons">&#xE14C;</i>
             </div>
           </div>
@@ -479,80 +545,112 @@ class GoalsView extends BaseComponent {
       <div>
         {formError}
         <div className={s.root}>
-          <div className={s.transactionsHeader}>
-            <div className={s.transactionsLabel}>Toistuvat tulot</div>
-            <div className={s.transactionsSummary}>
-              <span style={{ color: "green" }} className={s.dataValue}>
-                +{incomeSummary}
-              </span>
-              <span className={s.euroSign}>
-                €/kk
-              </span>
+          <div className={s.repeatingTransactions}>
+            <div className={s.transactionsHeader}>
+              <div className={s.transactionsLabel}>Toistuvat tulot</div>
+              <div className={s.transactionsSummary}>
+                <span style={{ color: "green" }} className={s.dataValue}>
+                  +{incomeSummary}
+                </span>
+                <span className={s.euroSign}>
+                  €/kk
+                </span>
+              </div>
             </div>
-          </div>
-          <div className={s.transactions}>
-            {incomeTxElems}
-            <div onClick={() => this._editTransaction("+")} className={s.newTransaction}>
-              + UUSI
+            <div className={s.transactions}>
+              <div className={s.newTransaction}>
+                <RaisedButton onTouchTap={() => this._editTransaction("+")}
+                  secondary={true} label="Lisää uusi tulo"
+                  style={{ width: "100%" }} />
+              </div>
+              <div className={s.transactionsList}>
+                {incomeTxElems}
+              </div>
             </div>
-          </div>
-          <div className={s.transactionsHeader}>
-            <div className={s.transactionsLabel}>Toistuvat menot</div>
-            <div className={s.transactionsSummary}>
-              <span style={{ color: "red" }} className={s.dataValue}>
-                -{expensesSummary}
-              </span>
-              <span className={s.euroSign}>
-                €/kk
-              </span>
+          </div>  
+          <div className={s.repeatingTransactions}>
+            <div className={s.transactionsHeader}>
+              <div className={s.transactionsLabel}>Toistuvat menot</div>
+              <div className={s.transactionsSummary}>
+                <span style={{ color: "red" }} className={s.dataValue}>
+                  -{expensesSummary}
+                </span>
+                <span className={s.euroSign}>
+                  €/kk
+                </span>
+              </div>
             </div>
-          </div>
-          <div className={s.transactions}>
-            {expenseTxElems}
-            <div onClick={() => this._editTransaction("-")} className={s.newTransaction}>
-              + UUSI
+            <div className={s.transactions}>
+              <div className={s.newTransaction}>
+                <RaisedButton onTouchTap={() => this._editTransaction("-")}
+                  secondary={true} label="Lisää uusi meno"
+                  style={{ width: "100%" }} />
+              </div>
+              <div className={s.transactionsList}>
+                {expenseTxElems}
+              </div>
             </div>
           </div>
           <div>
-            <div>
-              <div className={s.transactionsHeader}>
-                <div className={s.transactionsLabel}>Omat kategoriat</div>
+            <div style={{ backgroundColor: "#f0f0f0" }}>
+              <div className={s.categoriesHeader}>
+                <div className={s.categoriesLabel}>Omat kategoriat</div>
               </div>
-              <div className={s.transactions}>
-                <div className={s.catTypeLabel}>Tulot</div>
-                {incomeCatElems}
-                <div className={s.newCategory}>
-                  <TextField style={catInputCss}
-                    name="label"
-                    floatingLabelText="Uusi kategoria"
-                    value={this.state.incomeCategory.label}
-                    onChange={this._handleIncomeCatChange.bind(this)} />
-                  <FlatButton style={catSubmitCss} 
-                    onTouchTap={() => this._saveCategory(this.state.incomeCategory)}>
-                    <i className="material-icons">&#xE148;</i>
-                  </FlatButton>
+              <div className={s.categoriesContainer}>
+                <div className={s.categories}>
+                  <div className={s.categoriesList}>
+                    <div className={s.catTypeLabel}>TULOT</div>
+                    <div className={s.newCategory}>
+                      <div className={s.catInput}>
+                        <TextField style={catInputCss}
+                          name="label"
+                          floatingLabelText="Uusi kategoria"
+                          value={this.state.incomeCategory.label}
+                          onChange={this._handleIncomeCatChange.bind(this)}
+                          style={{ width: "100%" }} />
+                      </div>
+                      <div className={s.catSubmit}>
+                        <RaisedButton secondary={true} style={catSubmitCss} 
+                          onTouchTap={() => this._saveCategory(this.state.incomeCategory)}
+                          label="Lisää">
+                        </RaisedButton>
+                      </div>
+                    </div>
+                    {incomeCatElems}
+                  </div>
                 </div>
               </div>
-              <div className={s.transactions}>
-                <div className={s.catTypeLabel}>Menot</div>
-                {expenseCatElems}
-                <div className={s.newCategory}>
-                  <TextField style={catInputCss}
-                    name="label"
-                    floatingLabelText="Uusi kategoria"
-                    value={this.state.expenseCategory.label}
-                    onChange={this._handleExpenseCatChange.bind(this)} />
-                  <FlatButton style={catSubmitCss} 
-                    onTouchTap={() => this._saveCategory(this.state.expenseCategory)}>
-                    <i className="material-icons">&#xE148;</i>
-                  </FlatButton>
+              <div className={s.categoriesContainer}>
+                <div className={s.categories}>
+                  <div className={s.categoriesList}>
+                    <div className={s.catTypeLabel}>MENOT</div>
+                    <div className={s.newCategory}>
+                      <div className={s.catInput}>
+                        <TextField style={catInputCss}
+                          name="label"
+                          floatingLabelText="Uusi kategoria"
+                          value={this.state.expenseCategory.label}
+                          onChange={this._handleExpenseCatChange.bind(this)}
+                          style={{ width: "100%" }} />
+                      </div>
+                      <div className={s.catSubmit}>
+                        <RaisedButton secondary={true} style={catSubmitCss} 
+                          onTouchTap={() => this._saveCategory(this.state.expenseCategory)}
+                          label="Lisää">
+                        </RaisedButton>
+                      </div>
+                    </div>
+                    {expenseCatElems}
+                  </div>
                 </div>
               </div>
               <div></div>
             </div>
           </div>
           <div className={s.goals}>
-            <div className={s.goalLabel}>Säästöasetukset</div>
+            <div className={s.categoriesHeader}>
+              <div className={s.categoriesLabel}>Säästöasetukset</div>
+            </div>
             <div className={s.goal}>
               <div className={s.goalRow}>
                 <div className={s.goalAmount}>
@@ -571,12 +669,11 @@ class GoalsView extends BaseComponent {
               </div>
               <div className={s.goalRow}>
                 <div className={s.finiteToggle}>
-                  <Toggle
-                    label="Tavoite"
-                    toggled={this.state.goal.finite}
-                    onToggle={() => this._toggleFiniteGoal()}
-                    labelStyle={{ width: "initial", marginRight: "8px" }}
+                  <div className={s.dropdownLabel} style={{ marginBottom: "6px" }}>Tavoite</div>
+                  <Checkbox
                     style={{ width: "initial", margin: "auto" }}
+                    checked={this.state.goal.finite}
+                    onCheck={() => this._toggleFiniteGoal()}
                   />  
                 </div>
                 <div className={s.goalAmount}>

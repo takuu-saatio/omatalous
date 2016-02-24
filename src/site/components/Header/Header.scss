@@ -12,6 +12,7 @@ $brand-color: #61dafb;
   max-width: $max-content-width;
   position: relative;
   display: flex;
+  z-index: 1;
 }
 
 .logo {
