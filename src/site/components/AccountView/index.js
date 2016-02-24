@@ -221,14 +221,42 @@ class AccountView extends BaseComponent {
     if (!account.password || account.password === "") {
       delete passwordStatus.pass;
     }
- 
+    
+    
+    let accountIcon = <i className="material-icons">&#xE853;</i>;
+    let accountName = null;
+    if (account && account.icon) {
+      
+      accountIcon = <img src={account.icon}/>;
+      accountName = account.email;
+      
+      if (account.firstName) {
+        accountName = " "+account.firstName;
+      }
+      
+      if (account.lastName) {
+        accountName += " "+account.lastName; 
+      }
+
+      accountName = accountName.trim();
+
+    }
+
     return (
       <div>
         {formError}
         <div className={s.root}>
           <div className={s.profile}>
             <div className={s.profileTitle}>
-              Henkilötiedot 
+              Profiili 
+            </div>
+            <div className={s.profileImage}>
+              <div className={s.imageCell}>
+                {accountIcon}
+              </div>
+              <div className={s.nameCell}>
+                {accountName}
+              </div> 
             </div>
             <div className={s.profileRow}>
               <div className={s.profileCell}>

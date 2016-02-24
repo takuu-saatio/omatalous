@@ -36,7 +36,7 @@ export default function(app) {
       let lastName = profile.name.familyName;
     
       if (!email) {
-        return { error: new Unauthorized(null, "missing_provider_data") };
+        return { error: new Unauthorized({ method }, "missing_provider_data") };
       }
 
       try {

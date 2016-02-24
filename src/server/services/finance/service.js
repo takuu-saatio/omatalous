@@ -372,12 +372,15 @@ class FinanceService {
     for (let tx of transactions) {
         
       if (tx.repeats === "M") {
+        
+        let repeatValue = tx.repeatValue > lastDay.getDate() ? 
+          lastDay.getDate() : tx.repeatValue;
 
-        if (tx.repeatValue >= tomorrow.getDate()) {
+        if (repeatValue >= tomorrow.getDate()) {
           let txJson = Object.assign({}, tx.json());
-          const monthDate = new Date(now.getFullYear(), now.getMonth(), tx.repeatValue);
+          const monthDate = new Date(now.getFullYear(), now.getMonth(), repeatValue);
           txJson.dateLabel = DAY_NAMES[monthDate.getDay()]+" "+monthDate.getDate();
-          txMap[tx.repeatValue].push(txJson);
+          txMap[repeatValue].push(txJson);
         }
 
       } else if (tx.repeats === "W") {

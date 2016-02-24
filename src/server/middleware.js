@@ -89,7 +89,18 @@ export function registerErrorHandlers(app) {
     if (!err.id) {
       err = new BaseError(err);
     }
-  
+     
+    if (err.id && err.id === "missing_provider_data") {
+      if (err.data.method === "Facebook") {
+        err.message = "Emme saaneet sähköpostiosoitettasi Facebookilta. Tieto voi puuttua tai et ole antanut lupaa sen luovuttamiseen. Sähköposti on pakollinen rekisteröintitieto. Voit kokeilla rekisteröitymistä Google-tunnuksilla tai sähköpostin ja salasanan yhdistelmällä.";
+      } else if (err.data.method === "Google") {
+        err.message = "Emme saaneet sähköpostiosoitettasi Googlelta. Tieto voi puuttua tai et ole antanut lupaa sen luovuttamiseen. Sähköposti on pakollinen rekisteröintitieto. Voit kokeilla rekisteröitymistä Facebook-tunnuksilla tai sähköpostin ja salasanan yhdistelmällä.";
+      }
+
+      req.session.error = err;
+      return res.redirect("/login");
+    }
+
     next(err);   
   
   });

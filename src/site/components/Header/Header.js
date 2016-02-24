@@ -46,7 +46,15 @@ class Header extends BaseComponent {
     this.state.navOpen = false;
     Location.go(path);
   }
-  
+
+  _getItemCss(path) {
+    return Object.assign({ 
+      borderTop: "1px solid #f0f0f0" 
+    }, this.state.routing.path === path ? {
+      borderLeft: "5px solid #00bcd4"
+    } : {});
+  }
+
   render() {
     
     console.log("HEADER", this.state, this.props); 
@@ -66,6 +74,10 @@ class Header extends BaseComponent {
     let logoStyles = s.logo;
     let logoNavPath = "/";
         
+    const menuItemStyle = {
+      borderTop: "1px solid #f0f0f0"
+    };
+
     if (auth && auth.user) {
       
       logoNavPath = "/consumption";  
@@ -79,9 +91,8 @@ class Header extends BaseComponent {
       
       if (auth.user.isAdmin) {
         adminNavItem = (
-          <MenuItem onTouchTap={() => this._menuGo("/admin")}>
+          <MenuItem style={this._getItemCss("/admin")} onTouchTap={() => this._menuGo("/admin")}>
             <div className={s.menuItem}>
-              <i className="material-icons">&#xE8D3;</i>
               <span>Hallinta</span>
             </div>
           </MenuItem> 
@@ -91,8 +102,22 @@ class Header extends BaseComponent {
     }
      
     let accountIcon = <i className="material-icons">&#xE853;</i>;
+    let accountName = null;
     if (auth.user && auth.user.icon) {
+      
       accountIcon = <img src={auth.user.icon}/>;
+      accountName = auth.user.email;
+      
+      if (auth.user.firstName) {
+        accountName = " "+auth.user.firstName;
+      }
+      
+      if (auth.user.lastName) {
+        accountName += " "+auth.user.lastName; 
+      }
+
+      accountName = accountName.trim();
+
     }
 
     return (
@@ -111,30 +136,43 @@ class Header extends BaseComponent {
         <div className={s.leftNav} style={leftNavCss}>
           <MenuItem onTouchTap={() => this._menuGo("/account")}>
             <div className={s.menuItem}>
-              {accountIcon}
-              <span>Tili</span>
+              <div className={s.userImage}>{accountIcon}</div>
+              <div className={s.userName}>{accountName}</div>
             </div>
           </MenuItem>
-          <MenuItem onTouchTap={() => this._menuGo("/consumption")}>
+          <MenuItem style={this._getItemCss("/consumption")} 
+            onTouchTap={() => this._menuGo("/consumption")}>
             <div className={s.menuItem}>
-              <i className="material-icons">&#xE870;</i>
-              <span>Kulutus</span>
+              <span>Tilanne</span>
             </div>
           </MenuItem>
-          <MenuItem onTouchTap={() => this._menuGo("/goals")}>
+          <MenuItem style={this._getItemCss("/goals")} 
+            onTouchTap={() => this._menuGo("/goals")}>
             <div className={s.menuItem}>
-              <i className="material-icons">&#xE850;</i>
-              <span>Tavoitteet</span>
+              <span>Talouteni</span>
             </div>
           </MenuItem>
-          <MenuItem onTouchTap={() => this._menuGo("/planning")}>
+          <MenuItem style={this._getItemCss("/planning")} 
+            onTouchTap={() => this._menuGo("/planning")}>
             <div className={s.menuItem}>
-              <i className="material-icons">&#xE878;</i>
               <span>Suunnittelu</span>
             </div>
           </MenuItem>
+          <MenuItem style={this._getItemCss("/account")} 
+            onTouchTap={() => this._menuGo("/account")}>
+            <div className={s.menuItem}>
+              <span>Profiili</span>
+            </div>
+            <div className={s.itemSelection}></div>
+          </MenuItem>
           {adminNavItem}
-          <MenuItem primaryText="Ulos" onTouchTap={this._logOut} />
+          <MenuItem style={menuItemStyle} 
+            onTouchTap={this._logOut}>
+            <div className={s.menuItem}>
+              <span>Kirjaudu ulos</span>
+              <i className="material-icons">&#xE8AC;</i>
+            </div>
+          </MenuItem>
         </div>
       </div>
     );

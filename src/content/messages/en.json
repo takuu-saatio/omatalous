@@ -5,6 +5,7 @@
   "logout": "ULOS",
   "pwd_mismatch": "Väärä salasana",
   "token_not_found": "Väärä kirjautumislinkki",
+  "missing_provider_data": "Puutteelliset tiedot Facebookista",
   "changed": "Muutettu",
   "saved": "Tallennettu",
   "save_failed": "Tallennusvirhe"

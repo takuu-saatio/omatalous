@@ -215,7 +215,7 @@ class LoginPage extends BaseComponent {
   createErrorElem(error) {
     return (
       <div className={s.error}> 
-        {this.getIntlMessage(error.id)}
+        {error.message || this.getIntlMessage(error.id)}
       </div>
     );
   }

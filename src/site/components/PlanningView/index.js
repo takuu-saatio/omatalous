@@ -2,13 +2,28 @@ import React, { Component, PropTypes } from "react";
 import s from "./PlanningView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
-import FlatButton from "material-ui/lib/flat-button";
+import RaisedButton from "material-ui/lib/raised-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
 import { EditPlannedTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
 import http from "../../tools/http-client";
+
+const monthNames = {
+  "01": "Tammikuu",
+  "02": "Helmikuu",
+  "03": "Maaliskuu",
+  "04": "Huhtikuu",
+  "05": "Toukokuu",
+  "06": "Kesäkuu",
+  "07": "Heinäkuu",
+  "08": "Elokuu",
+  "09": "Syyskuu",
+  "10": "Lokakuu",
+  "11": "Marraskuu",
+  "12": "Joulukuu"
+};
 
 @withStyles(s)
 class PlanningView extends BaseComponent {
@@ -59,6 +74,16 @@ class PlanningView extends BaseComponent {
     this.state.edit = false;
     this.fetchData();
   }
+
+  _renderTransactionElems(transactions) {
+      
+    return transactions.map(transaction => {
+
+
+    });
+
+  }
+
 
   render() {
     
@@ -114,52 +139,73 @@ class PlanningView extends BaseComponent {
           
           const categories = transaction.sign === "+" ?
             staticCategories.income : staticCategories.expenses;
-            
+             
+          const highlightCss = {};
+          if (transaction.type === "copy") {
+            highlightCss.backgroundColor = "#f0f0f0";
+            highlightCss.border = "1px solid #e0e0e0";
+          }
+          
+          const transactionElem = (
+            <div style={highlightCss} className={s.transaction}>
+              <div className={s.txAmount}
+                style={{ color: transaction.sign === "+" ? "#3B8021" : "#C53636" }}>
+                {transaction.sign}{transaction.amount} €
+              </div>
+              <div className={s.txCategory}>
+                {categories[transaction.category]}
+              </div>
+              <div className={s.txDescription}>
+                {transaction.description}
+              </div>
+              <div className={s.txDate}>
+                <i className="material-icons">
+                  &#xE315;
+                </i>
+              </div>
+            </div>
+          );
+
           return (
-            <div key={transaction.uuid} className={s.transaction}>
-              <div>
-                {transaction.month}
-              </div>
-              <div style={{ color: transaction.sign === "+" ? "green" : "red" }}>
-                {transaction.sign}{transaction.amount}
-              </div>
-              <div>{categories[transaction.category]}</div>
-              <div>{transaction.description}</div>
+            <div key={transaction.uuid} className={s.transactionBox}>
+              {transactionElem}
               <div className={s.txControls}>
                 <div className={s.txControlContainer}>
                   <div>
                     <i className="material-icons"
-                      onTouchTap={() => this._copyTransaction(transaction)}>
+                      onClick={() => this._copyTransaction(transaction)}>
                       &#xE8A1;
                     </i>
                   </div>
                   <div>
                     <i className="material-icons"
-                      onTouchTap={() => this._editTransaction(transaction.uuid)}>
-                      &#xE150;
+                      onClick={() => this._editTransaction(transaction.uuid)}>
+                      &#xE8B8;
                     </i>
                   </div>
                   <div>
                     <i className="material-icons"
-                      onTouchTap={() => this._deleteTransaction(transaction.uuid)}>
-                      &#xE14A;
+                      onClick={() => this._deleteTransaction(transaction.uuid)}>
+                      &#xE872;
                     </i>
                   </div>
                 </div>
               </div>
             </div>
           );
+        
         });
       
         transactionElems = transactionElems.concat(groupTransactionElems);
         if (groupedTxs.length > i+1) {
 
           let nextMonth = groupedTxs[i+1].month;
+          const [ year, month ] = nextMonth.split("-");
           const monthHeaderElem = (
             <div className={s.monthHeader} key={nextMonth}>
               <div className={s.monthHeaderLine}></div>
               <div className={s.monthHeaderLabel}>
-                {nextMonth}
+                {monthNames[month] + " " + year}
               </div>
             </div>
           );
@@ -181,13 +227,21 @@ class PlanningView extends BaseComponent {
     return (
       <div>
         <div className={s.root}>
+          <div className={s.planningTitle}>
+            Suunnittelu
+          </div>
+          <div className={s.planningDescription}>
+            Tähän voit listata etukäteen arvioimiasi menoja ja tuloja.
+            <br/>
+            Kun ne toteutuvat, voit lisätä ne Tapahtumiin.
+          </div>
           <div className={s.buttons}>
             <div className={s.buttonLeft}>
-              <FlatButton style={{ width: "100%", lineHeight: "28px" }} 
+              <RaisedButton secondary={true} style={{ width: "100%", lineHeight: "28px" }} 
                 onTouchTap={() => this._editTransaction("-")} label="- LISÄÄ MENO"/>
             </div>
             <div className={s.buttonRight}>
-              <FlatButton style={{ width: "100%", lineHeight: "28px" }} 
+              <RaisedButton secondary={true} style={{ width: "100%", lineHeight: "28px" }} 
                 onTouchTap={() => this._editTransaction("+")} label="+ LISÄÄ TULO"/>
             </div>
           </div>

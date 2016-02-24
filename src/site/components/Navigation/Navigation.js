@@ -81,7 +81,7 @@ class Navigation extends Component {
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
           <IconButton onClick={() => Location.go("/consumption")}
             iconClassName="material-icons"
-            tooltip="Kulutus"
+            tooltip="Tilanne"
             iconStyle={iconItemStyle}
             tooltipStyles={tooltipStyles}
             style={iconStyle}>
@@ -94,7 +94,7 @@ class Navigation extends Component {
         <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
           <IconButton onClick={() => Location.go("/goals")}
             iconClassName="material-icons"
-            tooltip="Tavoitteet"
+            tooltip="Talouteni"
             iconStyle={iconItemStyle}
             tooltipStyles={tooltipStyles}
             style={iconStyle}>
