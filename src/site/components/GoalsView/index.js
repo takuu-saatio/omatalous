@@ -535,7 +535,7 @@ class GoalsView extends BaseComponent {
     }
 
     const catInputCss = {
-      width: "140px"
+      width: "100%"
     };
     const catSubmitCss = {
       minWidth: "initial",
@@ -608,7 +608,7 @@ class GoalsView extends BaseComponent {
                           floatingLabelText="Uusi kategoria"
                           value={this.state.incomeCategory.label}
                           onChange={this._handleIncomeCatChange.bind(this)}
-                           />
+                        />
                       </div>
                       <div className={s.catSubmit}>
                         <RaisedButton secondary={true} style={catSubmitCss} 
@@ -632,7 +632,7 @@ class GoalsView extends BaseComponent {
                           floatingLabelText="Uusi kategoria"
                           value={this.state.expenseCategory.label}
                           onChange={this._handleExpenseCatChange.bind(this)}
-                           />
+                        />
                       </div>
                       <div className={s.catSubmit}>
                         <RaisedButton secondary={true} style={catSubmitCss} 
