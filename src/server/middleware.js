@@ -12,8 +12,12 @@ export function registerMiddleware(app) {
   
   app.use(async (req, res, next) => {
 
-    log.debug(`Access path ${req.path}`);
-        
+    log.debug(`Access path ${req.path}`, req.query);
+    
+    if (req.query && req.query.nonce) {
+      delete req.query.nonce;
+    }
+
     if (req.path.substring(0, 2) === "/_") {
       return next();
     } else if (req.path.substring(0, 8) === "/main.js") {

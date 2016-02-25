@@ -67,11 +67,6 @@ class GoalsView extends BaseComponent {
   
   updateState(state) {
     
-    // Win7/IE10 hack :( 
-    if (state.transactions) {
-      this.state.transactions = [];
-    }
-
     if (state.categoryCreated === true) {
       this.state.categories.push(state.category);
       if (state.category.type === "expense") {

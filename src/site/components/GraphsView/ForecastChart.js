@@ -104,7 +104,7 @@ class ForecastChart extends Component {
 
             htmlContent += `<div style="flex: 1 1 auto;">`;
             
-            if (meta[point.id][point.index - 1]) {
+            if (point.id && meta[point.id][point.index - 1]) {
               meta[point.id][point.index - 1].forEach(tx => {
                 const catLabels = tx.sign === "+" ?
                   staticCategories.income : staticCategories.expenses;

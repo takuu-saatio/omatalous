@@ -17,7 +17,7 @@ class HttpClient {
     
     return new Promise((resolve, reject) => {
       request.get(path)
-      .query(params || {})
+      .query(Object.assign((params || {}), { nonce: (new Date()).getTime() }))
       .accept("application/json")
       .end((err, res) => {
         this._resolveResponse(resolve, err, res);
@@ -29,6 +29,7 @@ class HttpClient {
   post(path, body) {
     return new Promise((resolve, reject) => {
       request.post(path)
+      .query({ nonce: (new Date()).getTime() })
       .send(body)
       .accept("application/json")
       .end((err, res) => {
@@ -40,6 +41,7 @@ class HttpClient {
   put(path, body) {
     return new Promise((resolve, reject) => {
       request.put(path)
+      .query({ nonce: (new Date()).getTime() })
       .send(body)
       .accept("application/json")
       .end((err, res) => {
@@ -51,6 +53,7 @@ class HttpClient {
   delete(path, body) {
     return new Promise((resolve, reject) => {
       request.delete(path)
+      .query({ nonce: (new Date()).getTime() })
       .accept("application/json")
       .end((err, res) => {
         this._resolveResponse(resolve, err, res);

@@ -14,7 +14,14 @@ export function fetchGraphStats(user, params) {
     const action = processResponse(response, STATS_FETCH_SUCCESS, STATS_FETCH_FAIL);
     
     if (action.type === STATS_FETCH_SUCCESS) {
+      
       action.stats = response.stats; 
+
+      response = await http.get(`/api/finance/categories/${user}`);
+      if (response.categories) {
+        action.categories = response.categories;
+      }
+    
     }
 
     dispatch(action);

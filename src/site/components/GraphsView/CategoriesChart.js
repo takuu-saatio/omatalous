@@ -7,12 +7,13 @@ import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import CircularProgress from "material-ui/lib/circular-progress";
 import { staticCategories } from "../../constants";
+import { mergeCategories } from "../../utils";
 
 class CategoriesChart extends Component {
   
   constructor(props) {
 
-    super(props);    
+    super(props);
     this.state = {
       catParams: {
         graphs: "categories,forecast,progress",
@@ -86,11 +87,16 @@ class CategoriesChart extends Component {
   }
 
   _renderChartContent(data) {
+    
+    const incomeCategories = mergeCategories(
+      staticCategories.income, this.props.customCategories, "income");
+    const expenseCategories = mergeCategories(
+      staticCategories.expenses, this.props.customCategories, "expense");
       
     const catKeys = Object.keys(data);
     const chartColumns = catKeys.map(catKey => {
       const catLabels = this.state.catParams.sign === "+" ?
-        staticCategories.income : staticCategories.expenses;
+        incomeCategories : expenseCategories;
       return [catLabels[catKey], data[catKey]]
     });
 
@@ -166,8 +172,8 @@ class CategoriesChart extends Component {
       d3.select("#catLegend").insert("div", ".chart")
       .attr("class", "legend").selectAll(".legend-item").data(sortedColumns)
       .enter().append("div")
-        .attr("data-id", data => data[0])
-        .attr("class", "legend-item")
+      .attr("data-id", data => data[0])
+      .attr("class", "legend-item")
       .html(data => {
         const color = chart.color(data[0]);
         return `

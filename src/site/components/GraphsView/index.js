@@ -72,15 +72,17 @@ class GraphsView extends BaseComponent {
     
     const categoriesElem = <CategoriesChart 
       data={categoriesData}
+      customCategories={this.state.categories}
       fetchData={this.fetchData.bind(this)}
       graphSize={graphSize} />
-
+      
     const forecastElem = <ForecastChart 
       data={forecastData}
       graphSize={graphSize} />
 
     const progressElem = <ProgressChart 
       data={progressData}
+      customCategories={this.state.categories}
       graphSize={graphSize} />
            
     return (

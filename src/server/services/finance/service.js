@@ -53,7 +53,7 @@ class FinanceService {
   }
 
   getTransactions(user, params, order) {
-  
+    
     return new Promise((resolve, reject) => {
 
       const { Transaction } = this.app.entities;

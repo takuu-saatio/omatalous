@@ -7,6 +7,7 @@ import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import CircularProgress from "material-ui/lib/circular-progress";
 import { staticCategories } from "../../constants";
+import { mergeCategories } from "../../utils";
 
 class ProgressChart extends Component {
   
@@ -70,14 +71,19 @@ class ProgressChart extends Component {
     });
     
     
+    const incomeCategories = mergeCategories(
+      staticCategories.income, this.props.customCategories, "income");
+    const expenseCategories = mergeCategories(
+      staticCategories.expenses, this.props.customCategories, "expense");
+      
     const progressColumns = [];
     Object.keys(valsByCat).forEach(cat => {
       
       const vals = valsByCat[cat];
       if (vals[0].substring(0, 4) === "inc_") {
-        vals[0] = "+ " + staticCategories.income[vals[0].substring(4)];
+        vals[0] = "+ " + incomeCategories[vals[0].substring(4)];
       } else {
-        vals[0] = "- " + staticCategories.expenses[vals[0].substring(4)];
+        vals[0] = "- " + expenseCategories[vals[0].substring(4)];
       }
 
       progressColumns.push(vals);

@@ -49,7 +49,7 @@ export function fetchTransactions(user, month) {
     if (month) {
       url += `&month=${month}`;
     }
-
+    
     let response = await http.get(url);
     const action = processResponse(response, FETCH_SUCCESS, FETCH_FAIL);
     

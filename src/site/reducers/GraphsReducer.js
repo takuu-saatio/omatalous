@@ -10,7 +10,7 @@ export default function (state = {}, action) {
   
   switch (action.type) {
     case actions.STATS_FETCH_SUCCESS:
-      return { stats: action.stats, isUpdated: true };
+      return { stats: action.stats, categories: action.categories, isUpdated: true };
     case actions.STATS_FETCH_FAIL:
       return { error: action.error, isUpdated: true };
     default:
