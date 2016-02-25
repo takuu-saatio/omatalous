@@ -14,6 +14,7 @@ import Checkbox from "material-ui/lib/checkbox";
 import BaseComponent from "../BaseComponent";
 import { EditRepeatingTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
+import { mergeCategories } from "../../utils";
 
 @withStyles(s)
 @reactMixin.decorate(ReactIntl.IntlMixin)
@@ -298,10 +299,15 @@ class GoalsView extends BaseComponent {
 
     const weekDays = [ "Su", "Ma", "Ti", "Ke", "To", "Pe", "La" ];
 
+    const incomeCategories = mergeCategories(
+      staticCategories.income, this.state.categories, "income");
+    const expenseCategories = mergeCategories(
+      staticCategories.expenses, this.state.categories, "expense");
+
     return transactions.map(transaction => {
 
       const categories = transaction.sign === "+" ?
-        staticCategories.income : staticCategories.expenses;
+        incomeCategories : expenseCategories;
       
       const highlightCss = {};
       if (transaction.type === "copy") {

@@ -8,6 +8,7 @@ import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
 import { EditPlannedTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
+import { mergeCategories } from "../../utils";
 import http from "../../tools/http-client";
 
 const monthNames = {
@@ -75,16 +76,6 @@ class PlanningView extends BaseComponent {
     this.fetchData();
   }
 
-  _renderTransactionElems(transactions) {
-      
-    return transactions.map(transaction => {
-
-
-    });
-
-  }
-
-
   render() {
     
     this._setTitle("Suunnittelu");
@@ -114,6 +105,11 @@ class PlanningView extends BaseComponent {
     
     }
      
+    const incomeCategories = mergeCategories(
+      staticCategories.income, this.state.categories, "income");
+    const expenseCategories = mergeCategories(
+      staticCategories.expenses, this.state.categories, "expense");
+      
     let transactionElems = null;
     if (transactions && transactions.length > 0) {
       
@@ -138,7 +134,7 @@ class PlanningView extends BaseComponent {
         const groupTransactionElems = group.transactions.map(transaction => {
           
           const categories = transaction.sign === "+" ?
-            staticCategories.income : staticCategories.expenses;
+            incomeCategories : expenseCategories;
              
           const highlightCss = {};
           if (transaction.type === "copy") {

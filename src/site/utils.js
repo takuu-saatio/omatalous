@@ -90,3 +90,20 @@ export function passwordValid(password) {
   return "Salasana";
 
 }
+
+export function mergeCategories(staticCategories, customCategories, categoryType) {
+    
+  const mergedCategories = Object.assign({}, staticCategories);
+
+  if (customCategories) {
+    customCategories.forEach(category => {
+      if (category.type === categoryType) {
+        mergedCategories[category.name] = category.label;
+      }
+    });
+  }
+
+  return mergedCategories;
+
+}
+

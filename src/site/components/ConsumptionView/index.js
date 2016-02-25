@@ -12,6 +12,7 @@ import LinearProgress from "material-ui/lib/linear-progress";
 import BaseComponent from "../BaseComponent";
 import { EditTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
+import { mergeCategories } from "../../utils";
 
 @withStyles(s)
 class ConsumptionView extends BaseComponent {
@@ -69,7 +70,7 @@ class ConsumptionView extends BaseComponent {
     if (state.goal) {
       this.state.goal = null;
     }
-    
+
     super.updateState(state);
     
     if (state.messages && state.messages.editStatus === "saved") {
@@ -443,11 +444,16 @@ class ConsumptionView extends BaseComponent {
   }
 
   _renderTransactionElems(transactions) {
-      
+
+      const incomeCategories = mergeCategories(
+        staticCategories.income, this.state.categories, "income");
+      const expenseCategories = mergeCategories(
+        staticCategories.expenses, this.state.categories, "expense");
+
       return transactions.map(transaction => {
 
         const categories = transaction.sign === "+" ?
-          staticCategories.income : staticCategories.expenses;
+          incomeCategories : expenseCategories;
         
         const highlightCss = {};
         if (transaction.type === "copy") {
@@ -504,10 +510,15 @@ class ConsumptionView extends BaseComponent {
   
   _renderFutureTransactionElems(transactions) {
       
+      const incomeCategories = mergeCategories(
+        staticCategories.income, this.state.categories, "income");
+      const expenseCategories = mergeCategories(
+        staticCategories.expenses, this.state.categories, "expense");
+        
       return transactions.map((transaction, index) => {
 
         const categories = transaction.sign === "+" ?
-          staticCategories.income : staticCategories.expenses;
+          incomeCategories : expenseCategories;
         
         return (
           <div key={transaction.uuid + "-" + index} className={s.futureTransaction}>
@@ -656,25 +667,19 @@ class ConsumptionView extends BaseComponent {
     
     const quickTransaction = this.state.quickTransaction;
 
-    const ownCategories = this.state.categories;
-    let categories = null;
     let categoryType = null;
+    let typeCategories = null;
     if(quickTransaction.sign === "+") {
-      categories = staticCategories.income;
+      typeCategories = staticCategories.income;
       categoryType = "income";
     } else {
-      categories = staticCategories.expenses;
+      typeCategories = staticCategories.expenses;
       categoryType = "expense";
     }
-
-    if (ownCategories) {
-      ownCategories.forEach(category => {
-        if (category.type === categoryType) {
-          categories[category.name] = category.label;
-        }
-      });
-    }
-    
+ 
+    let categories = mergeCategories(
+      typeCategories, this.state.categories, categoryType);
+      
     const redColorCss = { color: "#C53636" };
     const greenColorCss = { color: "#3B8021" };
 
@@ -779,7 +784,7 @@ class ConsumptionView extends BaseComponent {
 
   render() {
      
-    console.log("render consumption");
+    console.log("render consumption", this.state);
     let { transactions, goal, monthStats, 
       alerts, messages } = this.state;
     
