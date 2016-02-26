@@ -19,6 +19,7 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
   }
 
   _handleRepeatDropdown(event, index, value) {
+    this.state.transaction.repeatValue = 1;
     this._handleFormChange("repeats", value);
   }
   
@@ -72,6 +73,9 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
       <div className={s.extraGroup}>
         <div className={s.repetitionSettings}> 
           <div className={s.repetitionType}>
+            <div className={s.groupLabel}>
+              Toistuvuus
+            </div> 
             <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
               name="repeats" 
               value={this.state.transaction.repeats} 
@@ -82,6 +86,9 @@ class EditRepeatingTransactionView extends EditTransactionViewClass {
             </DropDownMenu>
           </div>
           <div className={s.repetitionValue}>
+            <div className={s.groupLabel}>
+              Ajankohta
+            </div> 
             {valueElem}
           </div>
         </div>

@@ -47,16 +47,13 @@
     align-items: flex-end;
     padding-bottom: 8px;
     position: relative;
-
-    > button { 
-      > div {
-        > i {
-          vertical-align: middle;
-          font-size: 24px;
-        }
-      }
+ 
+    .signIcon {
+      font-size: 32px;
+      padding: 0px;
     }
 
+    
   }
 
   .amount {
@@ -127,6 +124,7 @@
   padding-bottom: 36px;
   background-color: white;
   border-bottom: 1px solid #f0f0f0;
+  user-select: none;
 
   .monthHeader {
     
@@ -165,29 +163,36 @@
     background-color: white;
     
     display: flex;
-    
-    .sectionLabel {
-      font-size: 12px;
-      text-align: left;
-      margin-bottom: 2px;
-      margin-left: 2px;
-    }
-    
-    .sectionValue {
+   
+    .section {
       
-      font-size: 32px;
-      font-weight: 300;
-      
-      @media (max-width: 380px) {
-        font-size: 26px;
+      flex: 1 1;  
+      position: relative;
+
+      .sectionLabel {
+        font-size: 12px;
+        text-align: left;
+        margin-bottom: 2px;
+        margin-left: 2px;
       }
       
-      .euroSign {
-        font-size: 24px;
-        font-weight: 100;
+      .sectionValue {
+        
+        font-size: 32px;
+        font-weight: 300;
+        
         @media (max-width: 380px) {
-          font-size: 14px;
+          font-size: 26px;
         }
+        
+        .euroSign {
+          font-size: 24px;
+          font-weight: 100;
+          @media (max-width: 380px) {
+            font-size: 14px;
+          }
+        }
+
       }
       
     }
@@ -197,20 +202,7 @@
       padding-left: 3px;
       padding-bottom: 4px;
     }
-
-    > div:nth-child(1) {
-      flex: 1 1;
-    }
-    
-    > div:nth-child(2) {
-      
-      border-left: 1px solid #e0e0e0;
-      border-right: 1px solid #e0e0e0;
-      flex: 1 1;
-      position: relative;
-      
-    }
-    
+ 
     .savingsCell {
     
       flex: 1 1;
@@ -287,12 +279,9 @@
       }
 
     }
-    
-    > div:nth-child(4) {
-      flex: 2 1;
-    }
-    
+     
     .periodSwitch {
+
       position: absolute;
       bottom: -22px;
       left: -1px;
@@ -300,10 +289,12 @@
       background-color: white;
       font-size: 12px;
       display: flex;
+      
       .periodSwitchCell {
         flex: 1 1;
         cursor: pointer;
       }
+
     }
 
   }
@@ -398,7 +389,8 @@
   margin-top: 16px;
   margin-bottom: 6px;
   text-align: center;
- 
+  user-select: none;
+
   .transactionsList {
      
     .transactionBox {
@@ -483,6 +475,7 @@
       
       display: inline-block;
       margin-right: 4px;
+      color: #00bcd4;
 
       .txControlContainer {
         

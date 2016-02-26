@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from "react";
 import s from "./LoginView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
-import FlatButton from "material-ui/lib/flat-button";
+import RaisedButton from "material-ui/lib/raised-button";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import BaseComponent from "../BaseComponent";
@@ -106,7 +106,7 @@ class LoginPage extends BaseComponent {
         <form className={s.renewForm} action="/login" method="post">
           <input type="hidden" name="email" value="token" />
           <input type="hidden" name="password" value={this.state.token} />
-          <FlatButton type="submit" label="SISÄÄN" />
+          <RaisedButton secondary={true} type="submit" label="SISÄÄN" />
         </form>
       </div>
     );
@@ -196,9 +196,9 @@ class LoginPage extends BaseComponent {
                   </a>
                 </div>
                 <div className={s.submitButton}>
-                  <FlatButton disabled={disableLogin}
-                    type="submit" label="Sisään">
-                  </FlatButton>
+                  <RaisedButton disabled={disableLogin}
+                    secondary={true} type="submit" label="Sisään">
+                  </RaisedButton>
                 </div>
               </div>
               <div>

@@ -5,6 +5,7 @@ import s from "./AccountView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
+import RaisedButton from "material-ui/lib/raised-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
@@ -316,7 +317,7 @@ class AccountView extends BaseComponent {
                 {editStatus}
               </div>
               <div className={s.saveButton}>
-                <FlatButton disabled={saveDisabled}
+                <RaisedButton secondary={true} disabled={saveDisabled}
                   onTouchTap={() => this._saveAccount()} label="Tallenna" />
               </div>
             </div>

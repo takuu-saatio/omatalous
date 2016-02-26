@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import s from "./ConsumptionView.scss";
+import cx from "classnames";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import FlatButton from "material-ui/lib/flat-button";
@@ -176,6 +177,7 @@ class ConsumptionView extends BaseComponent {
     let sign = this.state.quickTransaction.sign;
     sign = sign === "-" ? "+" : "-"; 
     this.state.quickTransaction.sign = sign;
+    this.state.quickTransaction.category = "misc";
     this.setState(this.state);
   }
   
@@ -214,7 +216,7 @@ class ConsumptionView extends BaseComponent {
   _getHighlightCss(field, value) {
     
     if (field === value) {
-      return { backgroundColor: "#f0f0f0" };
+      return { backgroundColor: "#00bcd4", color: "white" };
     }
     
     return {};
@@ -376,14 +378,11 @@ class ConsumptionView extends BaseComponent {
     }
     
     const savingElem = this._renderGoal(goal, monthStats);
- 
-    return (
-      <div className={s.month}>
-        <div className={s.monthHeader}>
-          <span>Kuluva kuukausi</span>
-        </div>  
-        <div className={s.monthData}>
-          <div className={s.section}>
+    
+    let remainingSection = null;
+    if (goal && goal.finite) {
+      remainingSection = (
+          <div className={s.section} style={{ borderRight: "1px solid #f0f0f0" }}>
             <div className={s.sectionLabel}>
               Jäljellä
             </div>
@@ -391,6 +390,16 @@ class ConsumptionView extends BaseComponent {
               {available} <span className={s.euroSign}>€</span>
             </div>
           </div>
+      );
+    }
+
+    return (
+      <div className={s.month}>
+        <div className={s.monthHeader}>
+          <span>Kuluva kuukausi</span>
+        </div>  
+        <div className={s.monthData}>
+          {remainingSection}
           <div className={s.section}>
             <div className={s.sectionLabel}>
               Käytettävissä
@@ -411,8 +420,10 @@ class ConsumptionView extends BaseComponent {
               </div>
             </div>
           </div>
-          <div className={s.savingsCell}>
-            {savingElem}
+          <div className={s.section} style={{ borderLeft: "1px solid #f0f0f0" }}>
+            <div className={s.savingsCell}>
+              {savingElem}
+            </div>
             <div className={s.periodSwitch}>
               <div style={this._getHighlightCss(this.state.savingView, "total")}
                 className={s.periodSwitchCell}
@@ -440,6 +451,10 @@ class ConsumptionView extends BaseComponent {
         staticCategories.expenses, this.state.categories, "expense");
 
       return transactions.map(transaction => {
+        
+        if (transaction.amount === 0) {
+          return null;
+        }
 
         const categories = transaction.sign === "+" ?
           incomeCategories : expenseCategories;
@@ -687,12 +702,13 @@ class ConsumptionView extends BaseComponent {
     
     let txSignSymbol = null;
     let iconColorCss = null;
+    const signSymbolCss = cx("material-icons", "pulsar", s.signIcon);
     if (quickTransaction.sign === "-") {
       iconColorCss = redColorCss;
-      txSignSymbol = (<span className="material-icons">&#xE15D;</span>);
+      txSignSymbol = (<span className={signSymbolCss}>&#xE15D;</span>);
     } else {
       iconColorCss = greenColorCss;
-      txSignSymbol = (<span className="material-icons">&#xE148;</span>);
+      txSignSymbol = (<span className={signSymbolCss}>&#xE148;</span>);
     }
     
     let inputErrorElem = null;
@@ -727,7 +743,8 @@ class ConsumptionView extends BaseComponent {
       <div className={s.saveTransactionContainer}>
         <div className={s.saveTransaction} style={txBorderCss}>
           <div className={s.sign}>
-            <IconButton iconStyle={signIconCss} 
+            <IconButton 
+              iconStyle={iconColorCss} 
               style={signButtonCss} 
               onTouchTap={() => this._toggleTxSign()}>
               {txSignSymbol}

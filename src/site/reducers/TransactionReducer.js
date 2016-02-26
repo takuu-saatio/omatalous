@@ -14,8 +14,12 @@ export default function (state = {}, action) {
     case actions.TX_FETCH_SUCCESS:
       return { transaction: action.transaction, isUpdated: true };
     case actions.TX_SAVE_SUCCESS:
-      console.log("return save state");
-      return { messages: { editStatus: "saved" }, created: action.created, isUpdated: true };
+      return { 
+        status: "saved",
+        messages: { editStatus: "saved" }, 
+        created: action.created, 
+        isUpdated: true 
+      };
     case actions.TX_DELETE_SUCCESS:
       return { status: "deleted" };
     case actions.TX_SAVE_FAIL:

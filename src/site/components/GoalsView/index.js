@@ -6,7 +6,6 @@ import ReactIntl from "react-intl";
 import s from "./GoalsView.scss";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
-import FlatButton from "material-ui/lib/flat-button";
 import RaisedButton from "material-ui/lib/raised-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
@@ -494,8 +493,9 @@ class GoalsView extends BaseComponent {
     let goalDeleteButton = null;
     if (this.state.goal.uuid) {
       goalDeleteButton = (
-        <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-          onTouchTap={() => this._deleteGoal()} label="POISTA"/>
+        <RaisedButton 
+          style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+          onTouchTap={() => this._deleteGoal()} label="ALUSTA"/>
       );
     }
 
@@ -701,7 +701,7 @@ class GoalsView extends BaseComponent {
                 {goalDeleteButton}
               </div>
               <div className={s.saveButton}> 
-                <FlatButton disabled={saveGoalDisabled}
+                <RaisedButton secondary={true} disabled={saveGoalDisabled}
                   style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
                   onTouchTap={() => this._saveGoal()} label="TALLENNA"/>
               </div>

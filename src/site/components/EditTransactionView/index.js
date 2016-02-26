@@ -4,9 +4,11 @@ import React, { Component, PropTypes } from "react";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import s from "./EditTransactionView.scss";
+import cx from "classnames";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
-import FlatButton from "material-ui/lib/flat-button";
+import RaisedButton from "material-ui/lib/raised-button";
+import IconButton from "material-ui/lib/icon-button";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
 import BaseComponent from "../BaseComponent";
@@ -49,15 +51,14 @@ class EditTransactionView extends BaseComponent {
   updateState(state) {
     
     console.log("UPDATING TX STATE", state);
-        
+    
+    if (state.status === "deleted" || state.status === "saved") {
+      this.props.close();
+      return;
+    }
+
     if (state.messages) {
-      if (state.messages.editStatus === "saved") {
-        this.props.close();
-        return;
-      } else {
-         this.state.messages = state.messages;
-      
-      }
+       this.state.messages = state.messages;
     }
 
     if (state.transaction) {
@@ -138,6 +139,7 @@ class EditTransactionView extends BaseComponent {
     let sign = this.state.transaction.sign;
     sign = sign === "-" ? "+" : "-"; 
     this.state.transaction.sign = sign;
+    this.state.transaction.category = "misc";
     this.setState(this.state);
   }
 
@@ -185,25 +187,32 @@ class EditTransactionView extends BaseComponent {
 
     }
  
+    const signDisabled = this.props.signDisabled ?
+      this.props.signDisabled : false;
+      
     const fullWidth = { width: "100%", minWidth: "initial" };
     const labelCss = { verticalAlign: "middle" };
     const txBorderCss = {
       transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms"
     };
+
+    let iconColorCss = null;
     let txSignSymbol = null;
+    const signSymbolCss = cx(
+      "material-icons", 
+      !signDisabled ? "pulsar" : "", 
+      s.signIcon);
     let categories = null;
+     
     if (transaction.sign === "-") {
-      txBorderCss.borderBottom = "2px solid red";
-      txSignSymbol = (<i style={labelCss} className="material-icons">&#xE15B;</i>);
+      iconColorCss = { color: "#C53636" };
+      txSignSymbol = (<span className={signSymbolCss}>&#xE15D;</span>);
       categories = staticCategories.expenses;
     } else {
-      txBorderCss.borderBottom = "2px solid green";
-      txSignSymbol = (<i style={labelCss} className="material-icons">&#xE145;</i>);
+      iconColorCss = { color: "#3B8021" };
+      txSignSymbol = (<span className={signSymbolCss}>&#xE148;</span>);
       categories = staticCategories.income;
     }
-
-    const signDisabled = this.props.signDisabled ?
-      this.props.signDisabled : false;
 
     if (this.props.categories) {
       this.props.categories.forEach(category => {
@@ -238,18 +247,48 @@ class EditTransactionView extends BaseComponent {
       );
     }
 
+    const signIconCss = Object.assign({
+      fontSize: "32px",
+      padding: "0px"
+    }, iconColorCss);
+    
+    const signButtonCss = {
+      position: "absolute",
+      bottom: "4px",
+      right: "2px"
+    };
+
+    let deleteButton = null;
+    if (this.state.transaction.uuid) {
+      deleteButton = (
+        <RaisedButton 
+          backgroundColor="#C53636" 
+          onTouchTap={() => this._deleteTransaction(this.state.transaction.uuid)} 
+          label="POISTA"/>
+      ); 
+    }
+
     return (
       <div>
         {formError}
         <div className={s.root}>
           <div className={s.saveTransaction}>
+            <div className={s.editTxHeader}>
+              <div className={s.editTxLabel}>
+                Tapahtuman muokkaus
+              </div>
+              <div className={s.deleteTx}>
+                {deleteButton}
+              </div>
+            </div>
             <div className={s.topGroup}>
               <div className={s.sign}>
-                <FlatButton disabled={signDisabled} 
-                  style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-                  onClick={() => this._toggleTxSign()}>
+                <IconButton disabled={signDisabled} 
+                  iconStyle={iconColorCss} 
+                  style={signButtonCss} 
+                  onTouchTap={() => this._toggleTxSign()}>
                   {txSignSymbol}
-                </FlatButton>
+                </IconButton>
               </div> 
               <div className={s.amount}>
                 {inputErrorElem}
@@ -287,11 +326,11 @@ class EditTransactionView extends BaseComponent {
             </div>
             <div className={s.buttonsGroup}>
               <div className={s.cancel}>
-                <FlatButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
+                <RaisedButton style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
                   onClick={() => this.props.close()} label="PERUUTA"/>
               </div>
               <div className={s.submit}>
-                <FlatButton disabled={this.state.saveDisabled} 
+                <RaisedButton secondary={true} disabled={this.state.saveDisabled} 
                   style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
                   onClick={() => this._saveTransaction()} label="TALLENNA"/>
               </div>

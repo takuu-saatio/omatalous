@@ -60,18 +60,22 @@ class FinanceService {
       
       params = Object.assign((params || {}), { user });
       log.debug("GET TXS!!!!!", params, order);
+      
       if (!order) {
         order = "\"createdAt\" DESC";
       }
+
       Transaction.selectAll(params, { order })
       .then(transactions => {
         
         for (let transaction of transactions) {
+
           transaction.extras = {
             dateLabel: DAY_NAMES[transaction.createdAt.getDay()] + " " +
               transaction.createdAt.getDate(),
             createdAt: transaction.createdAt
           };
+          
         }
 
         resolve(transactions)
@@ -145,6 +149,14 @@ class FinanceService {
 
         if (user !== "admin" && transaction.user !== user) {
           return reject(new Unauthorized());
+        }
+        
+        if (transaction.type === "copy") {
+          transaction.amount = 0;
+          transaction.save()
+          .then(() => resolve())
+          .catch(err => reject(err));
+          return;
         }
         
         transaction.destroy({ force: true })
@@ -416,7 +428,7 @@ class FinanceService {
     
     return new Promise(async (resolve, reject) => {
 
-      const { Transaction } = this.app.entities;
+      const { Transaction, Copy } = this.app.entities;
 
       try {
         
@@ -454,10 +466,21 @@ class FinanceService {
         }
 
         for(let tx of actualTxs) {
+          
           if (tx.type !== "copy") {
             actual[tx.sign] += tx.amount;
+          } else {
+          
+            const copyRecord = await Copy.selectOne({ copy: tx.uuid });
+            if (copyRecord) {
+              const amountDiff = tx.amount - copyRecord.amount;
+              actual[tx.sign] += amountDiff;
+            }
+
           }
+
           raw[tx.sign] += tx.amount;
+        
         }
 
         resolve({ 

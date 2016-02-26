@@ -5,7 +5,26 @@
   margin: auto;
   margin-bottom: 16px;
   padding-bottom: 12px;
-   
+  
+  .editTxHeader {
+    
+    width: 100%;
+    padding-top: 12px;
+    display: flex;
+
+    .editTxLabel {
+      flex: 1 1;
+      font-weight: 600;
+    }
+
+    .deleteTx {
+      flex: 1 1;
+      text-align: right;
+      padding-right: 8px;
+    }
+  
+  }
+
   .topGroup {
     display: flex;
     width: 100%;
@@ -16,8 +35,20 @@
   }
   
   .extraGroup {
+    
     width: 100%;
     padding-bottom: 12px;
+    position: relative;
+    margin-top: 16px;
+
+    .groupLabel {
+      font-size: 12px;
+      position: absolute;
+      top: -6px;
+      left: 24px;
+      color: rgba(0, 0, 0, 0.5);
+    }
+
   }
 
   .buttonsGroup {
@@ -37,15 +68,14 @@
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
-    
-    > button { 
-      > div {
-        > i {
-          vertical-align: middle;
-        }
-      }
+    position: relative;
+ 
+    .signIcon {
+      font-size: 36px;
+      padding: 0px;
+      margin-left: -14px;
     }
-
+    
   }
 
   .amount {
@@ -88,9 +118,9 @@
     display: flex;
     flex: 1 1;
     align-items: flex-end;
-    padding-bottom: 8px;
-    
-    > button { 
+    padding: 8px;
+     
+    > button {
       > div {
         > i {
           vertical-align: middle;
@@ -105,10 +135,12 @@
 
     .repetitionType {
       flex: 1 1;
+      position: relative;
     }
 
     .repetitionValue {
       flex: 1 1; 
+      position: relative;
     }
 
   }

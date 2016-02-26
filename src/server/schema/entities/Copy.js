@@ -13,6 +13,7 @@ class Copy extends BaseEntity {
 
       user: { type: Sequelize.STRING },
       transaction: { type: Sequelize.STRING },
+      amount: { type: Sequelize.FLOAT },
       copy: { type: Sequelize.STRING },
       date: { type: Sequelize.STRING }
 

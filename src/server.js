@@ -55,6 +55,7 @@ app.schemaLoader = new SchemaLoader(app.sequelize);
 app.entities = {
   User: app.schemaLoader.loadSchema("User"),
   Transaction: app.schemaLoader.loadSchema("Transaction"),
+  Copy: app.schemaLoader.loadSchema("Copy"),
   Goal: app.schemaLoader.loadSchema("Goal"),
   Alert: app.schemaLoader.loadSchema("Alert"),
   Event: app.schemaLoader.loadSchema("Event"),

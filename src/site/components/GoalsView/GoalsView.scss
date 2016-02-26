@@ -141,6 +141,7 @@
       
       display: inline-block;
       margin-right: 4px;
+      color: #00bcd4;
 
       .txControlContainer {
         
@@ -331,13 +332,18 @@
 
     .editStatus {
       flex: 1 1;
+      text-align: center;
     }
     
     .deleteButton {
+      padding-left: 8px;
+      padding-right: 8px;
       flex: 1 1;
     }
 
     .saveButton {
+      padding-left: 8px;
+      padding-right: 8px;
       flex: 1 1;
     } 
 
