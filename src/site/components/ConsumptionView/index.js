@@ -677,7 +677,21 @@ class ConsumptionView extends BaseComponent {
               {nextMonthButton}
             </div>
             <div className={s.currentMonth}>
-              <div className={s.summaryLabel}>{summaryLabel}</div>
+              <div className={s.summaryLabel}>
+                <span>{summaryLabel}</span>
+                <span className={s.infoIcon} style={{ right: "-20px" }}> 
+                  <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+                  <div className={cx(s.infoPopup, s.transactionsPopup)} style={{ top: "23px" }}>
+                    <div className={s.infoText}>
+                      <b>Tapahtumat</b>
+                      <div>
+                        Yhteenvetotietoja toteutuneista menoista ja tuloista 
+                        sekä tapahtumien tarkastelu kuukausittain.
+                      </div>
+                    </div>
+                  </div>
+                </span>
+              </div>
             </div>
             <div className={s.prevMonth}>
               <FlatButton style={Object.assign({ lineHeight: "28px" })} 

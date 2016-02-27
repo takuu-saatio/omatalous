@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from "react";
 import reactMixin from "react-mixin";
 import ReactIntl from "react-intl";
 import s from "./GoalsView.scss";
+import cx from "classnames";
 import withStyles from "../../decorators/withStyles";
 import TextField from "material-ui/lib/text-field";
 import RaisedButton from "material-ui/lib/raised-button";
@@ -549,7 +550,22 @@ class GoalsView extends BaseComponent {
         <div className={s.root}>
           <div className={s.repeatingTransactions}>
             <div className={s.transactionsHeader}>
-              <div className={s.transactionsLabel}>Toistuvat tulot</div>
+              <div className={s.transactionsLabel}>
+                <span>Toistuvat tulot</span>
+                <span className={s.infoIcon} style={{ right: "-20px" }}> 
+                  <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+                  <div className={cx(s.infoPopup, s.goalsPopup)} style={{ top: "23px" }}>
+                    <div className={s.infoText}>
+                      <b>Toistuvat tulot</b>
+                      <div>
+                        Lisää, poista ja muokkaa säännöllisiä tulojasi.
+                        Tietoja säännöllisistä tuloistasi käytetään käytettävissä olevan
+                        rahamäärän arviointiin ja säästön suunnitteluun.
+                      </div>
+                    </div>
+                  </div>
+                </span>
+              </div>
               <div className={s.transactionsSummary}>
                 <span style={{ color: "green" }} className={s.dataValue}>
                   +{incomeSummary}
@@ -572,7 +588,22 @@ class GoalsView extends BaseComponent {
           </div>  
           <div className={s.repeatingTransactions}>
             <div className={s.transactionsHeader}>
-              <div className={s.transactionsLabel}>Toistuvat menot</div>
+              <div className={s.transactionsLabel}>
+                <span>Toistuvat menot</span>
+                <span className={s.infoIcon} style={{ right: "-20px" }}> 
+                  <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+                  <div className={cx(s.infoPopup, s.goalsPopup)} style={{ top: "23px" }}>
+                    <div className={s.infoText}>
+                      <b>Toistuvat menot</b>
+                      <div>
+                        Lisää, poista ja muokkaa säännöllisiä menojasi.
+                        Tietoja säännöllisistä menoistasi käytetään käytettävissä olevan
+                        rahamäärän arviointiin ja säästön suunnitteluun.
+                      </div>
+                    </div>
+                  </div>
+                </span>
+              </div>
               <div className={s.transactionsSummary}>
                 <span style={{ color: "red" }} className={s.dataValue}>
                   -{expensesSummary}
@@ -596,7 +627,21 @@ class GoalsView extends BaseComponent {
           <div>
             <div style={{ backgroundColor: "#f0f0f0" }}>
               <div className={s.categoriesHeader}>
-                <div className={s.categoriesLabel}>Omat kategoriat</div>
+                <div className={s.categoriesLabel}>
+                  <span>Omat kategoriat</span>
+                  <span className={s.infoIcon} style={{ right: "-20px" }}> 
+                    <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+                    <div className={cx(s.infoPopup, s.goalsPopup)} style={{ top: "23px" }}>
+                      <div className={s.infoText}>
+                        <b>Omat kategoriat</b>
+                        <div>
+                          Voit lisätä kategorioita, jotka kuvaavat parhaiten
+                          omia kulutuksen kohteitasi tai tulojasi.
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
               </div>
               <div className={s.categoriesContainer}>
                 <div className={s.categories}>
@@ -651,7 +696,28 @@ class GoalsView extends BaseComponent {
           </div>
           <div className={s.goals}>
             <div className={s.categoriesHeader}>
-              <div className={s.categoriesLabel}>Säästöasetukset</div>
+              <div className={s.categoriesLabel}>
+                <span>Säästöasetukset</span>
+                <span className={s.infoIcon} style={{ right: "-20px" }}> 
+                  <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+                  <div className={cx(s.infoPopup, s.goalsPopup)} style={{ top: "initial", bottom: "24px" }}>
+                    <div className={s.infoText}>
+                      <b>Säästöasetukset</b>
+                      <div style={{ textAlign: "left", paddingTop: "6px" }}>
+                        <b>Aloitussumma:</b> Valmiiksi säästössä oleva rahamäärä.<br/>
+                        <b>Aloitus-kk:</b> Kuukausi, jolloin säästäminen on aloitettu tai 
+                        on tarkoitus aloittaa.<br/>
+                        <b>Tavoite:</b> Säästölle voi asettaa tavoitesumma ja aika, 
+                        jotta sovellus voi auttaa mitoittamaan rahankäyttöä ja
+                        näyttää säästön edistymistä.<br/>
+                        <b>Tavoite €:</b> Tavoitteena olevan säästön lopullinen rahamäärä.<br/>
+                        <b>Lopetus-kk:</b> Kuukausi, jonka loppuun mennessä tavoitteen 
+                        tulee täyttyä
+                      </div>
+                    </div>
+                  </div>
+                </span>
+              </div>
             </div>
             <div className={s.goal}>
               <div className={s.goalRow}>

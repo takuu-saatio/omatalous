@@ -11,6 +11,61 @@
   }
 }
 
+.infoIcon {
+  
+  margin-left: 4px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  text-align: right;
+
+  .infoSymbol {
+    
+    cursor: pointer;
+    font-size: 16px;
+    vertical-align: middle;
+    margin-top: -2px;
+    
+    &:active ~ .infoPopup {
+      opacity: 1;
+    }
+    
+    &:hover ~ .infoPopup {
+      opacity: 1;
+    }
+
+  }
+   
+  .goalsPopup {
+    font-weight: 100;
+    width: 200%;
+    left: 0px;
+  }
+
+  .infoPopup {
+
+    position: absolute;
+    top: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1;
+    padding: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms;
+
+    .infoText {
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 14px;
+    }
+
+  }
+
+}
+
 .transactionsHeader {
   
   width: 100%;
@@ -27,6 +82,7 @@
     font-size: 16px;
     font-weight: 500;
     display: inline-block;
+    position: relative;
   }
   
   .transactionsSummary {
@@ -187,6 +243,7 @@
     font-size: 16px;
     font-weight: 500;
     display: inline-block;
+    position: relative;
   }
 
 }

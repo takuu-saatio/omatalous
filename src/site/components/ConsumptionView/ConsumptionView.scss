@@ -203,6 +203,12 @@
     }
 
   }
+  
+  .transactionsPopup {
+    font-weight: 100;
+    width: 300%;
+    left: calc(-100% - 24px);
+  }
 
   .infoPopup {
 
@@ -655,7 +661,8 @@
     display: inline-block;
     vertical-align: sub;
     text-align: center;
-    font-weight: 500;  
+    font-weight: 500;
+    position: relative;  
   }
   
   .summaryData {
