@@ -99,15 +99,19 @@ class CategoriesChart extends Component {
         incomeCategories : expenseCategories;
       return [catLabels[catKey], data[catKey]]
     });
-
+    
+    let chart = null;
     const chartData = {
       bindto: "#catChart",
       data: {
         columns: chartColumns,
         type : "donut",
-        //onclick: function (d, i) { console.log("onclick", d, i); },
-        //onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-        //onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+        onclick: function (d, i) { 
+          console.log("onclick", chart, d, i);
+          chart.focus(d.id); 
+        },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
       },
       legend: {
         show: false
@@ -166,7 +170,7 @@ class CategoriesChart extends Component {
     const categories = this._createCategoriesData(data); 
     require(["d3", "c3"], function(d3, c3) {
       
-      const chart = c3.generate(chartData);
+      chart = c3.generate(chartData);
        
       d3.select("#catLegend").selectAll("*").remove();
       d3.select("#catLegend").insert("div", ".chart")
@@ -194,14 +198,21 @@ class CategoriesChart extends Component {
       .each(function(data) {
         //d3.select(this).style("background-color", chart.color(data[0]));
       })
+      .on("click", function(data) {
+        d3.select(this).style("font-weight", "bold");
+        chart.focus(data[0]);
+      })
       .on("mouseover", function(data) {
         d3.select(this).style("font-weight", "bold");
+        console.log("focus", data[0]);
         chart.focus(data[0]);
       })
       .on("mouseout", function(data) {
         d3.select(this).style("font-weight", "inherit");
         chart.revert();
       });
+
+      console.log("chart data", chart.data);
     
     });
 
