@@ -117,6 +117,116 @@
 
 }
 
+.infoIcon {
+  
+  margin-left: 4px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  text-align: right;
+
+  .infoSymbol {
+    
+    cursor: pointer;
+    font-size: 16px;
+    vertical-align: middle;
+    margin-top: -2px;
+    
+    &:active ~ .infoPopup {
+      opacity: 1;
+    }
+    
+    &:hover ~ .infoPopup {
+      opacity: 1;
+    }
+
+  }
+  
+  .leftPopup {
+    
+    width: 100%;
+    left: -8px;
+
+    @media(max-width: 600px) {
+      width: 300%;
+      left: -2px;
+    }
+
+  } 
+  
+  .leftPopupLarge {
+    
+    width: 100%;
+    left: -8px;
+
+    @media(max-width: 600px) {
+      width: 200%;
+      left: -2px;
+    }
+
+  } 
+  
+  .centerPopup {
+
+    width: 100%;
+    left: -8px;
+     
+    @media(max-width: 600px) {
+      width: 300%;
+      left: calc(-100% - 4px);
+    }
+
+  } 
+  
+  .rightPopup {
+    
+    width: 100%;
+    left: -8px; 
+    
+    @media(max-width: 600px) {
+      width: 300%;
+      left: calc(-200% - 8px);
+    }
+
+  }
+  
+  .rightPopupLarge {
+    
+    width: 100%;
+    left: -8px; 
+    
+    @media(max-width: 600px) {
+      width: 200%;
+      left: calc(-100% - 8px);
+    }
+
+  }
+
+  .infoPopup {
+
+    position: absolute;
+    top: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1;
+    padding: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms;
+
+    .infoText {
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 14px;
+    }
+
+  }
+
+
+}
+
 .month {
   
   position: relative;
@@ -161,7 +271,7 @@
     margin: auto;
     position: relative;
     background-color: white;
-    
+     
     display: flex;
    
     .section {
@@ -170,10 +280,12 @@
       position: relative;
 
       .sectionLabel {
+      
         font-size: 12px;
         text-align: left;
         margin-bottom: 2px;
-        margin-left: 2px;
+        position: relative;        
+
       }
       
       .sectionValue {
@@ -212,7 +324,7 @@
         
         position: relative;
         height: 16px;
-        overflow: hidden; 
+        overflow: hidden;
 
         .sectionLabel {
           
@@ -260,7 +372,7 @@
 
       }
 
-      &:hover {
+      &:active, &:hover {
         
         .sectionLabel {
           top: -24px;
@@ -401,7 +513,7 @@
       margin: auto;
       text-align: right;
 
-      &:hover {
+      &:active, &:hover {
         .transaction {
           left: -72px;
           top: -4px;

@@ -15,6 +15,27 @@ import { EditTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
 import { mergeCategories } from "../../utils";
 
+const infoButtonStyles = {
+  button: {
+    padding: "0px",
+    width: "initial",
+    height: "initial",
+    verticalAlign: "middle",
+    marginLeft: "6px"
+  },
+  icon: {
+    fontSize: "18px"
+  },
+  tooltip: {
+    marginTop: "-15px",
+    width: "200px",
+    whiteSpace: "initial",
+    lineHeight: "18px",
+    fontSize: "12px",
+    zIndex: "1"
+  }
+};
+
 @withStyles(s)
 class ConsumptionView extends BaseComponent {
   
@@ -295,12 +316,25 @@ class ConsumptionView extends BaseComponent {
 
       goalElem = (
         <div>
+          <span className={s.infoIcon} style={{ top: "-3px" }}> 
+            <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+            <div className={cx(s.infoPopup, s.rightPopup)} style={{ top: "23px" }}>
+              <div className={s.infoText}>
+                <b>Säästetty</b>
+                <div>
+                  Säästön määrä tähän päivään asti.
+                  Kuluvan kuukauden aikana kertynyt säästö on arvio, joka
+                  perustuu tähänastiseen kulutukseesi.
+                </div>
+              </div>
+            </div>
+          </span>
           <div className={s.sectionLabelContainer}>
             <div className={s.sectionLabel}>
-              Säästetty
+              <span>Säästetty</span>
             </div>
             <div className={s.sectionLabelAlt}>
-              Säästötavoite
+              <span>Säästötavoite</span>
             </div>
           </div>
           <div className={s.sectionValue}>
@@ -323,6 +357,19 @@ class ConsumptionView extends BaseComponent {
 
       goalElem = (
         <div>
+          <span className={s.infoIcon} style={{ top: "-3px" }}> 
+            <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+            <div className={cx(s.infoPopup, s.rightPopup)}>
+              <div className={s.infoText}>
+                <b>Säästetty</b>
+                <div>
+                  Säästön määrä tähän päivään asti.
+                  Kuluvan kuukauden aikana kertynyt säästö on arvio, joka
+                  perustuu tähänastiseen kulutukseesi.
+                </div>
+              </div>
+            </div>
+          </span>
           <div className={s.sectionLabel}>
             Säästetty
           </div>
@@ -384,7 +431,18 @@ class ConsumptionView extends BaseComponent {
       remainingSection = (
           <div className={s.section} style={{ borderRight: "1px solid #f0f0f0" }}>
             <div className={s.sectionLabel}>
-              Jäljellä
+              <span>Jäljellä</span>
+              <span className={s.infoIcon}> 
+                <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+                <div className={cx(s.infoPopup, s.leftPopup)}>
+                  <div className={s.infoText}>
+                    <b>Jäljellä</b>
+                    <div>
+                      Pakollisten menojen jälkeen tuloista jäävä rahamäärä.
+                    </div>
+                  </div>
+                </div>
+              </span>
             </div>
             <div className={s.sectionValue}>
               {available} <span className={s.euroSign}>€</span>
@@ -392,6 +450,9 @@ class ConsumptionView extends BaseComponent {
           </div>
       );
     }
+    
+    const infoPositionCss = remainingSection ? s.centerPopup : s.leftPopupLarge;
+    const savingsCellCss = remainingSection ? s.savingsCell : null;
 
     return (
       <div className={s.month}>
@@ -402,7 +463,19 @@ class ConsumptionView extends BaseComponent {
           {remainingSection}
           <div className={s.section}>
             <div className={s.sectionLabel}>
-              Käytettävissä
+              <span>Käytettävissä</span>
+              <span className={s.infoIcon}> 
+                <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
+                <div className={cx(s.infoPopup, infoPositionCss)}>
+                  <div className={s.infoText}>
+                    <b>Käytettävissä</b>
+                    <div>
+                      Pakollisten menojen ja mahdollisen säästötavoitteen
+                      vähentämisen jälkeen käytettävissä oleva rahan määrä.
+                    </div>
+                  </div>
+                </div>
+              </span>
             </div>
             <div className={s.sectionValue}>
               {spendable} <span className={s.euroSign}>€</span>
@@ -421,7 +494,7 @@ class ConsumptionView extends BaseComponent {
             </div>
           </div>
           <div className={s.section} style={{ borderLeft: "1px solid #f0f0f0" }}>
-            <div className={s.savingsCell}>
+            <div className={savingsCellCss}>
               {savingElem}
             </div>
             <div className={s.periodSwitch}>
