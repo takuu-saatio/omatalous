@@ -107,13 +107,15 @@ class CategoriesChart extends Component {
         columns: chartColumns,
         type : "donut",
         onclick: function (d, i) { 
-          console.log("onclick", chart, d, i);
           chart.focus(d.id); 
-        },
-        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+        }
+        //onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        //onmouseout: function (d, i) { console.log("onmouseout", d, i); }
       },
       legend: {
+        show: false
+      },
+      tooltip: {
         show: false
       }
     };
@@ -171,7 +173,8 @@ class CategoriesChart extends Component {
     require(["d3", "c3"], function(d3, c3) {
       
       chart = c3.generate(chartData);
-       
+
+      const legenElem = 
       d3.select("#catLegend").selectAll("*").remove();
       d3.select("#catLegend").insert("div", ".chart")
       .attr("class", "legend").selectAll(".legend-item").data(sortedColumns)
@@ -195,16 +198,25 @@ class CategoriesChart extends Component {
           </div>
         `;
       })
-      .each(function(data) {
+      .each(function(data, i, x, y) {
         //d3.select(this).style("background-color", chart.color(data[0]));
       })
       .on("click", function(data) {
-        d3.select(this).style("font-weight", "bold");
-        chart.focus(data[0]);
+        
+        d3.selectAll(".legend-item").data(sortedColumns)
+        .each(function(elemData) {
+          if (elemData[0] === data[0]) {
+            d3.select(this).style("font-weight", "bold");
+            chart.focus(data[0]);
+          } else {
+            d3.select(this).style("font-weight", "inherit");
+            chart.defocus(elemData[0]);
+          }
+        });
+
       })
       .on("mouseover", function(data) {
         d3.select(this).style("font-weight", "bold");
-        console.log("focus", data[0]);
         chart.focus(data[0]);
       })
       .on("mouseout", function(data) {
