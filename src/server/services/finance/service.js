@@ -473,8 +473,11 @@ class FinanceService {
           
             const copyRecord = await Copy.selectOne({ copy: tx.uuid });
             if (copyRecord) {
-              const amountDiff = tx.amount - copyRecord.amount;
-              actual[tx.sign] += amountDiff;
+              const origTx = await Transaction.selectOne({ uuid: copyRecord.transaction });
+              if (origTx) {
+                const amountDiff = tx.amount - copyRecord.amount;
+                actual[tx.sign] += amountDiff;
+              }
             }
 
           }
