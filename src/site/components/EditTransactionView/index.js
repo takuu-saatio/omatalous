@@ -187,9 +187,13 @@ class EditTransactionView extends BaseComponent {
 
     }
  
-    const signDisabled = this.props.signDisabled ?
+    let signDisabled = this.props.signDisabled ?
       this.props.signDisabled : false;
-      
+    
+    if (transaction.type === "copy") {
+      signDisabled = true;
+    }
+
     const fullWidth = { width: "100%", minWidth: "initial" };
     const labelCss = { verticalAlign: "middle" };
     const txBorderCss = {

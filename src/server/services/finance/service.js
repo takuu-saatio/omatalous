@@ -24,6 +24,192 @@ class FinanceService {
     this.sendgrid = require("sendgrid")(SENDGRID_USER, SENDGRID_PASSWORD);
   }
   
+  _calcWeeklyRepeatingSum(weekDay, amount, startDay) {
+ 
+    const now = new Date(); 
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), (startDay || 1));
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    let sum = 0;
+    const daysInMonth = lastDay.getDate();
+    const dayDiff = weekDay - firstDay.getDay();
+    const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
+    let currentDay = dayOffset + (startDay || 1);
+    log.debug("WEEKLY START", startDay, currentDay);
+    while (currentDay <= daysInMonth) { 
+      sum += amount;
+      currentDay += 7;
+      log.debug(amount, sum, currentDay);
+    }
+    
+    log.debug("WEEKLY RESULT", currentDay, " => SUM: ", sum);
+    return sum;
+  
+  }
+
+  _calcDailyRepeatingSum(amount, startDay) {
+    
+    const now = new Date(); 
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return amount * (lastDay.getDate() - (startDay || 0));
+  
+  }
+
+  _getFutureTransactions(transactions) {
+    
+    const now = new Date(); 
+    const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    if (tomorrow.getMonth() > now.getMonth()) {
+      return [];
+    }
+
+    const txMap = {};
+    for (let day = tomorrow.getDate(); day <= 31; day++) {
+      txMap[day] = [];
+    }
+ 
+    for (let tx of transactions) {
+        
+      if (tx.repeats === "M") {
+        
+        let repeatValue = tx.repeatValue > lastDay.getDate() ? 
+          lastDay.getDate() : tx.repeatValue;
+
+        if (repeatValue >= tomorrow.getDate()) {
+          let txJson = Object.assign({}, tx.json());
+          const monthDate = new Date(now.getFullYear(), now.getMonth(), repeatValue);
+          txJson.dateLabel = DAY_NAMES[monthDate.getDay()]+" "+monthDate.getDate();
+          txMap[repeatValue].push(txJson);
+        }
+
+      } else if (tx.repeats === "W") {
+
+        const daysInMonth = lastDay.getDate();
+        const dayDiff = tx.repeatValue - tomorrow.getDay();
+        const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
+        let currentDay = dayOffset + tomorrow.getDate();
+        while (currentDay <= daysInMonth) { 
+          let txJson = Object.assign({}, tx.json());
+          txJson.dateLabel = DAY_NAMES[tx.repeatValue]+" "+currentDay;
+          txMap[currentDay].push(txJson);
+          currentDay += 7;
+        }
+        
+      } else if (tx.repeats === "D") {
+      }
+      
+    }
+
+    let futureTransactions = [];
+    for (let day = lastDay.getDate(); day >= tomorrow.getDate(); day--) {
+      if (txMap[day].length > 0) {
+        futureTransactions = futureTransactions.concat(txMap[day]);
+      }
+    }
+
+    return futureTransactions;
+
+  } 
+
+  async _getRepeatingSums(user) {
+
+    const { Transaction, Copy } = this.app.entities;
+    
+    const sums = {
+      current: { "+": 0, "-": 0 },
+      planned: { "+": 0, "-": 0 }
+    };
+
+    const currentMonth = getCurrentMonth();
+    const now = new Date();
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    
+    const repeatingTxs = await Transaction.selectAll({ 
+      user,
+      type: "repeating"
+    });
+    
+    sums.transactions = repeatingTxs;
+    
+    const copyTxs = await Transaction.selectAll({ 
+      user,
+      type: "copy",
+      month: currentMonth,
+      createdAt: { $lt: now }
+    });
+    
+
+    log.debug("COPY TXS", copyTxs.length); 
+    for(let tx of copyTxs) {
+      log.debug("TX: ", tx.sign, tx.amount, tx.repeats);
+      sums.current[tx.sign] += tx.amount;
+    }
+
+    log.debug("COPY SUM", sums.current);
+
+    log.debug("REPEATING TXS", repeatingTxs.length); 
+    for(let tx of repeatingTxs) {
+      
+      log.debug("TX: ", tx.sign, tx.amount, tx.repeats, tx.repeatValue, now.getDate());
+      
+      /*
+      let actualAmount = 0;
+      const copyQuery = {
+        transaction: tx.uuid,
+        $and: [
+          { date: { $gte: `${currentMonth}-01` } },
+          { date: { $lte: `${currentMonth}-${now.getDate()}` } }
+        ]
+      };
+      */
+
+      /*
+      const copyRecords = await Copy.selectAll(copyQuery);
+      if (copyRecords && copyRecords.length > 0) {
+
+        log.debug("COPY RECORDS", copyRecords.length);
+
+        for (let copyRecord of copyRecords) {
+          const copyTx = await Transaction.selectOne({ uuid: copyRecord.copy });
+          if (copyTx) {
+            log.debug("COPY TX", copyTx.amount);
+            actualAmount += copyTx.amount;
+          }
+        }
+
+      } else {
+        actualAmount = tx.amount;
+        }
+        */
+
+      let totalAmount = 0;
+      let futureAmount = 0;
+
+      if (tx.repeats === "M") {
+        totalAmount = tx.amount;
+        if (tx.repeatValue > now.getDate() && now.getDate() < lastDay) {
+          futureAmount = tx.amount; 
+        }
+      } else if (tx.repeats === "W") {
+        totalAmount = this._calcWeeklyRepeatingSum(tx.repeatValue, tx.amount, 1);
+        futureAmount = this._calcWeeklyRepeatingSum(tx.repeatValue, tx.amount, 
+          now.getDate() + 1);
+      } else if (tx.repeats === "D") {
+        totalAmount = this._calcDailyRepeatingSum(tx.amount, 0);
+        futureAmount = this._calcDailyRepeatingSum(tx.amount, now.getDate());
+      }
+
+      log.debug("TOTALS: ", totalAmount, futureAmount);
+      sums.planned[tx.sign] += totalAmount;
+      sums.current[tx.sign] += futureAmount;
+
+    }
+    
+    return sums;
+
+  }
+  
   getTransaction(user, uuid) {
   
     return new Promise((resolve, reject) => {
@@ -217,14 +403,12 @@ class FinanceService {
               user: user,
               repeats: { $ne: null }
             };
-
-            const repeating = await Transaction.selectAll(params);
-            let repeatingTotal = 0;
-            for (let transaction of repeating) { 
-              repeatingTotal += transaction.sign === "+" ?
-                transaction.amount : -transaction.amount;
-            }
-
+            
+            const repeatingSums = await this._getRepeatingSums(user);
+            const repeatingTotal = repeatingSums.current["+"] - 
+              repeatingSums.current["-"];
+            
+            log.debug("GOAL >>> REPEATING SUMS", repeatingSums);
             const startMonth = goal.start > currentMonth ? goal.start : currentMonth;
             const startYYYY = parseInt(startMonth.substring(0, 4));
             const startMM = parseInt(startMonth.substring(5, 7));
@@ -343,91 +527,6 @@ class FinanceService {
 
   }
 
-  _calcWeeklyRepeatingSum(weekDay, amount) {
-     
-    const now = new Date(); 
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    let sum = 0;
-    const daysInMonth = lastDay.getDate();
-    const dayDiff = weekDay - firstDay.getDay();
-    const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
-    let currentDay = dayOffset + 1;
-    while (currentDay <= daysInMonth) { 
-      sum += amount;
-      currentDay += 7;
-    }
-
-    return sum;
-  
-  }
-
-  _calcDailyRepeatingSum(amount) {
-    
-    const now = new Date(); 
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    return amount * lastDay.getDate();
-  
-  }
-
-  _getFutureTransactions(transactions) {
-    
-    const now = new Date(); 
-    const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    
-    if (tomorrow.getMonth() > now.getMonth()) {
-      return [];
-    }
-
-    const txMap = {};
-    for (let day = tomorrow.getDate(); day <= 31; day++) {
-      txMap[day] = [];
-    }
- 
-    for (let tx of transactions) {
-        
-      if (tx.repeats === "M") {
-        
-        let repeatValue = tx.repeatValue > lastDay.getDate() ? 
-          lastDay.getDate() : tx.repeatValue;
-
-        if (repeatValue >= tomorrow.getDate()) {
-          let txJson = Object.assign({}, tx.json());
-          const monthDate = new Date(now.getFullYear(), now.getMonth(), repeatValue);
-          txJson.dateLabel = DAY_NAMES[monthDate.getDay()]+" "+monthDate.getDate();
-          txMap[repeatValue].push(txJson);
-        }
-
-      } else if (tx.repeats === "W") {
-
-        const daysInMonth = lastDay.getDate();
-        const dayDiff = tx.repeatValue - tomorrow.getDay();
-        const dayOffset = dayDiff >= 0 ? dayDiff : 7 + dayDiff; 
-        let currentDay = dayOffset + tomorrow.getDate();
-        while (currentDay <= daysInMonth) { 
-          let txJson = Object.assign({}, tx.json());
-          txJson.dateLabel = DAY_NAMES[tx.repeatValue]+" "+currentDay;
-          txMap[currentDay].push(txJson);
-          currentDay += 7;
-        }
-        
-      } else if (tx.repeats === "D") {
-      }
-      
-    }
-
-    let futureTransactions = [];
-    for (let day = lastDay.getDate(); day >= tomorrow.getDate(); day--) {
-      if (txMap[day].length > 0) {
-        futureTransactions = futureTransactions.concat(txMap[day]);
-      }
-    }
-
-    return futureTransactions;
-
-  } 
-
   getCurrentMonthStats(user) {
     
     return new Promise(async (resolve, reject) => {
@@ -437,12 +536,7 @@ class FinanceService {
       try {
         
         const currentMonth = getCurrentMonth();
-        
-        const repeatingTxs = await Transaction.selectAll({ 
-          user,
-          type: "repeating"
-        });
-        
+ 
         const actualTxs = await Transaction.selectAll({  
           user,
           month: currentMonth,
@@ -452,53 +546,33 @@ class FinanceService {
           ]
         });
 
-        const fixed = { "+": 0, "-": 0 };
         const actual = { "+": 0, "-": 0 };
         const raw = { "+": 0, "-": 0 };
         
-        for(let tx of repeatingTxs) {
-          
-          let amount = tx.amount;
-          if (tx.repeats === "W") {
-            amount = this._calcWeeklyRepeatingSum(tx.repeatValue, tx.amount);
-          } else if (tx.repeats === "D") {
-            amount = this._calcDailyRepeatingSum(tx.amount);
-          }
-          
-          fixed[tx.sign] += amount;
-          
-        }
-
         for(let tx of actualTxs) {
           
           if (tx.type !== "copy") {
             actual[tx.sign] += tx.amount;
-          } else {
-          
-            const copyRecord = await Copy.selectOne({ copy: tx.uuid });
-            if (copyRecord) {
-              const origTx = await Transaction.selectOne({ uuid: copyRecord.transaction });
-              if (origTx) {
-                const amountDiff = tx.amount - copyRecord.amount;
-                actual[tx.sign] += amountDiff;
-              }
-            }
-
           }
 
           raw[tx.sign] += tx.amount;
         
         }
-
+        
+        const repeatingSums = await this._getRepeatingSums(user); 
+        log.debug("MONTH STATS >>> REPEATING SUMS", repeatingSums);
+        
         resolve({ 
           label: currentMonth,
-          fixedIncome: fixed["+"],
-          fixedExpenses: fixed["-"], 
-          income: actual["+"], 
+          fixedIncome: repeatingSums.planned["+"],
+          fixedExpenses: repeatingSums.planned["-"], 
+          actualFixedIncome: repeatingSums.current["+"],
+          actualFixedExpenses: repeatingSums.current["-"],
+          income: actual["+"],
           expenses: actual["-"], 
           rawIncome: raw["+"], 
           rawExpenses: raw["-"],
-          futureTransactions: this._getFutureTransactions(repeatingTxs)
+          futureTransactions: this._getFutureTransactions(repeatingSums.transactions)
         });
 
       } catch (err) {

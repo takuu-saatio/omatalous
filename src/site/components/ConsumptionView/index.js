@@ -300,7 +300,8 @@ class ConsumptionView extends BaseComponent {
 
       const now = new Date();
       const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      const origAvg = (monthStats.fixedIncome - monthStats.fixedExpenses) / daysInMonth; 
+      const origAvg = (monthStats.actualFixedIncome - 
+                       monthStats.actualFixedExpenses) / daysInMonth; 
       const zeroLevel = origAvg * now.getDate();
       monthSaving = Math.floor(zeroLevel - monthStats.expenses + monthStats.income);
       // const remainingDays = (daysInMonth - now.getDate()) + 1;
@@ -403,8 +404,8 @@ class ConsumptionView extends BaseComponent {
     }
 
     let available = 
-      monthStats.fixedIncome - 
-      monthStats.fixedExpenses - 
+      monthStats.actualFixedIncome - 
+      monthStats.actualFixedExpenses - 
       monthStats.expenses +
       monthStats.income;
     available = Math.floor(available);
@@ -531,10 +532,6 @@ class ConsumptionView extends BaseComponent {
 
       return transactions.map(transaction => {
         
-        if (transaction.amount === 0) {
-          return null;
-        }
-
         const categories = transaction.sign === "+" ?
           incomeCategories : expenseCategories;
         
@@ -544,11 +541,17 @@ class ConsumptionView extends BaseComponent {
           highlightCss.border = "1px solid #e0e0e0";
         }
         
+        let amountColor = transaction.sign === "+" ? "#3B8021" : "#C53636";
+        if (transaction.amount === 0) {
+          amountColor = "#a0a0a0";
+        }
+
         const transactionElem = (
           <div style={highlightCss} className={s.transaction}>
             <div className={s.txAmount}
-              style={{ color: transaction.sign === "+" ? "#3B8021" : "#C53636" }}>
-              {transaction.sign}{transaction.amount}
+              style={{ color: amountColor }}>
+              {transaction.amount !== 0 ? transaction.sign : null}
+              {transaction.amount}
             </div>
             <div className={s.txCategory}>
               {categories[transaction.category]}
@@ -897,7 +900,7 @@ class ConsumptionView extends BaseComponent {
       let params = Object.assign(this.props.params, {
         uuid: this.state.edit 
       });
-
+      
       return (
         <EditTransactionContainer close={() => this._closeEditTx()} 
           categories={this.state.categories} params={params} />
