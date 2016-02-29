@@ -49,6 +49,7 @@ class ConsumptionView extends BaseComponent {
     
     this.summaryTypes = [
       "singlesTotal",
+      "total",
       "dayAvg"
     ];
 
@@ -264,7 +265,7 @@ class ConsumptionView extends BaseComponent {
       const value = tx.sign === "+" ? 0 : -tx.amount;
       
       summary.total += value;
-      if (tx.type === "single") {
+      if (tx.type === "single" && tx.sign === "-") {
         summary.singlesTotal += value;
       }
     
@@ -656,11 +657,13 @@ class ConsumptionView extends BaseComponent {
     const selectedSummaryType = this.summaryTypes[this.state.summaryType];
     const summaryDataValues = {
       "singlesTotal": Math.abs(Math.ceil(summary.singlesTotal)),
+      "total": Math.abs(Math.ceil(summary.total)),
       "dayAvg": summary.dayAvg
     };
     
     const summaryTypeNames = {
-      "singlesTotal": "Yhteensä",
+      "singlesTotal": "Käytetty yhteensä",
+      "total": "Saldo",
       "dayAvg": "Keskikulutus päivässä"
     };
 

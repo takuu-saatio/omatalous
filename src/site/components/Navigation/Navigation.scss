@@ -1,20 +1,44 @@
 .root {
   
-  height: 100%;
   display: flex;
-  justify-content: center;
-  padding-top: 2px;
-  
+  padding-left: 24px;
+  user-select: none;
+  flex: 1 1 auto;
+
   .minHidden {
     @media (max-width: 660px) {
       display: none;
     }
   }
+  
+  .leftNav {
+    display: flex;
+    flex: 0 0 auto;
+  }
+
+  .rightNav {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    align-items: center;
+  }
 
   .navItem {
+  
     padding-top: 6px;
-    pading-right: 10px;
-    flex: 0 1 auto;
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+
+    .navLabel {
+      display: inline-block;
+      vertical-align: bottom;
+      margin-bottom: 6px;
+      margin-left: 5px;
+      margin-right: 5px;
+      font-weight: 400;
+    }
+
   }
 
   .iconItem {
@@ -31,7 +55,6 @@
 
   .buttonItem {
   
-    padding-top: 6px;
     margin-right: 6px;
      
   }

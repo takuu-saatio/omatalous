@@ -105,8 +105,8 @@ class ProgressChart extends Component {
     months.unshift("x");
     progressColumns.unshift(months);
 
-    console.log("PROG CHART DATA", progressColumns, progressGroups);
-    
+    let chart = null;
+
     const progressData = {
       bindto: "#progressChart",
       data: {
@@ -117,7 +117,10 @@ class ProgressChart extends Component {
           "Säästö": "line" 
         },
         groups: progressGroups,
-        order: "asc"
+        order: "asc",
+        onclick: function (d, i) { 
+          chart.focus(d.id); 
+        }
       },
       grid: {
         y: {
@@ -173,10 +176,11 @@ class ProgressChart extends Component {
 
     require(["d3", "c3"], function(d3, c3) {
       
-      const chart = c3.generate(progressData);
+      chart = c3.generate(progressData);
       
       const setLegend = (element, columns) => {
 
+        d3.select(element).selectAll("*").remove();
         d3.select(element).insert("div", ".chart")
         .attr("class", "legend").selectAll(".legend-item").data(columns)
         .enter().append("div")
@@ -196,6 +200,20 @@ class ProgressChart extends Component {
         })
         .each(function(data) {
           //d3.select(this).style("background-color", chart.color(data[0]));
+        })
+        .on("click", function(data) {
+          
+          d3.selectAll(".legend-item").data(columns)
+          .each(function(elemData) {
+            if (elemData[0] === data[0]) {
+              d3.select(this).style("font-weight", "bold");
+              chart.focus(data[0]);
+            } else {
+              d3.select(this).style("font-weight", "inherit");
+              chart.defocus(elemData[0]);
+            }
+          });
+
         })
         .on("mouseover", function(data) {
           d3.select(this).style("font-weight", "bold");

@@ -19,6 +19,32 @@ class Navigation extends Component {
   static propTypes = {
     className: PropTypes.string,
   };
+  
+  _isSelectedCss(path) {
+    
+    let style = {
+      borderBottom: "4px solid rgba(0, 0, 0, 0)"
+    };
+
+    let propPath = this.props.path;
+    if (!propPath) {
+      return style;
+    }
+
+    let hashIndex = propPath.indexOf("#");
+    if (hashIndex !== -1) {
+      propPath = propPath.substring(0, hashIndex);
+    }
+
+    if (propPath === path) {
+      style = { 
+        borderBottom: "4px solid #00bcd4"
+      };
+    }
+
+    return style;
+
+  }
 
   render() {
 
@@ -52,15 +78,10 @@ class Navigation extends Component {
  
       if (auth.user.isAdmin) {
         adminElem = (
-          <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-            <IconButton onClick={() => Location.go("/admin")}
-              iconClassName="material-icons"
-              tooltip="Hallinta"
-              iconStyle={iconItemStyle}
-              tooltipStyles={tooltipStyles}
-              style={iconStyle}>
-              &#xE8D3;
-            </IconButton>
+          <div className={cx(s.navItem, s.minHidden)}
+            onTouchTap={() => Location.go("/admin")}
+            style={this._isSelectedCss("/admin")}>
+            <div className={s.navLabel}>Hallinta</div>
           </div>
         );
       }
@@ -78,48 +99,33 @@ class Navigation extends Component {
       );
        
       consumptionElem = (
-        <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-          <IconButton onClick={() => Location.go("/consumption")}
-            iconClassName="material-icons"
-            tooltip="Tilanne"
-            iconStyle={iconItemStyle}
-            tooltipStyles={tooltipStyles}
-            style={iconStyle}>
-            &#xE870;
-          </IconButton>
+        <div className={cx(s.navItem, s.minHidden)}
+          onTouchTap={() => Location.go("/consumption")}
+          style={this._isSelectedCss("/consumption")}>
+          <div className={s.navLabel}>Tilanne</div>
         </div>
       );
       
       goalsElem = (
-        <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-          <IconButton onClick={() => Location.go("/goals")}
-            iconClassName="material-icons"
-            tooltip="Talouteni"
-            iconStyle={iconItemStyle}
-            tooltipStyles={tooltipStyles}
-            style={iconStyle}>
-            &#xE850;
-          </IconButton>
+        <div className={cx(s.navItem, s.minHidden)}
+          onTouchTap={() => Location.go("/goals")}
+          style={this._isSelectedCss("/goals")}>
+          <div className={s.navLabel}>Talouteni</div>
         </div>
       );
       
       planningElem = (
-        <div className={cx(s.navItem, s.iconItem, s.minHidden)}>
-          <IconButton onClick={() => Location.go("/planning")}
-            iconClassName="material-icons"
-            tooltip="Suunnittelu"
-            iconStyle={iconItemStyle}
-            tooltipStyles={tooltipStyles}
-            style={iconStyle}>
-            &#xE878;
-          </IconButton>
+        <div className={cx(s.navItem, s.minHidden)}
+          onTouchTap={() => Location.go("/planning")}
+          style={this._isSelectedCss("/planning")}>
+          <div className={s.navLabel}>Muistikirja</div>
         </div>
       );
 
       loginElem = (
-        <div className={cx(s.navItem, s.buttonItem, s.logoutItem)}>
+        <div className={cx(s.buttonItem, s.logoutItem)}>
           <a className={s.link} style={{ verticalAlign: "top" }} href="/logout">
-            <FlatButton labelStyle={{ color: "#e0e0e0" }} 
+            <FlatButton style={{ minWidth: "initial" }} labelStyle={{ color: "#e0e0e0" }} 
               label={this.getIntlMessage("logout")} />
           </a>
         </div>
@@ -129,7 +135,7 @@ class Navigation extends Component {
     } else {
       
       loginElem = this.props.path !== "/login" ? (
-        <div className={cx(s.navItem, s.buttonItem)}>
+        <div className={cx(s.buttonItem)}>
           <a className={s.link} href="/login" onClick={Link.handleClick}>
             <FlatButton labelStyle={{ color: "#e0e0e0" }} 
               label={this.getIntlMessage("login")} />
@@ -141,12 +147,16 @@ class Navigation extends Component {
 
     return (
       <div className={cx(s.root, this.props.className)} role="navigation">
-        {accountElem}
-        {consumptionElem}
-        {goalsElem}
-        {planningElem}
-        {adminElem}
-        {loginElem}
+        <div className={s.leftNav}>
+          {consumptionElem}
+          {goalsElem}
+          {planningElem}
+          {adminElem}
+        </div>
+        <div className={s.rightNav}>
+          {accountElem}
+          {loginElem}
+        </div>
       </div>
     );
   }

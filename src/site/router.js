@@ -1,12 +1,3 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import React from 'react';
 import Router from 'react-routing/src/Router';
 import fetch from '../core/fetch';
@@ -34,7 +25,8 @@ const router = new Router(on => {
     const component = await next();
     let intlData = state.context.intlData;
     console.log("intl data", intlData, state);
-    return component && <App context={state.context} {...intlData}>{component}</App>;
+    return component && <App path={state.path} 
+      context={state.context} {...intlData}>{component}</App>;
   
   });
 

@@ -5,6 +5,7 @@ $brand-color: #61dafb;
 .root {
   background: #333;
   color: white;
+  user-select: none;
 }
 
 .container {
@@ -17,7 +18,7 @@ $brand-color: #61dafb;
 
 .logo {
   
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   
   .brand {
     

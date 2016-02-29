@@ -48,9 +48,17 @@ class Header extends BaseComponent {
   }
 
   _getItemCss(path) {
+
+    let appPath = this.state.routing.path || this.props.path;
+    
+    let hashIndex = appPath.indexOf("#");
+    if (hashIndex !== -1) {
+      appPath = appPath.substring(0, hashIndex);
+    }
+
     return Object.assign({ 
       borderTop: "1px solid #f0f0f0" 
-    }, this.state.routing.path === path ? {
+    }, appPath === path ? {
       borderLeft: "5px solid #00bcd4"
     } : {});
   }
@@ -119,7 +127,7 @@ class Header extends BaseComponent {
       accountName = accountName.trim();
 
     }
-
+    
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -130,7 +138,9 @@ class Header extends BaseComponent {
               <span className={s.brandTxt}>Omatalous</span>
             </a>
           </div>
-          <Navigation auth={auth} path={this.state.routing.path} className={s.navFull} />
+          <Navigation auth={auth} 
+            path={this.state.routing.path || this.props.path} 
+            className={s.navFull} />
         </div>
         <div className={s.fadeBg} style={fadeBgCss} onTouchTap={() => this._closeLeftNav()}></div>
         <div className={s.leftNav} style={leftNavCss}>

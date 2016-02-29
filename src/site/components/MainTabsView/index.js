@@ -11,18 +11,6 @@ import {
   GraphsContainer
 } from "../../containers";
 
-const styles = {
-  headline: {
-    fontSize: 24,
-    paddingTop: 16,
-    marginBottom: 12,
-    fontWeight: 400,
-  },
-  slide: {
-    padding: 10,
-  },
-};
-
 @withStyles(s)
 export default class MainTabsView extends BaseComponent {
 
@@ -63,9 +51,9 @@ export default class MainTabsView extends BaseComponent {
     
     const inkBarStyle = {
       backgroundColor: "#00bcd4",
-      marginTop: "initial",
-      bottom: "48px",
-      height: "4px"
+      //backgroundColor: "#f0f0f0",
+      height: "2px",
+      bottom: "0px"
     };
  
     return (

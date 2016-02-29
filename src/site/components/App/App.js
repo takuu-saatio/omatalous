@@ -69,10 +69,11 @@ class Content extends Component {
     if (!canUseDOM) {
       router = this.props.children;
     }
-
+    
+    console.log("APP PROPS", this.props);
     return (
       <div>
-        <HeaderContainer />
+        <HeaderContainer path={this.props.path} />
         {router}
         <Footer />
       </div>
@@ -137,7 +138,7 @@ class App extends Component {
     return !this.props.error ? ( 
       <div>
         <Provider store={this.store}>
-          <Content {...this.intlData}>    
+          <Content path={this.props.path} {...this.intlData}>    
             {this.props.children}
           </Content>
         </Provider> 

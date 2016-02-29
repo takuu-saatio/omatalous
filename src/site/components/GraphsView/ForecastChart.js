@@ -46,6 +46,8 @@ class ForecastChart extends Component {
       data2.push(val.y);
       meta["Toteutuneet"].push(val.txs);
     });
+    
+    let chart = null;
 
     const chartData = {
       bindto: "#forecastChart",
@@ -63,6 +65,9 @@ class ForecastChart extends Component {
         types: {
           "Toistuvat": "spline",
           "Toteutuneet": "spline"
+        },
+        onclick: function(data) {
+          console.log(data);
         }
       },
       axis: {
@@ -186,7 +191,7 @@ class ForecastChart extends Component {
 
     require(["d3", "c3"], function(d3, c3) {
       console.log("forecast chart data", chartData);
-      c3.generate(chartData);
+      chart = c3.generate(chartData);
     
     });
 
