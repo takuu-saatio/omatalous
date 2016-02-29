@@ -296,7 +296,7 @@ class ConsumptionView extends BaseComponent {
       const now = new Date();
       const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       const origAvg = (monthStats.fixedIncome - monthStats.fixedExpenses) / daysInMonth; 
-      const zeroLevel = (origAvg * (now.getDate() + 1));
+      const zeroLevel = origAvg * now.getDate();
       monthSaving = Math.floor(zeroLevel - monthStats.expenses + monthStats.income);
       // const remainingDays = (daysInMonth - now.getDate()) + 1;
       // const monthSaving = spendable < 0 ? spendable :
