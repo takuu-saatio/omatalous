@@ -244,7 +244,12 @@ class ConsumptionView extends BaseComponent {
     return {};
 
   }
-  
+
+  _formatMonth(month) {
+    const [ YYYY, MM ] = month.split("-");
+    return MM + "/" + YYYY;
+  }
+
   _getMonthSummary(transactions, days) {
   
     const summary = {
@@ -648,11 +653,14 @@ class ConsumptionView extends BaseComponent {
     const summaryLabel = month === this.state.monthStats.label ?
       "Tapahtumat" : month;
   
+    const prevMonth = this._prevMonth();
+    const nextMonth = this._nextMonth();
+     
     const nextMonthButton = month !== this.state.monthStats.label ?
       <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-        onTouchTap={() => this._loadMonth(this._nextMonth())}
+        onTouchTap={() => this._loadMonth(nextMonth)}
         labelStyle={{ padding: "0px" }}
-        label={"< " + this._nextMonth()} /> : null;
+        label={"< " + this._formatMonth(nextMonth)} /> : null;
 
     const selectedSummaryType = this.summaryTypes[this.state.summaryType];
     const summaryDataValues = {
@@ -671,7 +679,7 @@ class ConsumptionView extends BaseComponent {
     const summaryTypeLabel = summaryTypeNames[selectedSummaryType];
     const expandIcon = this.state.futureTransactionsOpen ?
       <span style={blueBgCss}>&#xE5C9;</span> : <span style={blueBgCss}>&#xE5C6;</span>;
-
+     
     return (
       <div className={s.monthSummaryContainer}>
         <div className={s.monthSummary}>
@@ -698,9 +706,9 @@ class ConsumptionView extends BaseComponent {
             </div>
             <div className={s.prevMonth}>
               <FlatButton style={Object.assign({ lineHeight: "28px" })} 
-                onTouchTap={() => this._loadMonth(this._prevMonth())}
+                onTouchTap={() => this._loadMonth(prevMonth)}
                 labelStyle={{ padding: "0px" }}
-                label={this._prevMonth() + " >"} />
+                label={this._formatMonth(prevMonth) + " >"} />
             </div>
           </div>
           <div className={s.summaryData}>
