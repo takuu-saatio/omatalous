@@ -262,13 +262,13 @@ class ConsumptionView extends BaseComponent {
       new Date(txDate.getFullYear(), txDate.getMonth() + 1, 0).getDate();
     transactions.forEach(tx => {
       
-      const value = tx.sign === "+" ? 0 : -tx.amount;
-      
+      const value = tx.sign === "+" ? tx.amount : -tx.amount;
+
       summary.total += value;
       if (tx.type === "single" && tx.sign === "-") {
         summary.singlesTotal += value;
       }
-    
+      
     });
     
     days = days ||
