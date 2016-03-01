@@ -531,9 +531,11 @@ class GoalsView extends BaseComponent {
      
     let incomeSummary = 0;
     let expensesSummary = 0;
+    let repeatingSummary = 0;
     if (monthStats) {
       incomeSummary = monthStats.fixedIncome;
       expensesSummary = monthStats.fixedExpenses;
+      repeatingSummary = incomeSummary - expensesSummary;
     }
 
     const catInputCss = {
@@ -623,6 +625,9 @@ class GoalsView extends BaseComponent {
                 {expenseTxElems}
               </div>
             </div>
+          </div>
+          <div className={s.repeatingSummary}>
+            Käytettävissä: <b>{repeatingSummary} €</b>
           </div>
           <div>
             <div style={{ backgroundColor: "#f0f0f0" }}>

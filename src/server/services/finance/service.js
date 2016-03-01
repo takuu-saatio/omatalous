@@ -358,6 +358,7 @@ class FinanceService {
           return reject(new Unauthorized());
         }
         
+        /*  
         if (transaction.type === "copy") {
           transaction.amount = 0;
           transaction.save()
@@ -365,7 +366,8 @@ class FinanceService {
           .catch(err => reject(err));
           return;
         }
-        
+        */
+
         transaction.destroy({ force: true })
         .then(() => resolve()) 
         .catch(err => reject(err));

@@ -6,9 +6,16 @@
   display: inline-block;
   vertical-align: top;
   width: 100%;
+  background-color: white;
   @media(min-width: 660px) {
     width: 50%;
   }
+}
+
+.repeatingSummary {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 8px;
 }
 
 .infoIcon {
@@ -66,15 +73,23 @@
 
 }
 
+.transactionHeaderContainer {
+  background-color: white;
+}
+
 .transactionsHeader {
   
   width: 100%;
   padding-left: 6px;
   padding-top: 6px;
-  padding-bottom: 6px;
-  margin-bottom: 6px;
+  padding-bottom: 8px;
+  margin: auto;
   background-color: white;
   position: relative;
+  
+  @media(min-width: 660px) {
+    max-width: 420px;
+  }
 
   .transactionsLabel {
     margin-top: 12px;

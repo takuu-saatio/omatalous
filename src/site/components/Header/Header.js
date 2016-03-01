@@ -135,7 +135,7 @@ class Header extends BaseComponent {
           <div className={logoStyles}>
             <a className={s.brand} href={logoNavPath} onClick={Link.handleClick}>
               <i className="material-icons">&#xE251;</i>
-              <span className={s.brandTxt}>Omatalous</span>
+              <span className={s.brandTxt}>P€nn0</span>
             </a>
           </div>
           <Navigation auth={auth} 
