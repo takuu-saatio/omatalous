@@ -20,8 +20,6 @@ class FinanceService {
   
   constructor(app) {
     this.app = app;
-    const { SENDGRID_USER, SENDGRID_PASSWORD } = process.env;
-    this.sendgrid = require("sendgrid")(SENDGRID_USER, SENDGRID_PASSWORD);
   }
 
   _getNow() {
