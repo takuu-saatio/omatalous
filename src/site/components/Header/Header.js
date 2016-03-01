@@ -159,7 +159,7 @@ class Header extends BaseComponent {
           <MenuItem style={this._getItemCss("/goals")} 
             onTouchTap={() => this._menuGo("/goals")}>
             <div className={s.menuItem}>
-              <span>Talouteni</span>
+              <span>Suunnittelu</span>
             </div>
           </MenuItem>
           <MenuItem style={this._getItemCss("/planning")} 

@@ -23,10 +23,49 @@ class FinanceService {
     const { SENDGRID_USER, SENDGRID_PASSWORD } = process.env;
     this.sendgrid = require("sendgrid")(SENDGRID_USER, SENDGRID_PASSWORD);
   }
+
+  _getNow() {
+    return process.env.NOW ? new Date(process.env.NOW) : new Date();
+  }
+
+  _getNextWeekOffset(baseDate) { 
+    return baseDate.getDay() !== 0 ? 8 - baseDate.getDay() : 1; 
+  }
+
+  _getPeriod(baseDate, periodType) {
+ 
+    const padded = (val) => {
+      const padding = val < 10 ? "0" : "";
+      return padding + val;
+    };
+
+    const format = (date) => {
+      return date.getFullYear() + "-" +
+        padded(date.getMonth() + 1) + "-" + 
+        padded(date.getDate()); 
+    };
+
+    let periodStart = null;
+
+    if (periodType === "M") {
+      periodStart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);  
+    } else if (periodType === "W") {
+      const offset = baseDate.getDay() !== 0 ? baseDate.getDay() - 1 : 6; 
+      periodStart = new Date(baseDate.getFullYear(), 
+                             baseDate.getMonth(), baseDate.getDate() - offset);  
+    } else {
+      periodStart = new Date(baseDate.getFullYear(), 
+                             baseDate.getMonth(), baseDate.getDate());  
+    }
   
+    return format(periodStart);
+
+  }
+
   _calcWeeklyRepeatingSum(weekDay, amount, startDay) {
  
-    const now = new Date(); 
+    const now = this._getNow();
+    
     const firstDay = new Date(now.getFullYear(), now.getMonth(), (startDay || 1));
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     let sum = 0;
@@ -48,7 +87,7 @@ class FinanceService {
 
   _calcDailyRepeatingSum(amount, startDay) {
     
-    const now = new Date(); 
+    const now = this._getNow();
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     return amount * (lastDay.getDate() - (startDay || 0));
   
@@ -56,7 +95,7 @@ class FinanceService {
 
   _getFutureTransactions(transactions) {
     
-    const now = new Date(); 
+    const now = this._getNow();
     const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     
@@ -122,7 +161,7 @@ class FinanceService {
     };
 
     const currentMonth = getCurrentMonth();
-    const now = new Date();
+    const now = this._getNow();
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
     
     const repeatingTxs = await Transaction.selectAll({ 
@@ -151,53 +190,35 @@ class FinanceService {
     log.debug("REPEATING TXS", repeatingTxs.length); 
     for(let tx of repeatingTxs) {
       
-      log.debug("TX: ", tx.sign, tx.amount, tx.repeats, tx.repeatValue, now.getDate());
+      const period = this._getPeriod(now, tx.repeats);      
       
-      /*
-      let actualAmount = 0;
-      const copyQuery = {
+      log.debug("TX: ", tx.sign, tx.amount, tx.repeats, tx.repeatValue, period, 
+                now.getDate());
+      
+      const copyRecords = await Copy.selectAll({
         transaction: tx.uuid,
-        $and: [
-          { date: { $gte: `${currentMonth}-01` } },
-          { date: { $lte: `${currentMonth}-${now.getDate()}` } }
-        ]
-      };
-      */
+        period: period
+      });
 
-      /*
-      const copyRecords = await Copy.selectAll(copyQuery);
-      if (copyRecords && copyRecords.length > 0) {
-
-        log.debug("COPY RECORDS", copyRecords.length);
-
-        for (let copyRecord of copyRecords) {
-          const copyTx = await Transaction.selectOne({ uuid: copyRecord.copy });
-          if (copyTx) {
-            log.debug("COPY TX", copyTx.amount);
-            actualAmount += copyTx.amount;
-          }
-        }
-
-      } else {
-        actualAmount = tx.amount;
-        }
-        */
-
+      const hasCopy = copyRecords.length > 0;
+      
       let totalAmount = 0;
       let futureAmount = 0;
 
       if (tx.repeats === "M") {
         totalAmount = tx.amount;
-        if (tx.repeatValue > now.getDate() && now.getDate() < lastDay) {
+        if (!hasCopy && tx.repeatValue > now.getDate() && now.getDate() < lastDay) {
           futureAmount = tx.amount; 
         }
       } else if (tx.repeats === "W") {
         totalAmount = this._calcWeeklyRepeatingSum(tx.repeatValue, tx.amount, 1);
+        const weekOffset = hasCopy ? this._getNextWeekOffset(now) : 1;
         futureAmount = this._calcWeeklyRepeatingSum(tx.repeatValue, tx.amount, 
-          now.getDate() + 1);
+                                       now.getDate() + weekOffset);
       } else if (tx.repeats === "D") {
         totalAmount = this._calcDailyRepeatingSum(tx.amount, 0);
-        futureAmount = this._calcDailyRepeatingSum(tx.amount, now.getDate());
+        futureAmount = 
+          this._calcDailyRepeatingSum(tx.amount, now.getDate());
       }
 
       log.debug("TOTALS: ", totalAmount, futureAmount);

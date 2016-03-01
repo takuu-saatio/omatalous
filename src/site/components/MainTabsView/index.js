@@ -62,7 +62,7 @@ export default class MainTabsView extends BaseComponent {
           tabItemContainerStyle={{ backgroundColor: "#f0f0f0" }}
           onChange={this._setTab}
           value={this.state.tab}>
-          <Tab label="Kulutus" value={0} style={this._tabLabelCss(0)}/>
+          <Tab label="Tapahtumat" value={0} style={this._tabLabelCss(0)}/>
           <Tab label="Graafit" value={1} style={this._tabLabelCss(1)} />
         </Tabs>
         <div>

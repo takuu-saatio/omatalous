@@ -110,7 +110,7 @@ class Navigation extends Component {
         <div className={cx(s.navItem, s.minHidden)}
           onTouchTap={() => Location.go("/goals")}
           style={this._isSelectedCss("/goals")}>
-          <div className={s.navLabel}>Talouteni</div>
+          <div className={s.navLabel}>Suunnittelu</div>
         </div>
       );
       
