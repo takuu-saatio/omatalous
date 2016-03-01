@@ -654,7 +654,7 @@ class ConsumptionView extends BaseComponent {
     };
     
     const summaryLabel = month === this.state.monthStats.label ?
-      "Tapahtumat" : month;
+      "Tapahtumat" : this._formatMonth(month);
   
     const prevMonth = this._prevMonth();
     const nextMonth = this._nextMonth();
@@ -668,7 +668,7 @@ class ConsumptionView extends BaseComponent {
     const selectedSummaryType = this.summaryTypes[this.state.summaryType];
     const summaryDataValues = {
       "singlesTotal": Math.abs(Math.ceil(summary.singlesTotal)),
-      "total": Math.abs(Math.ceil(summary.total)),
+      "total": Math.ceil(summary.total),
       "dayAvg": summary.dayAvg
     };
     
@@ -900,7 +900,7 @@ class ConsumptionView extends BaseComponent {
       let params = Object.assign(this.props.params, {
         uuid: this.state.edit 
       });
-      
+       
       return (
         <EditTransactionContainer close={() => this._closeEditTx()} 
           categories={this.state.categories} params={params} />

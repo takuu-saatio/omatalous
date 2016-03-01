@@ -5,6 +5,7 @@ import withStyles from "../../decorators/withStyles";
 import SelectField from "material-ui/lib/select-field";
 import DropDownMenu from "material-ui/lib/DropDownMenu";
 import MenuItem from "material-ui/lib/menus/menu-item";
+import FlatButton from "material-ui/lib/flat-button";
 import CircularProgress from "material-ui/lib/circular-progress";
 import { staticCategories } from "../../constants";
 import { mergeCategories } from "../../utils";
@@ -23,6 +24,11 @@ class CategoriesChart extends Component {
       }
     };
 
+  }
+
+  _formatMonth(month) {
+    const [ YYYY, MM ] = month.split("-");
+    return MM + "/" + YYYY;
   }
 
   _handleCatTypeChange(event, index, value) {
@@ -119,7 +125,12 @@ class CategoriesChart extends Component {
         show: false
       }
     };
-  
+
+    const buttonStyle = {
+      minWidth: "initial",
+      lineHeight: "18px"
+    };
+
     const chartContent = (
       <div className={s.chartContent}>
         <div className={s.chartSettings}>
@@ -135,28 +146,40 @@ class CategoriesChart extends Component {
               <div className={s.selectorLabel}>
                 Alkaen
               </div>
-              <div className={s.monthDec} 
-                onTouchTap={() => this._monthDec(this.state.catParams, "start")}>
-                <i className="material-icons">&#xE5CB;</i>
+              <div className={s.monthDec}>
+                <FlatButton style={buttonStyle}
+                  onTouchTap={() => this._monthDec(this.state.catParams, "start")}>
+                  <i className="material-icons">&#xE5CB;</i>
+                </FlatButton>
               </div>
-              <div className={s.monthLabel}>{this.state.catParams.start}</div>
-              <div className={s.monthInc}
-                onTouchTap={() => this._monthInc(this.state.catParams, "start")}>
-                <i className="material-icons">&#xE5CC;</i>
+              <div className={s.monthLabel}>
+                {this._formatMonth(this.state.catParams.start)}
+              </div>
+              <div className={s.monthInc}>
+                <FlatButton style={buttonStyle}
+                  onTouchTap={() => this._monthInc(this.state.catParams, "start")}>
+                  <i className="material-icons">&#xE5CC;</i>
+                </FlatButton>
               </div>
             </div>
             <div className={s.monthSelector}>
               <div className={s.selectorLabel}>
                 Asti
               </div>
-              <div className={s.monthDec}
-                onTouchTap={() => this._monthDec(this.state.catParams, "end")}>
-                <i className="material-icons">&#xE5CB;</i>
+              <div className={s.monthDec}>
+                <FlatButton style={buttonStyle}
+                  onTouchTap={() => this._monthDec(this.state.catParams, "end")}>
+                  <i className="material-icons">&#xE5CB;</i>
+                </FlatButton>
               </div>
-              <div className={s.monthLabel}>{this.state.catParams.end}</div>
-              <div className={s.monthInc}
-                onTouchTap={() => this._monthInc(this.state.catParams, "end")}>
-                <i className="material-icons">&#xE5CC;</i>
+              <div className={s.monthLabel}>
+                {this._formatMonth(this.state.catParams.end)}
+              </div>
+              <div className={s.monthInc}>
+                <FlatButton style={buttonStyle}
+                  onTouchTap={() => this._monthInc(this.state.catParams, "end")}>
+                  <i className="material-icons">&#xE5CC;</i>
+                </FlatButton>
               </div>
             </div>
           </div>

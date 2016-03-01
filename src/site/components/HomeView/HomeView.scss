@@ -7,9 +7,34 @@
   background-color: #333;
   color: white;
   text-align: center;
-  padding-bottom: 64px;
   padding-top: 20px;
+  position: relative;
+  overflow: hidden;
+
+  .bannerBg {
+
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    position: relative;
+
+    @media screen and (orientation:portrait) {
+      width: 200%;
+    }
+
+    > img {
+      width: 100%; 
+      @media screen and (orientation:portrait) {
+        margin-left: -100%;
+      }
+    }
+
+  }
   
+  .bannerContent {
+    display: none;
+  }
+
   .smallHeading {
     font-size: 22px; 
   }

@@ -25,9 +25,18 @@
   
   }
 
+  .groupLabel {
+    font-size: 12px;
+    position: absolute;
+    top: -6px;
+    left: 24px;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
   .topGroup {
     display: flex;
     width: 100%;
+    position: relative;
   }
   
   .descGroup {
@@ -40,14 +49,6 @@
     padding-bottom: 12px;
     position: relative;
     margin-top: 16px;
-
-    .groupLabel {
-      font-size: 12px;
-      position: absolute;
-      top: -6px;
-      left: 24px;
-      color: rgba(0, 0, 0, 0.5);
-    }
 
   }
 
@@ -94,6 +95,7 @@
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
+    position: relative;
   }
 
   .cancel {

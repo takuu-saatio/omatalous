@@ -14,6 +14,17 @@ class ProgressChart extends Component {
   constructor(props) {
     super(props);    
   }
+  
+  _formatMonth(month) {
+    
+    if (month.indexOf("-") === -1) {
+      return month;
+    }
+
+    const [ YYYY, MM ] = month.split("-");
+    return MM + "/" + YYYY;
+  
+  }
 
   _renderChartContent(data) {
     
@@ -103,7 +114,7 @@ class ProgressChart extends Component {
     });
     
     months.unshift("x");
-    progressColumns.unshift(months);
+    progressColumns.unshift(months.map(month => this._formatMonth(month)));
 
     let chart = null;
 

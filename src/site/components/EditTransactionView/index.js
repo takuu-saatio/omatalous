@@ -271,6 +271,13 @@ class EditTransactionView extends BaseComponent {
           label="POISTA"/>
       ); 
     }
+    
+    const txSign = this.state.transaction.sign;
+
+    let viewTitle = txSign === "+" ? "Tulo" : "Meno";
+    if (this.props.title) {
+      viewTitle = this.props.title + (txSign === "+" ? " tulo" : " meno");
+    }
 
     return (
       <div>
@@ -279,7 +286,7 @@ class EditTransactionView extends BaseComponent {
           <div className={s.saveTransaction}>
             <div className={s.editTxHeader}>
               <div className={s.editTxLabel}>
-                Tapahtuman muokkaus
+                {viewTitle}
               </div>
               <div className={s.deleteTx}>
                 {deleteButton}
@@ -305,6 +312,9 @@ class EditTransactionView extends BaseComponent {
                   onChange={this._handleInputChange.bind(this)} />
               </div>
               <div className={s.category}>
+                <div className={s.groupLabel} style={{ top: "16px" }}>
+                  Kategoria
+                </div> 
                 <DropDownMenu style={Object.assign({ height: "43px" }, fullWidth)}
                   name="category" 
                   value={this.state.transaction.category} 

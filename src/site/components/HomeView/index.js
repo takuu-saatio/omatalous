@@ -18,25 +18,6 @@ class HomeView extends BaseComponent {
     this.state = props.state;
   }
 
-  _renderUnauthenticated() {
-    return (
-      <div className={s.root}>
-        <div className={s.banner}>
-          <div className={s.smallHeading}>Takuu-Säätio</div>
-          <div className={s.bigHeading}>Penno.fi</div>
-        </div>
-        <div className={s.content}>
-          <RaisedButton style={{ position: "absolute", top: "-18px", left: "calc(50% - 75px)" }} 
-            onTouchTap={() => Location.go("/login")}
-            label="Kirjaudu sisään" secondary={true} />
-          <p>
-            Penno auttaa sinua hallitsemaan talouttasi paremmin.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   render() {
 
     console.log("render home", this.props, this.state);
@@ -51,8 +32,13 @@ class HomeView extends BaseComponent {
     return (
       <div className={s.root}>
         <div className={s.banner}>
-          <div className={s.smallHeading}>Takuu-Säätio</div>
-          <div className={s.bigHeading}>Penno.fi</div>
+          <div className={s.bannerBg}>
+            <img src="/TS_image.jpg" />
+          </div>
+          <div className={s.bannerContent}>
+            <div className={s.smallHeading}>Takuu-Säätio</div>
+            <div className={s.bigHeading}>Penno.fi</div>
+          </div>
         </div>
         <div className={s.content}>
           {loginButton}

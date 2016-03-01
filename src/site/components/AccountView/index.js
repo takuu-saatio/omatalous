@@ -260,19 +260,12 @@ class AccountView extends BaseComponent {
               </div> 
             </div>
             <div className={s.profileRow}>
-              <div className={s.profileCell}>
+              <div className={s.profileCell} style={{ width: "100%" }}>
                 <TextField style={fullWidth}
                   name="email" 
                   floatingLabelText={emailStatus.text}
                   floatingLabelStyle={emailStatus.style}
                   value={account.email}
-                  onChange={this._handleInputChange.bind(this)} />
-              </div>
-              <div className={s.profileCell}>
-                <TextField style={fullWidth} 
-                  name="username" 
-                  floatingLabelText="Käyttäjätunnus"
-                  value={account.username}
                   onChange={this._handleInputChange.bind(this)} />
               </div>
             </div>
@@ -343,7 +336,7 @@ class AccountView extends BaseComponent {
                 {pwdStatus}
               </div>
               <div className={s.changePwdButton}>
-                <FlatButton disabled={!passwordStatus.pass}
+                <RaisedButton secondary={true} disabled={!passwordStatus.pass}
                   onTouchTap={() => this._savePassword()} label="Vaihda" />
               </div>
             </div>

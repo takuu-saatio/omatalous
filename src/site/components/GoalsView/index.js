@@ -205,10 +205,15 @@ class GoalsView extends BaseComponent {
   
   _deleteGoal() {
     const user = this.props.params.user || this.state.auth.user.uuid; 
+    const now = new Date();
+    const monthPadding = now.getMonth() < 9 ? "0" : "";
+    const monthVal = now.getFullYear() + "-" + monthPadding + (now.getMonth() + 1);
+    this.state.goal.start = monthVal;
     this.state.goal.end = null;
     this.state.goal.targetAmount = null;
     this.state.goal.startAmount = 0;
     this.state.goal.finite = false;
+    console.log("DELETE GOAL", this.state.goal);
     this.props.saveGoal(user, this.state.goal);
   }
   
@@ -393,6 +398,7 @@ class GoalsView extends BaseComponent {
 
       return (
         <EditRepeatingTransactionContainer close={() => this._closeEditTx()}
+          title="Toistuva"
           signDisabled={true}
           categories={this.state.categories}
           params={params} transaction={transaction} />
@@ -496,7 +502,7 @@ class GoalsView extends BaseComponent {
       goalDeleteButton = (
         <RaisedButton 
           style={Object.assign({ lineHeight: "28px" }, fullWidth)} 
-          onTouchTap={() => this._deleteGoal()} label="ALUSTA"/>
+          onTouchTap={() => this._deleteGoal()} label="NOLLAA"/>
       );
     }
 
