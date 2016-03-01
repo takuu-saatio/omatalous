@@ -9,6 +9,16 @@ import { Unauthorized } from "../../core/errors";
 
 export function registerRoutes(app) {
   
+  app.get("/", (req, res, next) => {
+
+    if (!req.isAuthenticated()) {
+      return res.redirect("/home");
+    }
+   
+    res.redirect("/consumption");
+
+  });
+
   app.get("/home", (req, res, next) => {
     
     const homeState = {

@@ -18,25 +18,6 @@ class HomeView extends BaseComponent {
     this.state = props.state;
   }
 
-  _renderAuthenticated() {
-    
-    const { doTest } = this.props;
-    
-    return (
-      <div className={s.root}>
-        <div className={s.content}>
-          <h1>Tulot</h1>
-          <p>123456</p>
-          <h1>Menot</h1>
-          <p>654321</p>
-          <h1>State val</h1>
-          <p>{this.state.homeVal}</p>
-          <button onClick={() => doTest()}>Test</button>
-        </div>
-      </div>
-    );
-  }
-
   _renderUnauthenticated() {
     return (
       <div className={s.root}>
@@ -61,9 +42,26 @@ class HomeView extends BaseComponent {
     console.log("render home", this.props, this.state);
     
     let auth = this.state.auth;
-    let content = (auth && auth.user) ?
-      this._renderAuthenticated() : this._renderUnauthenticated();
+    let loginButton = !(auth && auth.user) ?
+      (<RaisedButton 
+          style={{ position: "absolute", top: "-18px", left: "calc(50% - 75px)" }} 
+          onTouchTap={() => Location.go("/login")}
+          label="Kirjaudu sisään" secondary={true} />) : null;
    
+    return (
+      <div className={s.root}>
+        <div className={s.banner}>
+          <div className={s.smallHeading}>Takuu-Säätio</div>
+          <div className={s.bigHeading}>Penno.fi</div>
+        </div>
+        <div className={s.content}>
+          {loginButton}
+          <p>
+            Penno auttaa sinua hallitsemaan talouttasi paremmin.
+          </p>
+        </div>
+      </div>
+    );
     return (
       <div>
         {content}
