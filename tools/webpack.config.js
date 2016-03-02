@@ -98,7 +98,6 @@ const config = {
 
   postcss: function plugins(bundler) {
     return [
-      require('postcss-mixins'),
       require('postcss-import')({ addDependencyTo: bundler }),
       require('precss')(),
       require('autoprefixer')({ browsers: AUTOPREFIXER_BROWSERS }),
