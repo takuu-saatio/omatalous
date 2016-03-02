@@ -35,9 +35,11 @@ class HomeView extends BaseComponent {
           <div className={s.bannerBg}>
             <img src="/TS_image.jpg" />
           </div>
-          <div className={s.bannerContent}>
-            <div className={s.smallHeading}>Takuu-Säätio</div>
-            <div className={s.bigHeading}>Penno.fi</div>
+          <div className={s.bannerContainer}>
+            <div className={s.bannerContent}>
+              <div className={s.smallHeading}>Takuu-Säätio</div>
+              <div className={s.bigHeading}>Penno.fi</div>
+            </div>
           </div>
         </div>
         <div className={s.content}>
