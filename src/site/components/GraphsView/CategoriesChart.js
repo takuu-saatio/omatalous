@@ -15,12 +15,22 @@ class CategoriesChart extends Component {
   constructor(props) {
 
     super(props);
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    
+    const currentMonth = 
+      year + "-" +
+      (month < 10 ? "0" + month : month);
+    
     this.state = {
       catParams: {
         graphs: "categories,forecast,progress",
         sign: "-",
-        start: "2016-02",
-        end: "2016-02"
+        start: currentMonth,
+        end: currentMonth
       }
     };
 

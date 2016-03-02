@@ -327,11 +327,16 @@ class ConsumptionView extends BaseComponent {
             <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
             <div className={cx(s.infoPopup, s.rightPopup)} style={{ top: "23px" }}>
               <div className={s.infoText}>
-                <b>Säästetty</b>
-                <div>
-                  Säästön määrä tähän päivään asti.
-                  Kuluvan kuukauden aikana kertynyt säästö on arvio, joka
-                  perustuu tähänastiseen kulutukseesi.
+                <b>Säästetty / Säästötavoite</b>
+                <div style={{ textAlign: "left" }}>
+                  <b>Säästetty:</b>
+                  Säästön määrä tähän päivään asti. Kuluvan kuukauden aikana
+                  säästö on arvio, joka määräytyy kulutuksesi perusteella.
+                  Toteutuneen säästön määrä selviää kuukauden lopussa.
+                  <br/>
+                  <b>Säästötavoite:</b>
+                  Asetetun säästötavoitteen mukainen rahamäärä sekä säästettävä
+                  rahamäärä kuukaudessa, jotta säästötavoite toteutuu.
                 </div>
               </div>
             </div>
@@ -445,7 +450,7 @@ class ConsumptionView extends BaseComponent {
                   <div className={s.infoText}>
                     <b>Jäljellä</b>
                     <div>
-                      Pakollisten menojen jälkeen tuloista jäävä rahamäärä.
+                      Menojen jälkeen tuloista jäävä rahamäärä kuukaudessa.
                     </div>
                   </div>
                 </div>
@@ -477,8 +482,8 @@ class ConsumptionView extends BaseComponent {
                   <div className={s.infoText}>
                     <b>Käytettävissä</b>
                     <div>
-                      Pakollisten menojen ja mahdollisen säästötavoitteen
-                      vähentämisen jälkeen käytettävissä oleva rahan määrä.
+                      Menojen ja mahdollisen säästötavoitteen vähentämisen jälkeen
+                      käytettävissä oleva rahamäärä kuukaudessa tai päivässä.
                     </div>
                   </div>
                 </div>
@@ -673,8 +678,8 @@ class ConsumptionView extends BaseComponent {
     };
     
     const summaryTypeNames = {
-      "singlesTotal": "Käytetty yhteensä",
-      "total": "Saldo",
+      "singlesTotal": "Kulutus yhteensä",
+      "total": "Tapahtumat yhteensä",
       "dayAvg": "Keskikulutus päivässä"
     };
 

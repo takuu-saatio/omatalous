@@ -79,6 +79,10 @@ class GoalsView extends BaseComponent {
     super.updateState(state);
 
   }
+  
+  _setTitle(title) {
+    this.context.onSetTitle(title);
+  }
 
   _handleExpenseCatChange(event) {
     this._handleFormChange("expenseCategory", event.target.name, event.target.value);
@@ -377,6 +381,9 @@ class GoalsView extends BaseComponent {
   render() {
      
     console.log("render goals", this.props, this.state);
+    
+    this._setTitle("Suunnittelu");
+
     let { 
       transactions, categories, goal, 
       monthStats, messages, edit 
@@ -566,8 +573,8 @@ class GoalsView extends BaseComponent {
                     <div className={s.infoText}>
                       <b>Toistuvat tulot</b>
                       <div>
-                        Lisää, poista ja muokkaa säännöllisiä tulojasi.
-                        Tietoja säännöllisistä tuloistasi käytetään käytettävissä olevan
+                        Lisää, muokkaa ja poista toistuvia tuloja.
+                        Tietoja tuloista käytetään käytettävissä olevan
                         rahamäärän arviointiin ja säästön suunnitteluun.
                       </div>
                     </div>
@@ -604,8 +611,8 @@ class GoalsView extends BaseComponent {
                     <div className={s.infoText}>
                       <b>Toistuvat menot</b>
                       <div>
-                        Lisää, poista ja muokkaa säännöllisiä menojasi.
-                        Tietoja säännöllisistä menoistasi käytetään käytettävissä olevan
+                        Lisää, muokkaa ja poista toistuvia menoja.
+                        Tietoja menoista käytetään käytettävissä olevan
                         rahamäärän arviointiin ja säästön suunnitteluun.
                       </div>
                     </div>
@@ -718,11 +725,11 @@ class GoalsView extends BaseComponent {
                         <b>Aloitussumma:</b> Valmiiksi säästössä oleva rahamäärä.<br/>
                         <b>Aloitus-kk:</b> Kuukausi, jolloin säästäminen on aloitettu tai 
                         on tarkoitus aloittaa.<br/>
-                        <b>Tavoite:</b> Säästölle voi asettaa tavoitesumma ja aika, 
-                        jotta sovellus voi auttaa mitoittamaan rahankäyttöä ja
+                        <b>Tavoite:</b> Säästölle voi asettaa tavoitesumman ja -ajan, 
+                        jolloin sovellus auttaa mitoittamaan rahankäyttöä ja
                         näyttää säästön edistymistä.<br/>
                         <b>Tavoite €:</b> Tavoitteena olevan säästön lopullinen rahamäärä.<br/>
-                        <b>Lopetus-kk:</b> Kuukausi, jonka loppuun mennessä tavoitteen 
+                        <b>Lopetus-kk:</b> Kuukausi, jonka loppuun mennessä säästötavoitteen 
                         tulee täyttyä
                       </div>
                     </div>

@@ -78,7 +78,7 @@ class PlanningView extends BaseComponent {
 
   render() {
     
-    this._setTitle("Suunnittelu");
+    this._setTitle("Muistikirja");
     
     const { transactions, edit } = this.state;
     
@@ -225,10 +225,11 @@ class PlanningView extends BaseComponent {
       <div>
         <div className={s.root}>
           <div className={s.planningTitle}>
-            Suunnittelu
+            Muistikirja
           </div>
           <div className={s.planningDescription}>
-            Tähän voit listata etukäteen arvioimiasi menoja ja tuloja.
+            Tähän voit listata etukäteen yksittäisiä menoja ja tuloja,
+            jotka ovat vielä epävarmoja.
             <br/>
             Kun ne toteutuvat, voit lisätä ne Tapahtumiin.
           </div>

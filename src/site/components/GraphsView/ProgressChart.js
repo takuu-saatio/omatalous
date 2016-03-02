@@ -191,7 +191,7 @@ class ProgressChart extends Component {
       
       const setLegend = (element, columns) => {
 
-        d3.select(element).selectAll("*").remove();
+        d3.select(element).selectAll(".legend").remove();
         d3.select(element).insert("div", ".chart")
         .attr("class", "legend").selectAll(".legend-item").data(columns)
         .enter().append("div")
@@ -253,7 +253,7 @@ class ProgressChart extends Component {
     return (   
       <div className={s.graph}>
         <div className={s.graphLabel}>
-          Kehitys
+          Tulot, menot ja säästö kuukausittain
         </div>
         <div className={s.graphContainer} style={{ width: `${this.props.graphSize}px` }}>
           {chartContent}

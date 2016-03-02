@@ -210,7 +210,7 @@ class ForecastChart extends Component {
     return ( 
       <div className={s.graph}>
         <div className={s.graphLabel}>
-          Tilanne/ennuste
+          Ennuste/Tilanne
         </div>
         <div className={s.graphContainer} style={{ width: `${this.props.graphSize}px` }}>
           {chartContent}
