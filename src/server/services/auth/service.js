@@ -72,6 +72,86 @@ class AuthService {
 
   }
 
+  _createInactivityAlert(user) {
+    
+    const { Alert, Transaction } = this.app.entities;
+    const now = new Date();
+    const weekTime = 1000 * 60 * 2; //60 * 24 * 7;
+
+    Transaction.schema.findAll({
+      where: {
+        user: user.uuid,
+        type: "single"
+      },
+      order: [ [ "createdAt", "DESC" ] ],
+      limit: 1
+    }).then((lastTxs) => {
+      log.debug("LAST TXS", lastTxs);
+      if (lastTxs.length > 0) {
+
+        const tx = lastTxs[0];
+        const timeDiff = now.getTime() - tx.createdAt.getTime();
+        log.debug("TIME DIFF ", timeDiff);
+        
+        if (timeDiff > weekTime) {
+          
+          Alert.selectAll({
+            user: user.uuid,
+            type: "inactive_1wk",
+            $or: [
+              { shownAt: { $gt: new Date(now.getTime() - weekTime) } },
+              { status: "active" }
+            ]
+          }).then((alerts) => {
+            log.debug("ALERTS FOUND:", alerts.length);
+            if (alerts.length === 0) {
+              console.log("CREATE INACTIVITY ALERT!");
+              const alert = {
+                user: user.uuid,
+                status: "active",
+                type: "inactive_1wk",
+                behavior: "keep_on_dismiss",
+                message: "Et ole lisännyt uusia menoja yli viikkoon.",
+                month: getCurrentMonth()
+              };
+              
+              Alert.schema.create(alert)
+              .then((alert) => {
+                log.debug("Inactivity alert created");
+              })
+              .catch((err) => {
+                log.debug("Error creating inactivity alert");
+              });
+            }
+          });
+
+        } else {
+          
+          Alert.schema.destroy({ 
+            force: true,
+            where: {
+              user: user.uuid,
+              type: "inactive_1wk"
+            }
+          })
+          .then(() => {
+            log.debug("Deleted obsolete inactivity alerts");
+          })
+          .catch((err) => {
+            log.debug("ERROR DELETEING OBSOLETE INACTIVITY ALERTS", err);
+          });
+        
+        }
+
+      }
+
+    })
+    .catch((err) => {
+      log.debug("FIND LAST TXS ERROR: ", err);
+    });
+
+  }
+
   login(loginParams) {
 
     return new Promise((resolve, reject) => {
@@ -178,6 +258,8 @@ class AuthService {
           
         }
         
+        this._createInactivityAlert(user);
+
         // If token auth, reset the token and resolve
         if (email === "token") {
           user.token = null;

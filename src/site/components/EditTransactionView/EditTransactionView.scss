@@ -1,11 +1,17 @@
+.root {
+  max-width: 1000px;
+  margin: auto;
+  background-color: white;
+}
+
 .saveTransaction {
   
   width: 100%;
   max-width: 420px;
   margin: auto;
-  margin-bottom: 16px;
+  padding-bottom: 16px;
   padding-bottom: 12px;
-  
+
   .editTxHeader {
     
     width: 100%;

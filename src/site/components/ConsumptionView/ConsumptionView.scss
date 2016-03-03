@@ -733,8 +733,9 @@
   width: 90%;
   max-width: 600px;
   margin: auto;
-  padding-bottom: 12px;
-
+  padding-bottom: 6px;
+  padding-top: 6px;
+  
   .alert {
     
     padding: 12px;
@@ -742,14 +743,14 @@
     position: relative;
 
     .message {
-      width: calc(100% - 24px);
+      width: calc(100% - 32px);
       text-align: center;
     }
   
     .dismiss {
       
       position: absolute;
-      top: calc(50% - 13px);
+      top: 12px;
       right: 12px;
       cursor: pointer;
 

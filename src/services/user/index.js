@@ -24,8 +24,8 @@ export class LocalUserServiceInterface extends ServiceInterface {
     return await this.service.deleteUser(uuid);
   }
   
-  async getAlerts(params) {
-    return await this.service.getAlerts(params);
+  async getAlerts(user, params) {
+    return await this.service.getAlerts(user, params);
   }
   
   async deleteAlert(user, alert) {

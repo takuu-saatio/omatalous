@@ -117,7 +117,8 @@ class UserService {
   }
   
   getAlerts(user, params) {
-
+    
+    log.debug("GET ALERTS WITH PARAMS", params);
     return new Promise((resolve, reject) => {
   
       const { Alert } = this.app.entities;
@@ -163,13 +164,16 @@ class UserService {
           return reject(new Unauthorized());
         }
 
-        if (alert.type === "welcome") { 
+        if (alert.behavior === "delete_on_dismiss") { 
           alert.destroy({ force: true })
           .then(() => resolve()) 
           .catch(err => reject(err));
         } else {
           alert.status = "dismissed";
           alert.dismissedAt = new Date();
+          alert.save()
+          .then(() => resolve())
+          .catch((err) => reject(err));
         }
 
       }) 

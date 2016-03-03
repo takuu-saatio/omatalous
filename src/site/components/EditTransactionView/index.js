@@ -281,7 +281,6 @@ class EditTransactionView extends BaseComponent {
 
     return (
       <div>
-        {formError}
         <div className={s.root}>
           <div className={s.saveTransaction}>
             <div className={s.editTxHeader}>

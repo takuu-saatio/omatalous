@@ -11,6 +11,7 @@ import MenuItem from "material-ui/lib/menus/menu-item";
 import CircularProgress from "material-ui/lib/circular-progress";
 import LinearProgress from "material-ui/lib/linear-progress";
 import BaseComponent from "../BaseComponent";
+import Location from "../../../core/Location";
 import { EditTransactionContainer } from "../../containers";
 import { staticCategories } from "../../constants";
 import { mergeCategories } from "../../utils";
@@ -34,6 +35,38 @@ const infoButtonStyles = {
     fontSize: "12px",
     zIndex: "1"
   }
+};
+
+
+const alertMessages = {
+
+  "welcome": 
+    (
+      <div style={{ textAlign: "center", color: "white" }}>
+        <b>Tervetuloa käyttämään Pennoa!</b>
+        <br/><br/>
+        Tämä on näkymä, josta voit seurata päivittäistä kulutustasi ja hallita
+        juoksevia menoja ja tuloja. Saadaksesi täyden hyödyn irti Pennosta,&nbsp;
+        <a href="#" onTouchTap={() => Location.go("/goals")}>
+          lisää myös
+        </a>
+        &nbsp;toistuvat tulosi ja menosi ja aseta säästötavoite&nbsp;
+        <a href="#" onTouchTap={() => Location.go("/goals")}>
+          Suunnittelu-sivulla
+        </a>
+        !
+      </div>
+    ),
+
+    "inactive_1wk": 
+      (
+        <div style={{ textAlign: "center", color: "white" }}>
+          Et ole lisännyt uusia menoja yli viikkoon. Voit korjata tilanteen 
+          esimerkiksi lisäämällä yhtenä menona täähän asti kertyneiden menojesi summan. 
+          Tsemppiä!
+        </div>
+      )
+
 };
 
 @withStyles(s)
@@ -219,6 +252,7 @@ class ConsumptionView extends BaseComponent {
   }
   
   _dismissAlert(uuid) {
+    console.log("dismiss alert");
     const user = this.props.params.user || this.state.auth.user.uuid; 
     this.props.deleteAlert(user, uuid);
   }
@@ -371,7 +405,7 @@ class ConsumptionView extends BaseComponent {
         <div>
           <span className={s.infoIcon} style={{ top: "-3px" }}> 
             <span className={cx("material-icons", s.infoSymbol)}>&#xE88F;</span>
-            <div className={cx(s.infoPopup, s.rightPopup)}>
+            <div className={cx(s.infoPopup, s.rightPopupLarge)}>
               <div className={s.infoText}>
                 <b>Säästetty</b>
                 <div>
@@ -752,14 +786,23 @@ class ConsumptionView extends BaseComponent {
     }
 
     const alertElems = alerts.map(alert => {
+      
+      console.log("ALERT", alert);
+      const style = {};
+      if (alert.type === "welcome") {
+        style.backgroundColor = "#00bcd4";
+      } else if (alert.type === "inactive_1wk") {
+        style.backgroundColor = "#00bcd4";
+      }
+
       return (
-        <div className={s.alert}>
+        <div key={alert.uuid} className={s.alert} style={style}>
           <div className={s.message}>
-            {alert.message}
+            {alertMessages[alert.type]}
           </div>
           <div onTouchTap={() => this._dismissAlert(alert.uuid)} 
             className={s.dismiss}>
-            <i className="material-icons">&#xE14C;</i>
+            <i className="material-icons">&#xE888;</i>
           </div>
         </div>
       );

@@ -95,7 +95,8 @@ export function registerRoutes(app) {
     }
 
     try {
-        
+
+      log.debug("QUERYING ALERTS", req.query);  
       const userService = app.services.user;
       const alerts = await userService.getAlerts(req.params.uuid, req.query)
       res.json({ status: "ok", alerts: alerts.map(alert => alert.json()) });

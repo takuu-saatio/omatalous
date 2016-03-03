@@ -26,7 +26,7 @@ export function registerMiddleware(app) {
       return next();
     }
 
-    log.debug(`Use middleware [locale=${req.locale}, auth=${req.isAuthenticated()}]`);
+    //log.debug(`Use middleware [locale=${req.locale}, auth=${req.isAuthenticated()}]`);
     GLOBAL.navigator = { userAgent: req.headers["user-agent"] };     
     
     let statusCode = 200;
@@ -78,7 +78,7 @@ export function registerMiddleware(app) {
     req.context = context;
     req.data = data;
         
-    console.log("middleware >>> next", req.context.initialState);
+    //console.log("middleware >>> next", req.context.initialState);
     next();
 
   });
