@@ -1,7 +1,10 @@
 @import "../variables.scss";
 
 .root {
-  margin-bottom: 24px;  
+  padding-bottom: 24px;
+  margin: auto;  
+  max-width: 1000px;
+  background-color: white;
 }
 
 .planningTitle {

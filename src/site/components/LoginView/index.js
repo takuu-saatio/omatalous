@@ -138,8 +138,8 @@ class LoginPage extends BaseComponent {
               Kirjaudu sisään jollain alla olevista tavoista.
               Jos et ole käyttänyt palvelua aiemmin, tunnuksesi luodaan
               ensimmäisen kirjautumisen yhteydessä.
-              <br/>
-              Kirjautumalla sovellukseen hyväksyt sovelluksen
+              <br/><br/>
+              Kirjautumalla sovellukseen hyväksyt sovelluksen&nbsp;
               <a href="#">ehdot</a>.
             </div>
             <div className={s.extLogin}>

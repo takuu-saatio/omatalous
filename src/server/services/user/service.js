@@ -124,7 +124,22 @@ class UserService {
 
       params = Object.assign({ user }, params || {});
       Alert.selectAll(params)
-      .then((alerts) => resolve(alerts))
+      .then((alerts) => {
+        
+        const alertUuids = alerts.map(alert => alert.uuid);
+        const now = new Date();
+        Alert.schema.update({ shownAt: now }, { 
+          where: { uuid: { $in: alertUuids } } 
+        }).then((affected, rows) => {
+          log.debug("Updated shown at for " + affected + " alerts to " + now);
+        })
+        .catch((err) => {
+          log.debug("FAILED TO UPDATE ALERTS SHOWN-AT: ", err);
+        });
+
+        resolve(alerts);
+      
+      })
       .catch((err) => reject(err));
 
     });

@@ -112,13 +112,13 @@ class AuthService {
             
             log.debug(`Created new user with ${method} method`, user);
 
-            /*
             let alert = {
               user: user.uuid,
               status: "active",
               type: "welcome",
               behavior: "delete_on_dismiss",
-              message: "Tervetuloa"
+              message: "Tervetuloa",
+              month: getCurrentMonth()
             };
             
             Alert.schema.create(alert)
@@ -128,7 +128,6 @@ class AuthService {
             .catch((err) => {
               log.debug("Error creating welcome alert");
             });
-            */
 
             const now = new Date();
             const currentDay = now.getDate() < 10 ? 

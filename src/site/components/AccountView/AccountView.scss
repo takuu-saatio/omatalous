@@ -1,7 +1,11 @@
 @import "../variables.scss";
 
 .root {
-  margin-bottom: 24px;  
+  padding-top: 24px;
+  padding-bottom: 24px;  
+  max-width: 1000px;
+  background-color: white;
+  margin: auto;
 }
 
 
@@ -11,7 +15,6 @@
   max-width: 420px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 24px;
   
   .profileTitle {
     font-weight: 600;

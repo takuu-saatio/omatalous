@@ -55,13 +55,20 @@ export default class MainTabsView extends BaseComponent {
       height: "2px",
       bottom: "0px"
     };
- 
+    
+    const style = {
+      marginLeft: "auto",
+      marginRight: "auto",
+      maxWidth: "1000px"
+    };
+
     return (
       <div>
         <Tabs inkBarStyle={inkBarStyle} 
           tabItemContainerStyle={{ backgroundColor: "#f0f0f0" }}
           onChange={this._setTab}
-          value={this.state.tab}>
+          value={this.state.tab}
+          style={style}>
           <Tab label="Tapahtumat" value={0} style={this._tabLabelCss(0)}/>
           <Tab label="Graafit" value={1} style={this._tabLabelCss(1)} />
         </Tabs>

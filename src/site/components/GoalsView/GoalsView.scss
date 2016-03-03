@@ -1,5 +1,7 @@
 .root {
   background-color: #f0f0f0;
+  max-width: 1000px;
+  margin: auto;
 }
 
 .repeatingTransactions {
@@ -244,7 +246,6 @@
 
 .categoriesHeader {
   
-  width: 100%;
   padding-left: 6px;
   padding-top: 6px;
   margin-bottom: 6px;

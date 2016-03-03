@@ -16,7 +16,9 @@ class Alert extends BaseEntity {
       status: { type: Sequelize.STRING },
       behavior: { type: Sequelize.STRING },
       message: { type: Sequelize.STRING },
-      dismissedAt: { type: Sequelize.DATE }
+      shownAt: { type: Sequelize.DATE },
+      dismissedAt: { type: Sequelize.DATE },
+      month: { type: Sequelize.STRING }
 
     });
 

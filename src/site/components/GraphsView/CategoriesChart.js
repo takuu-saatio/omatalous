@@ -29,7 +29,7 @@ class CategoriesChart extends Component {
       catParams: {
         graphs: "categories,forecast,progress",
         sign: "-",
-        start: currentMonth,
+        start: "2016-01",
         end: currentMonth
       }
     };

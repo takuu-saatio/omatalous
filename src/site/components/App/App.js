@@ -72,7 +72,7 @@ class Content extends Component {
     
     console.log("APP PROPS", this.props);
     return (
-      <div>
+      <div style={{ backgroundColor: "#f0f0f0" }}>
         <HeaderContainer path={this.props.path} />
         {router}
         <Footer />

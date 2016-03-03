@@ -1,5 +1,8 @@
 .root {  
+  background-color: white;
   padding-bottom: 24px;
+  max-width: 1000px;
+  margin: auto;
 }
 
 .banner {
@@ -22,6 +25,7 @@
 
     @media screen and (orientation:portrait) {
       width: 150%;
+      max-height: initial;
     }
 
     > img {
